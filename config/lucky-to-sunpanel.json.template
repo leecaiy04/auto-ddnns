@@ -1,0 +1,66 @@
+{
+  "lucky": {
+    "apiBase": "http://192.168.3.200:16601",
+    "openToken": "your-lucky-open-token-here"
+  },
+  "sunpanel": {
+    "apiBase": "http://192.168.3.200:20001/openapi/v1",
+    "apiToken": "your-sunpanel-api-token",
+    "defaultGroupId": 9
+  },
+  "sync": {
+    "interval": 300,
+    "autoCreateGroups": true,
+    "deleteRemoved": false,
+    "saveIcon": true,
+    "onlySyncEnabled": true
+  },
+  "groups": {
+    "管理面板": {
+      "description": "各种管理面板和控制台",
+      "keywords": ["panel", "admin", "dashboard", "console", "控制台"],
+      "portRanges": [],
+      "priority": 1
+    },
+    "API": {
+      "description": "API 接口和网关",
+      "keywords": ["api", "gateway", "接口"],
+      "portRanges": [],
+      "priority": 2
+    },
+    "开发工具": {
+      "description": "开发工具和调试界面",
+      "keywords": ["dev", "debug", "test", "开发", "调试"],
+      "portRanges": [[3000, 8999]],
+      "priority": 3
+    },
+    "Web 服务": {
+      "description": "Web 应用和服务",
+      "keywords": ["web", "app", "service", "网站"],
+      "portRanges": [[8080, 8090]],
+      "priority": 4
+    },
+    "AI 服务": {
+      "description": "AI 相关服务",
+      "keywords": ["ai", "openai", "claude", "llm", "chat"],
+      "portRanges": [],
+      "priority": 5
+    },
+    "工具": {
+      "description": "其他工具",
+      "keywords": [],
+      "portRanges": [],
+      "priority": 99
+    }
+  },
+  "exclude": {
+    "remarks": ["测试", "test", "暂不使用"],
+    "domains": ["test.local", "example.com"],
+    "ports": []
+  },
+  "includeOnly": {
+    "remarks": [],
+    "domains": [],
+    "ports": []
+  }
+}

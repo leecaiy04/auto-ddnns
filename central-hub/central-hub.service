@@ -1,0 +1,29 @@
+[Unit]
+Description=Central Hub Service - 网络基础设施中枢服务
+Documentation=file:///home/leecaiy/workspace/auto-dnns/central-hub/README.md
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/node /home/leecaiy/workspace/auto-dnns/central-hub/server.mjs
+WorkingDirectory=/home/leecaiy/workspace/auto-dnns/central-hub
+Restart=always
+RestartSec=10
+User=leecaiy
+Environment=NODE_ENV=production
+Environment=CONFIG_PATH=/home/leecaiy/workspace/auto-dnns/config/central-hub.json
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=central-hub
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/home/leecaiy/workspace/auto-dnns/data /home/leecaiy/workspace/auto-dnns/logs
+
+[Install]
+WantedBy=multi-user.target

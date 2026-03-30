@@ -118,6 +118,11 @@ ROUTER_HOST=192.168.3.1
 ROUTER_USERNAME=root
 ROUTER_PASSWORD=your-router-password
 
+# 阿里云 DDNS 配置
+ALIYUN_AK=your-aliyun-access-key-id
+ALIYUN_SK=your-aliyun-access-key-secret
+ALIYUN_DOMAIN=example.com
+
 # Lucky配置
 LUCKY_OPEN_TOKEN=your-lucky-open-token
 LUCKY_API_BASE=http://192.168.3.200:16601
@@ -130,7 +135,7 @@ NPM_API_PASSWORD=changeme
 # NPM_API_TOKEN=your-npm-api-token
 
 # SunPanel配置
-SUNPANEL_API_TOKEN=g1i4ov4xiq2rk7bho6rftwlfnvvjtb09
+SUNPANEL_API_TOKEN=your-sunpanel-api-token
 SUNPANEL_API_BASE=http://192.168.3.200:20001/openapi/v1
 
 # 中枢服务配置

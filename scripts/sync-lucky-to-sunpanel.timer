@@ -1,0 +1,12 @@
+[Unit]
+Description=Lucky to SunPanel Auto Sync Timer
+Documentation=file:///home/leecaiy/workspace/auto-dnns/docs/lucky-to-sunpanel.md
+Requires=sync-lucky-to-sunpanel.service
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=5min
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target

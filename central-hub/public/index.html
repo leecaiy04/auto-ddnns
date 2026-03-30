@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central Hub - 局域网部署自动化</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .status-running {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-stopped {
+            background: #ef4444;
+            color: white;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-icon {
+            font-size: 24px;
+        }
+
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .stat:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #666;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .device-list {
+            margin-top: 15px;
+        }
+
+        .device-item {
+            background: #f9fafb;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 3px solid #10b981;
+        }
+
+        .device-item.no-ipv6 {
+            border-left-color: #ef4444;
+        }
+
+        .device-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .device-info {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .actions {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .actions h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: background 0.3s;
+        }
+
+        .button:hover {
+            background: #5568d3;
+        }
+
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .button-secondary {
+            background: #10b981;
+        }
+
+        .button-secondary:hover {
+            background: #059669;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 5px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .last-update {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #3c3;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                🚀 Central Hub
+                <span class="status-badge" id="coordinatorStatus">加载中...</span>
+            </h1>
+            <p>局域网对外部署自动化管理平台</p>
+        </div>
+
+        <div id="messageArea"></div>
+
+        <div class="dashboard">
+            <div class="card">
+                <h2><span class="card-icon">📡</span>设备监控</h2>
+                <div class="stat">
+                    <span class="stat-label">设备总数</span>
+                    <span class="stat-value" id="deviceTotal">-</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">IPv6就绪</span>
+                    <span class="stat-value" id="deviceIPv6Ready">-</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">最后更新</span>
+                    <span class="stat-value" id="deviceLastUpdate">-</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><span class="card-icon">🌐</span>反向代理</h2>
+                <div class="stat">
+                    <span class="stat-label">Lucky (50000)</span>
+                    <span class="stat-value" id="luckyProxies">-</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">NPM (50001)</span>
+                    <span class="stat-value" id="npmProxies">-</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">服务总数</span>
+                    <span class="stat-value" id="serviceTotal">-</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><span class="card-icon">🌞</span>SunPanel</h2>
+                <div class="stat">
+                    <span class="stat-label">卡片数量</span>
+                    <span class="stat-value" id="sunpanelCards">-</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">最后同步</span>
+                    <span class="stat-value" id="sunpanelLastSync">-</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><span class="card-icon">🌍</span>DDNS</h2>
+                <div class="stat">
+                    <span class="stat-label">状态</span>
+                    <span class="stat-value" id="ddnsStatus">-</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">最后更新</span>
+                    <span class="stat-value" id="ddnsLastUpdate">-</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 20px;">
+            <h2><span class="card-icon">📱</span>设备列表</h2>
+            <div id="deviceList" class="device-list">加载中...</div>
+        </div>
+
+        <div class="actions">
+            <h2>🎮 操作</h2>
+            <button class="button" onclick="refreshStatus()">🔄 刷新状态</button>
+            <button class="button button-secondary" onclick="runFullSync()">⚡ 完整同步</button>
+            <button class="button" onclick="runDeviceMonitor()">📡 设备监控</button>
+            <button class="button" onclick="runLuckySync()">🎲 Lucky同步</button>
+            <button class="button" onclick="runNPMSync()">📋 NPM同步</button>
+            <button class="button" onclick="runSunpanelSync()">🌞 SunPanel同步</button>
+        </div>
+
+        <div class="last-update">
+            页面最后更新: <span id="pageLastUpdate">-</span>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+
+        // 格式化时间
+        function formatTime(isoString) {
+            if (!isoString) return '-';
+            const date = new Date(isoString);
+            return date.toLocaleString('zh-CN');
+        }
+
+        // 显示消息
+        function showMessage(message, type = 'info') {
+            const messageArea = document.getElementById('messageArea');
+            const className = type === 'error' ? 'error-message' : 'success-message';
+            messageArea.innerHTML = `<div class="${className}">${message}</div>`;
+            setTimeout(() => {
+                messageArea.innerHTML = '';
+            }, 5000);
+        }
+
+        // 刷新状态
+        async function refreshStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/dashboard/overview`);
+                const data = await response.json();
+
+                // 更新协调器状态
+                const coordinatorStatus = document.getElementById('coordinatorStatus');
+                if (data.coordinator.isRunning) {
+                    coordinatorStatus.textContent = '运行中';
+                    coordinatorStatus.className = 'status-badge status-running';
+                } else {
+                    coordinatorStatus.textContent = '已停止';
+                    coordinatorStatus.className = 'status-badge status-stopped';
+                }
+
+                // 更新设备监控
+                document.getElementById('deviceTotal').textContent = data.devices.total;
+                document.getElementById('deviceIPv6Ready').textContent = data.devices.ipv6Ready;
+                document.getElementById('deviceLastUpdate').textContent = formatTime(data.devices.lastUpdate);
+
+                // 更新反向代理
+                document.getElementById('luckyProxies').textContent = data.proxies.lucky;
+                document.getElementById('npmProxies').textContent = data.proxies.npm;
+                document.getElementById('serviceTotal').textContent = data.services.total;
+
+                // 更新SunPanel
+                document.getElementById('sunpanelCards').textContent = data.sunpanel.cardsCount;
+                document.getElementById('sunpanelLastSync').textContent = formatTime(data.sunpanel.lastSync);
+
+                // 更新DDNS
+                document.getElementById('ddnsStatus').textContent = data.ddns.enabled ? '启用' : '禁用';
+                document.getElementById('ddnsLastUpdate').textContent = formatTime(data.ddns.lastUpdate);
+
+                // 更新页面时间
+                document.getElementById('pageLastUpdate').textContent = new Date().toLocaleString('zh-CN');
+
+                // 加载设备列表
+                loadDeviceList();
+
+            } catch (error) {
+                console.error('刷新状态失败:', error);
+                showMessage('刷新状态失败: ' + error.message, 'error');
+            }
+        }
+
+        // 加载设备列表
+        async function loadDeviceList() {
+            try {
+                const response = await fetch(`${API_BASE}/devices/list`);
+                const devices = await response.json();
+
+                const deviceList = document.getElementById('deviceList');
+
+                if (devices.length === 0) {
+                    deviceList.innerHTML = '<p>暂无设备</p>';
+                    return;
+                }
+
+                deviceList.innerHTML = devices.map(device => `
+                    <div class="device-item ${!device.ipv6 ? 'no-ipv6' : ''}">
+                        <div class="device-name">${device.ipv4} ${device.ipv6 ? '✅' : '❌'}</div>
+                        <div class="device-info">
+                            IPv6: ${device.ipv6 || '未找到'}<br>
+                            MAC: ${device.mac || '未知'}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('加载设备列表失败:', error);
+            }
+        }
+
+        // 运行完整同步
+        async function runFullSync() {
+            try {
+                showMessage('正在执行完整同步...', 'info');
+                const response = await fetch(`${API_BASE}/sync/full`, { method: 'POST' });
+                const data = await response.json();
+                showMessage('完整同步完成！', 'success');
+                await refreshStatus();
+            } catch (error) {
+                console.error('完整同步失败:', error);
+                showMessage('完整同步失败: ' + error.message, 'error');
+            }
+        }
+
+        // 运行设备监控
+        async function runDeviceMonitor() {
+            try {
+                showMessage('正在执行设备监控...', 'info');
+                const response = await fetch(`${API_BASE}/devices/refresh`, { method: 'POST' });
+                const data = await response.json();
+                showMessage('设备监控完成！', 'success');
+                await refreshStatus();
+            } catch (error) {
+                console.error('设备监控失败:', error);
+                showMessage('设备监控失败: ' + error.message, 'error');
+            }
+        }
+
+        // 运行Lucky同步
+        async function runLuckySync() {
+            try {
+                showMessage('正在执行Lucky同步...', 'info');
+                const response = await fetch(`${API_BASE}/proxies/sync`, { method: 'POST' });
+                const data = await response.json();
+                showMessage('Lucky同步完成！', 'success');
+                await refreshStatus();
+            } catch (error) {
+                console.error('Lucky同步失败:', error);
+                showMessage('Lucky同步失败: ' + error.message, 'error');
+            }
+        }
+
+        // 运行NPM同步
+        async function runNPMSync() {
+            try {
+                showMessage('正在执行NPM同步...', 'info');
+                const response = await fetch(`${API_BASE}/npm/sync`, { method: 'POST' });
+                const data = await response.json();
+                showMessage('NPM同步完成！', 'success');
+                await refreshStatus();
+            } catch (error) {
+                console.error('NPM同步失败:', error);
+                showMessage('NPM同步失败: ' + error.message, 'error');
+            }
+        }
+
+        // 运行SunPanel同步
+        async function runSunpanelSync() {
+            try {
+                showMessage('正在执行SunPanel同步...', 'info');
+                const response = await fetch(`${API_BASE}/sunpanel/sync`, { method: 'POST' });
+                const data = await response.json();
+                showMessage('SunPanel同步完成！', 'success');
+                await refreshStatus();
+            } catch (error) {
+                console.error('SunPanel同步失败:', error);
+                showMessage('SunPanel同步失败: ' + error.message, 'error');
+            }
+        }
+
+        // 页面加载时自动刷新
+        window.addEventListener('load', () => {
+            refreshStatus();
+            // 每30秒自动刷新
+            setInterval(refreshStatus, 30000);
+        });
+    </script>
+</body>
+</html>

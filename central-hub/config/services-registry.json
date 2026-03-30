@@ -1,0 +1,67 @@
+{
+  "services": [
+    {
+      "id": "nas200-web",
+      "name": "飞牛OS Web界面",
+      "device": "200",
+      "internalPort": 443,
+      "enableProxy": true,
+      "proxyDomain": "nas200.leecaiy.xyz",
+      "proxyType": "reverseproxy",
+      "enableTLS": true,
+      "description": "飞牛OS的Web管理界面",
+      "lucky": {
+        "port": 50000,
+        "remark": "飞牛OS Web",
+        "advancedConfig": ""
+      },
+      "sunpanel": {
+        "group": "NAS",
+        "icon": "https://nas200.leecaiy.xyz/favicon.ico",
+        "lanUrl": "https://192.168.3.200:443"
+      }
+    },
+    {
+      "id": "nas201-dsm",
+      "name": "黑群晖DSM",
+      "device": "201",
+      "internalPort": 5001,
+      "enableProxy": true,
+      "proxyDomain": "nas201.leecaiy.xyz",
+      "proxyType": "reverseproxy",
+      "enableTLS": true,
+      "description": "黑群晖的DSM管理界面",
+      "lucky": {
+        "port": 50000,
+        "remark": "黑群晖DSM",
+        "advancedConfig": ""
+      },
+      "sunpanel": {
+        "group": "NAS",
+        "icon": "https://nas201.leecaiy.xyz/favicon.ico",
+        "lanUrl": "https://192.168.3.201:5001"
+      }
+    },
+    {
+      "id": "debian10-web",
+      "name": "Debian Web服务",
+      "device": "10",
+      "internalPort": 8080,
+      "enableProxy": true,
+      "proxyDomain": "web10.leecaiy.xyz",
+      "proxyType": "reverseproxy",
+      "enableTLS": false,
+      "description": "Debian服务器上的Web服务",
+      "lucky": {
+        "port": 50000,
+        "remark": "Debian Web",
+        "advancedConfig": ""
+      },
+      "sunpanel": {
+        "group": "服务器",
+        "icon": "https://web10.leecaiy.xyz/favicon.ico",
+        "lanUrl": "http://192.168.3.10:8080"
+      }
+    }
+  ]
+}

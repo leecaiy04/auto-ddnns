@@ -1,0 +1,74 @@
+{
+  "server": {
+    "port": 51000,
+    "host": "0.0.0.0",
+    "cors": {
+      "enabled": true,
+      "origin": "*"
+    }
+  },
+  "modules": {
+    "coordinator": {
+      "enabled": true,
+      "schedule": {
+        "deviceMonitor": "*/10 * * * *",
+        "ddns": "*/10 * * * *",
+        "services": "0 */2 * * *",
+        "luckySync": "*/15 * * * *",
+        "npmSync": "*/15 * * * *",
+        "sunpanelSync": "*/15 * * * *"
+      }
+    },
+    "deviceMonitor": {
+      "enabled": true,
+      "checkInterval": 600,
+      "devices": ["2", "10", "200", "201", "254"],
+      "router": {
+        "host": "192.168.3.1",
+        "username": "root",
+        "password": "${ROUTER_PASSWORD}",
+        "timeout": 10000
+      }
+    },
+    "ddns": {
+      "enabled": true,
+      "scriptPath": "./scripts/aliddns_sync.sh",
+      "updateInterval": 600,
+      "domains": {
+        "ipv4": ["leecaiy.xyz", "*.leecaiy.xyz"],
+        "ipv6": ["10.v6.leecaiy.xyz", "200.v6.leecaiy.xyz", "201.v6.leecaiy.xyz", "254.v6.leecaiy.xyz"]
+      }
+    },
+    "lucky": {
+      "enabled": true,
+      "apiBase": "http://192.168.3.200:16601",
+      "httpsPort": 50000,
+      "autoSync": true,
+      "autoCreateProxy": true
+    },
+    "npm": {
+      "enabled": true,
+      "apiBase": "http://192.168.3.200:50001",
+      "httpsPort": 50001,
+      "syncFromLucky": true,
+      "autoSync": true
+    },
+    "sunpanel": {
+      "enabled": true,
+      "apiBase": "http://192.168.3.200:20001/openapi/v1",
+      "autoSync": true,
+      "autoCreateGroups": true
+    }
+  },
+  "state": {
+    "path": "data/hub-state.json",
+    "backupPath": "data/backups/",
+    "keepHistory": 10
+  },
+  "logging": {
+    "level": "info",
+    "file": "logs/hub.log",
+    "maxSize": "10M",
+    "maxFiles": 5
+  }
+}

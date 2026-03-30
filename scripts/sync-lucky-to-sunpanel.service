@@ -1,0 +1,14 @@
+[Unit]
+Description=Lucky to SunPanel Auto Sync
+Documentation=file:///home/leecaiy/workspace/auto-dnns/docs/lucky-to-sunpanel.md
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/node /home/leecaiy/workspace/auto-dnns/scripts/sync-lucky-to-sunpanel.mjs --sync
+WorkingDirectory=/home/leecaiy/workspace/auto-dnns
+User=leecaiy
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,26 @@
+{
+  "name": "central-hub",
+  "version": "1.0.0",
+  "description": "中枢服务 - 统一的网络基础设施管理",
+  "type": "module",
+  "main": "server.mjs",
+  "bin": {
+    "hub-cli": "./hub-cli.mjs"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs",
+    "cli": "node hub-cli.mjs"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "node-cron": "^3.0.3",
+    "axios": "^1.6.0",
+    "commander": "^11.1.0",
+    "ssh2": "^1.15.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
