@@ -6,6 +6,8 @@
 import { getIPv6Neighbors, buildDeviceAddressMap } from '../../lib/ssh-client.mjs';
 import { getEnv } from '../../lib/utils/env-loader.mjs';
 
+const PUBLIC_DOMAIN = getEnv('ALIYUN_DOMAIN', 'leecaiy.shop');
+
 export class DeviceMonitor {
   constructor(config, stateManager) {
     this.config = config;
@@ -175,7 +177,7 @@ export class DeviceMonitor {
         ipv4: device.ipv4,
         ipv6: device.ipv6,
         mac: device.mac,
-        domain: device.ipv6 ? `${device.id}.v6.leecaiy.xyz` : null,
+        domain: device.ipv6 ? `${device.id}.v6.${PUBLIC_DOMAIN}` : null,
         ready: !!device.ipv6
       }))
     };

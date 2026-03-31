@@ -6,9 +6,19 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getEnv } from '../../lib/utils/env-loader.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const MANAGED_DOMAIN = getEnv('ALIYUN_DOMAIN', 'leecaiy.shop');
+
+function formatTargetHost(targetHost) {
+  return targetHost?.includes(':') ? `[${targetHost}]` : targetHost;
+}
+
+function isManagedDomain(domain) {
+  return domain === MANAGED_DOMAIN || domain.endsWith(`.${MANAGED_DOMAIN}`);
+}
 
 export class ServiceRegistry {
   constructor(config, stateManager) {
@@ -255,8 +265,8 @@ export class ServiceRegistry {
     }
 
     // 域名格式验证
-    if (service.proxyDomain && !service.proxyDomain.includes('leecaiy.xyz')) {
-      errors.push(`域名必须包含 leecaiy.xyz: ${service.proxyDomain}`);
+    if (service.proxyDomain && !isManagedDomain(service.proxyDomain)) {
+      errors.push(`域名必须属于 ${MANAGED_DOMAIN}: ${service.proxyDomain}`);
     }
 
     return {
@@ -279,9 +289,10 @@ export class ServiceRegistry {
 
     // 构建目标地址：优先使用IPv6，否则使用IPv4
     const targetHost = deviceIPv6 || `192.168.3.${service.device}`;
+    const formattedTargetHost = formatTargetHost(targetHost);
     const target = service.enableTLS
-      ? `https://${targetHost}:${service.internalPort}`
-      : `http://${targetHost}:${service.internalPort}`;
+      ? `https://${formattedTargetHost}:${service.internalPort}`
+      : `http://${formattedTargetHost}:${service.internalPort}`;
 
     return {
       port: service.lucky.port,

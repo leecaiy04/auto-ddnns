@@ -35,8 +35,8 @@
       "scriptPath": "./scripts/aliddns_sync.sh",
       "updateInterval": 600,
       "domains": {
-        "ipv4": ["leecaiy.xyz", "*.leecaiy.xyz"],
-        "ipv6": ["10.v6.leecaiy.xyz", "200.v6.leecaiy.xyz", "201.v6.leecaiy.xyz", "254.v6.leecaiy.xyz"]
+        "ipv4": ["leecaiy.shop", "*.leecaiy.shop"],
+        "ipv6": ["10.v6.leecaiy.shop", "200.v6.leecaiy.shop", "201.v6.leecaiy.shop", "254.v6.leecaiy.shop"]
       }
     },
     "lucky": {

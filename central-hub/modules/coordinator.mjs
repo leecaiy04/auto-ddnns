@@ -166,6 +166,8 @@ export class Coordinator {
       // 设备检查成功后，可以触发服务同步
       // await this.runServiceSync();
     }
+
+    return result;
   }
 
   /**
@@ -174,7 +176,7 @@ export class Coordinator {
   async runDDNS() {
     if (!this.modules.ddnsController) return;
 
-    await this.modules.ddnsController.update();
+    return await this.modules.ddnsController.update();
   }
 
   /**
@@ -232,39 +234,63 @@ export class Coordinator {
     console.log('[Coordinator] 🔄 开始完整同步流程...');
 
     const results = {};
+    const failedSteps = [];
+    let stepIndex = 0;
 
-    try {
-      // 1. 设备监控
-      if (this.modules.deviceMonitor) {
-        console.log('[Coordinator] 📡 步骤1: 设备监控...');
-        results.deviceMonitor = await this.runDeviceMonitor();
+    const runStep = async (key, label, runner) => {
+      stepIndex += 1;
+      console.log(`[Coordinator] ${label} 步骤${stepIndex}: ${key}...`);
+
+      try {
+        const result = await runner();
+        results[key] = result ?? { success: true, skipped: false };
+
+        const stepFailed =
+          results[key]?.success === false ||
+          (typeof results[key]?.failed === 'number' && results[key].failed > 0);
+
+        if (stepFailed) {
+          failedSteps.push(key);
+        }
+      } catch (error) {
+        console.error(`[Coordinator] ❌ 步骤失败: ${key} - ${error.message}`);
+        results[key] = {
+          success: false,
+          error: error.message,
+          skipped: true
+        };
+        failedSteps.push(key);
       }
+    };
 
-      // 2. Lucky同步
-      if (this.modules.luckyManager) {
-        console.log('[Coordinator] 🎲 步骤2: Lucky同步...');
-        results.luckySync = await this.runLuckySync();
-      }
-
-      // 3. NPM同步
-      if (this.modules.npmManager) {
-        console.log('[Coordinator] 📋 步骤3: NPM同步...');
-        results.npmSync = await this.runNPMSync();
-      }
-
-      // 4. SunPanel同步
-      if (this.modules.luckyManager) {
-        console.log('[Coordinator] 🌞 步骤4: SunPanel同步...');
-        results.sunpanelSync = await this.runSunpanelSync();
-      }
-
-      console.log('[Coordinator] 🎉 完整同步流程完成');
-    } catch (error) {
-      console.error('[Coordinator] ❌ 完整同步流程失败:', error.message);
-      throw error;
+    if (this.modules.deviceMonitor) {
+      await runStep('deviceMonitor', '📡', () => this.runDeviceMonitor());
     }
 
-    return results;
+    if (this.modules.ddnsController) {
+      await runStep('ddns', '🌐', () => this.runDDNS());
+    }
+
+    if (this.modules.luckyManager) {
+      await runStep('luckySync', '🎲', () => this.runLuckySync());
+    }
+
+    if (this.modules.npmManager) {
+      await runStep('npmSync', '📋', () => this.runNPMSync());
+    }
+
+    if (this.modules.luckyManager) {
+      await runStep('sunpanelSync', '🌞', () => this.runSunpanelSync());
+    }
+
+    console.log('[Coordinator] 🎉 完整同步流程完成');
+
+    return {
+      success: failedSteps.length === 0,
+      failedSteps,
+      results,
+      completedAt: new Date().toISOString()
+    };
   }
 
   /**

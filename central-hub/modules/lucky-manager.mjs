@@ -18,6 +18,42 @@ import {
 } from '../../lib/api-clients/sunpanel-api.mjs';
 import { getEnv } from '../../lib/utils/env-loader.mjs';
 
+function formatTargetHost(targetHost) {
+  return targetHost?.includes(':') ? `[${targetHost}]` : targetHost;
+}
+
+function isSunPanelIconFetchError(error) {
+  return typeof error?.message === 'string' &&
+    error.message.includes('failed to save icon file');
+}
+
+async function syncSunPanelCard(upsert, cardConfig) {
+  try {
+    return await upsert(cardConfig);
+  } catch (error) {
+    if (!isSunPanelIconFetchError(error)) {
+      throw error;
+    }
+
+    try {
+      return await upsert({
+        ...cardConfig,
+        isSaveIcon: false
+      });
+    } catch (fallbackError) {
+      if (!isSunPanelIconFetchError(fallbackError)) {
+        throw fallbackError;
+      }
+
+      return await upsert({
+        ...cardConfig,
+        iconUrl: '',
+        isSaveIcon: false
+      });
+    }
+  }
+}
+
 export class LuckyManager {
   constructor(config, stateManager) {
     this.config = config;
@@ -46,14 +82,19 @@ export class LuckyManager {
         proxies: {},
         syncStatus: {}
       };
+    } else if (!this.stateManager.state.lucky.syncStatus) {
+      this.stateManager.state.lucky.syncStatus = {};
     }
 
     if (!this.stateManager.state.sunpanel) {
       this.stateManager.state.sunpanel = {
         lastSync: null,
         cards: {},
-        groups: {}
+        groups: {},
+        syncStatus: {}
       };
+    } else if (!this.stateManager.state.sunpanel.syncStatus) {
+      this.stateManager.state.sunpanel.syncStatus = {};
     }
 
     console.log('[LuckyManager] ✅ Lucky管理模块初始化完成');
@@ -130,9 +171,10 @@ export class LuckyManager {
 
         // 构建目标地址
         const targetHost = deviceIPv6 || `192.168.3.${service.device}`;
+        const formattedTargetHost = formatTargetHost(targetHost);
         const target = service.enableTLS
-          ? `https://${targetHost}:${service.internalPort}`
-          : `http://${targetHost}:${service.internalPort}`;
+          ? `https://${formattedTargetHost}:${service.internalPort}`
+          : `http://${formattedTargetHost}:${service.internalPort}`;
 
         // 检查是否需要使用50000端口
         if (service.lucky.port !== 50000) {
@@ -293,15 +335,18 @@ export class LuckyManager {
           try {
             const existing = await getItemInfo(onlyName);
             // 更新卡片
-            await updateItem({
-              onlyName,
-              ...cardConfig
-            });
+            await syncSunPanelCard(
+              (payload) => updateItem({
+                onlyName,
+                ...payload
+              }),
+              cardConfig
+            );
             action = 'updated';
           } catch (error) {
             // 卡片不存在，创建新卡片
             if (error.message.includes('1203')) {
-              await createItem(cardConfig);
+              await syncSunPanelCard(createItem, cardConfig);
             } else {
               throw error;
             }

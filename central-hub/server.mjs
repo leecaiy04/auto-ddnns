@@ -139,6 +139,7 @@ class CentralHub {
         this.config.modules.ddns,
         this.stateManager
       );
+      this.modules.ddns = this.modules.ddnsController;
     }
 
     // Lucky 管理模块

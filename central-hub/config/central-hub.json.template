@@ -16,7 +16,7 @@
     "enabled": true,
     "checkInterval": 300,
     "scriptPath": "/home/leecaiy/ddns_work/update_all_ddns.sh",
-    "domains": ["leecaiy.xyz", "*.leecaiy.xyz"]
+    "domains": ["leecaiy.shop", "*.leecaiy.shop"]
   },
   "lucky": {
     "enabled": true,

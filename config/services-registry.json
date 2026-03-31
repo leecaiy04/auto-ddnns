@@ -6,7 +6,7 @@
       "device": "200",
       "internalPort": 443,
       "enableProxy": true,
-      "proxyDomain": "nas200.leecaiy.xyz",
+      "proxyDomain": "nas200.leecaiy.shop",
       "proxyType": "reverseproxy",
       "enableTLS": true,
       "description": "飞牛OS的Web管理界面",
@@ -17,7 +17,7 @@
       },
       "sunpanel": {
         "group": "NAS",
-        "icon": "https://nas200.leecaiy.xyz/favicon.ico",
+        "icon": "https://nas200.leecaiy.shop/favicon.ico",
         "lanUrl": "https://192.168.3.200:443"
       }
     },
@@ -27,7 +27,7 @@
       "device": "201",
       "internalPort": 5001,
       "enableProxy": true,
-      "proxyDomain": "nas201.leecaiy.xyz",
+      "proxyDomain": "nas201.leecaiy.shop",
       "proxyType": "reverseproxy",
       "enableTLS": true,
       "description": "黑群晖的DSM管理界面",
@@ -38,7 +38,7 @@
       },
       "sunpanel": {
         "group": "NAS",
-        "icon": "https://nas201.leecaiy.xyz/favicon.ico",
+        "icon": "https://nas201.leecaiy.shop/favicon.ico",
         "lanUrl": "https://192.168.3.201:5001"
       }
     },
@@ -48,7 +48,7 @@
       "device": "10",
       "internalPort": 8080,
       "enableProxy": true,
-      "proxyDomain": "web10.leecaiy.xyz",
+      "proxyDomain": "web10.leecaiy.shop",
       "proxyType": "reverseproxy",
       "enableTLS": false,
       "description": "Debian服务器上的Web服务",
@@ -59,7 +59,7 @@
       },
       "sunpanel": {
         "group": "服务器",
-        "icon": "https://web10.leecaiy.xyz/favicon.ico",
+        "icon": "https://web10.leecaiy.shop/favicon.ico",
         "lanUrl": "http://192.168.3.10:8080"
       }
     }
