@@ -90,7 +90,11 @@ export async function loadConfigWithEnv(configPath, envPath = null) {
     state: {
       path: getConfig(env, 'STATE_PATH', jsonConfig.state?.path, 'data/central-hub-state.json'),
       backupPath: getConfig(env, 'STATE_BACKUP_PATH', jsonConfig.state?.backupPath, 'data/backups/'),
-      keepHistory: parseInt(getConfig(env, 'STATE_KEEP_HISTORY', jsonConfig.state?.keepHistory, 10), 10)
+      keepHistory: parseInt(getConfig(env, 'STATE_KEEP_HISTORY', jsonConfig.state?.keepHistory, 10), 10),
+      backupKeepHistory: parseInt(
+        getConfig(env, 'STATE_BACKUP_KEEP_HISTORY', jsonConfig.state?.backupKeepHistory, 1),
+        10
+      )
     },
     logging: {
       level: getConfig(env, 'LOG_LEVEL', jsonConfig.logging?.level, 'info'),

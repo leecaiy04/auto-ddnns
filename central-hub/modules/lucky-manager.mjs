@@ -22,6 +22,64 @@ function formatTargetHost(targetHost) {
   return targetHost?.includes(':') ? `[${targetHost}]` : targetHost;
 }
 
+function stripIPv6Brackets(host) {
+  return host?.replace(/^\[/, '').replace(/\]$/, '');
+}
+
+function isLoopbackHost(host) {
+  const normalized = stripIPv6Brackets(host)?.toLowerCase();
+  return normalized === '127.0.0.1' || normalized === 'localhost' || normalized === '::1';
+}
+
+function isPrivateIPv4(host) {
+  return /^10\./.test(host) ||
+    /^192\.168\./.test(host) ||
+    /^172\.(1[6-9]|2\d|3[0-1])\./.test(host);
+}
+
+function isPrivateHost(host) {
+  const normalized = stripIPv6Brackets(host);
+  return Boolean(normalized) && (
+    isPrivateIPv4(normalized) ||
+    normalized.startsWith('fd') ||
+    normalized.startsWith('fc') ||
+    normalized.startsWith('fe80:')
+  );
+}
+
+function extractUrlHost(value) {
+  if (!value) return null;
+
+  try {
+    return stripIPv6Brackets(new URL(value).hostname);
+  } catch {
+    return null;
+  }
+}
+
+function buildUrlString(protocol, host, port, pathname = '', search = '', hash = '') {
+  const formattedHost = formatTargetHost(host);
+  const shouldAppendPort = Boolean(port);
+  const base = `${protocol}//${formattedHost}${shouldAppendPort ? `:${port}` : ''}`;
+  const suffix = pathname === '/' && !search && !hash ? '' : `${pathname || ''}${search || ''}${hash || ''}`;
+  return `${base}${suffix}`;
+}
+
+function hasExplicitPortInUrl(value) {
+  try {
+    const parsed = new URL(value);
+    const authority = value.slice(parsed.protocol.length + 2).split(/[/?#]/, 1)[0];
+
+    if (authority.startsWith('[')) {
+      return /^\[[^\]]+\]:\d+$/.test(authority);
+    }
+
+    return /^[^:]+:\d+$/.test(authority);
+  } catch {
+    return false;
+  }
+}
+
 function isSunPanelIconFetchError(error) {
   return typeof error?.message === 'string' &&
     error.message.includes('failed to save icon file');
@@ -67,6 +125,7 @@ export class LuckyManager {
       apiBase: getEnv('SUNPANEL_API_BASE', 'http://192.168.3.200:20001/openapi/v1'),
       apiToken: getEnv('SUNPANEL_API_TOKEN', '')
     };
+    this.luckyLanHost = this.resolveLuckyLanHost();
   }
 
   /**
@@ -108,6 +167,20 @@ export class LuckyManager {
     return crypto.createHash('md5').update(data).digest('hex');
   }
 
+  calculateSunPanelHash(proxy, cardConfig) {
+    const data = JSON.stringify({
+      port: proxy.port,
+      enabled: proxy.enabled,
+      title: cardConfig.title,
+      url: cardConfig.url,
+      lanUrl: cardConfig.lanUrl,
+      iconUrl: cardConfig.iconUrl,
+      group: cardConfig.itemGroupOnlyName
+    });
+
+    return crypto.createHash('md5').update(data).digest('hex');
+  }
+
   /**
    * 从域名生成 onlyName
    */
@@ -117,6 +190,63 @@ export class LuckyManager {
       .replace(/[\/:]/g, '-')
       .replace(/\./g, '-')
       .toLowerCase();
+  }
+
+  resolveLuckyLanHost() {
+    const envLanHost = getEnv('LUCKY_LAN_IP', '').trim();
+    if (envLanHost) {
+      return stripIPv6Brackets(envLanHost);
+    }
+
+    const candidates = [
+      this.sunpanelConfig.apiBase,
+      this.luckyConfig.apiBase
+    ];
+
+    for (const candidate of candidates) {
+      const host = extractUrlHost(candidate);
+      if (host && !isLoopbackHost(host) && isPrivateHost(host)) {
+        return host;
+      }
+    }
+
+    return null;
+  }
+
+  buildSunPanelPublicUrl(proxy, domain) {
+    const scheme = proxy.enableTLS === false ? 'http' : 'https';
+    const defaultPort = scheme === 'https' ? 443 : 80;
+    const port = proxy.port && proxy.port !== defaultPort ? proxy.port : '';
+    return buildUrlString(`${scheme}:`, domain, port);
+  }
+
+  buildSunPanelLanUrl(target) {
+    if (!target) return '';
+
+    try {
+      const parsed = new URL(target);
+      const hasExplicitPort = hasExplicitPortInUrl(target);
+      const host = stripIPv6Brackets(parsed.hostname);
+      const resolvedHost = isLoopbackHost(host) && this.luckyLanHost
+        ? this.luckyLanHost
+        : host;
+      const port = parsed.port || (
+        hasExplicitPort
+          ? (parsed.protocol === 'https:' ? '443' : parsed.protocol === 'http:' ? '80' : '')
+          : ''
+      );
+
+      return buildUrlString(
+        parsed.protocol,
+        resolvedHost,
+        port,
+        parsed.pathname,
+        parsed.search,
+        parsed.hash
+      );
+    } catch {
+      return target;
+    }
   }
 
   /**
@@ -130,6 +260,7 @@ export class LuckyManager {
         remark: p.remark,
         domains: p.domains,
         target: p.target,
+        enableTLS: p.enableTLS,
         enabled: p.enabled,
         hash: this.calculateHash({
           remark: p.remark,
@@ -304,10 +435,10 @@ export class LuckyManager {
           // 构建卡片配置
           const cardConfig = {
             title: proxy.remark || domain,
-            url: `https://${domain}`,
+            url: this.buildSunPanelPublicUrl(proxy, domain),
             onlyName,
             iconUrl: `https://${domain}/favicon.ico`,
-            lanUrl: proxy.target,
+            lanUrl: this.buildSunPanelLanUrl(proxy.target),
             description: proxy.remark || `反向代理: ${domain}`,
             itemGroupID: groupId,
             itemGroupOnlyName: groupOnlyName,
@@ -315,7 +446,7 @@ export class LuckyManager {
           };
 
           // 计算hash
-          const hash = this.calculateHash(proxy);
+          const hash = this.calculateSunPanelHash(proxy, cardConfig);
 
           // 检查是否已存在
           const currentState = this.stateManager.state.sunpanel.syncStatus[onlyName];

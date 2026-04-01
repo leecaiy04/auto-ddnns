@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>局域网设备状态</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1000px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; }
+        .update-time { text-align: center; color: #7f8c8d; margin-bottom: 20px; font-size: 0.9em; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+        th { background-color: #3498db; color: white; }
+        tr:hover { background-color: #f1f1f1; }
+        .port-tag { display: inline-block; background: #e67e22; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin: 1px; }
+        .ipv6-text { font-family: 'Courier New', Courier, monospace; font-size: 0.85em; word-break: break-all; }
+        @media (max-width: 600px) {
+            table, thead, tbody, th, td, tr { display: block; }
+            th { position: absolute; top: -9999px; left: -9999px; }
+            tr { border: 1px solid #ccc; margin-bottom: 5px; }
+            td { border: none; border-bottom: 1px solid #eee; position: relative; padding-left: 50%; }
+            td:before { position: absolute; top: 6px; left: 6px; width: 45%; padding-right: 10px; white-space: nowrap; font-weight: bold; }
+            td:nth-of-type(1):before { content: "MAC"; }
+            td:nth-of-type(2):before { content: "IPv4"; }
+            td:nth-of-type(3):before { content: "IPv6"; }
+            td:nth-of-type(4):before { content: "开放端口"; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>局域网设备状态看板</h1>
+        <p class="update-time">最后更新时间：2026-04-01 03:50:15</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>MAC</th>
+                    <th>IPv4</th>
+                    <th>IPv6 (Stable)</th>
+                    <th>开放端口</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>bc:24:11:9f:ba:81</td>
+                    <td><b>192.168.3.2</b></td>
+                    <td class="ipv6-text">240e:391:c85:f780:be24:11ff:fe9f:ba81</td>
+                    <td><span style='color:#999'>未发现常用端口</span></td>
+                </tr>
+                <tr>
+                    <td>bc:24:11:dc:58:78</td>
+                    <td><b>192.168.3.10</b></td>
+                    <td class="ipv6-text">240e:391:c85:f780:4e2e:8235:1c02:765b</td>
+                    <td><span style='color:#999'>未发现常用端口</span></td>
+                </tr>
+                <tr>
+                    <td>1e:83:0e:be:9c:b3</td>
+                    <td><b>192.168.3.105</b></td>
+                    <td class="ipv6-text">240e:391:c85:f780:1886:8d59:9771:262c</td>
+                    <td><span style='color:#999'>未发现常用端口</span></td>
+                </tr>
+                <tr>
+                    <td>68:76:27:53:06:99</td>
+                    <td><b>192.168.3.148</b></td>
+                    <td class="ipv6-text">240e:391:c85:f780:6a76:27ff:fe53:699</td>
+                    <td><span style='color:#999'>未发现常用端口</span></td>
+                </tr>
+                <tr>
+                    <td>70:c9:32:1e:83:47</td>
+                    <td><b>192.168.3.149</b></td>
+                    <td class="ipv6-text">240e:391:c85:f780:72c9:32ff:fe1e:8347</td>
+                    <td><span style='color:#999'>未发现常用端口</span></td>
+                </tr>
+                <tr>
+                    <td>74:56:3c:fc:03:82</td>
+                    <td><b>192.168.3.151</b></td>
+                    <td class="ipv6-text">240e:391:c85:f780:fcdf:acd6:4388:f5b3</td>
+                    <td><span style='color:#999'>未发现常用端口</span></td>
+                </tr>
+                <tr>
+                    <td>b8:d6:f6:d6:5b:b7</td>
+                    <td><b>192.168.3.152</b></td>
+                    <td class="ipv6-text">240e:391:c85:f780:bad6:f6ff:fed6:5bb7</td>
+                    <td><span style='color:#999'>未发现常用端口</span></td>
+                </tr>
+                <tr>
+                    <td>c2:1c:c8:89:0c:ed</td>
+                    <td><b>192.168.3.154</b></td>
+                    <td class="ipv6-text">240e:391:c85:f780::4</td>
+                    <td><span style='color:#999'>未发现常用端口</span></td>
+                </tr>
+                <tr>
+                    <td>5a:fb:0d:b5:4c:1a</td>
+                    <td><b>192.168.3.155</b></td>
+                    <td class="ipv6-text">240e:391:c85:f780:313e:aa62:71d1:3f3a</td>
+                    <td><span style='color:#999'>未发现常用端口</span></td>
+                </tr>
+                <tr>
+                    <td>92:08:b9:63:f3:19</td>
+                    <td><b>192.168.3.158</b></td>
+                    <td class="ipv6-text">240e:391:c85:f780:9008:b9ff:fe63:f319</td>
+                    <td><span style='color:#999'>未发现常用端口</span></td>
+                </tr>
+                <tr>
+                    <td>a0:d0:5b:51:f0:e2</td>
+                    <td><b>192.168.3.173</b></td>
+                    <td class="ipv6-text">240e:391:c85:f780:998a:1c1f:571a:2acb</td>
+                    <td><span style='color:#999'>未发现常用端口</span></td>
+                </tr>
+                <tr>
+                    <td>e0:bb:9e:e4:fa:0b</td>
+                    <td><b>192.168.3.194</b></td>
+                    <td class="ipv6-text">240e:391:c85:f780:e2bb:9eff:fee4:fa0b</td>
+                    <td><span style='color:#999'>未发现常用端口</span></td>
+                </tr>
+                <tr>
+                    <td>46:52:ca:4b:f0:86</td>
+                    <td><b>192.168.3.199</b></td>
+                    <td class="ipv6-text">240e:391:c85:f780:9596:7af:d5ee:f5ea</td>
+                    <td><span style='color:#999'>未发现常用端口</span></td>
+                </tr>
+                <tr>
+                    <td>bc:24:11:29:92:a4</td>
+                    <td><b>192.168.3.200</b></td>
+                    <td class="ipv6-text">240e:391:c85:f780:be24:11ff:fe29:92a4</td>
+                    <td><span style='color:#999'>未发现常用端口</span></td>
+                </tr>
+                <tr>
+                    <td>24:4b:fe:8a:7d:d7</td>
+                    <td><b>192.168.3.254</b></td>
+                    <td class="ipv6-text">240e:391:c85:f780:264b:feff:fe8a:7dd7</td>
+                    <td><span style='color:#999'>未发现常用端口</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

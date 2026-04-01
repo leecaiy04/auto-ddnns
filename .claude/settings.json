@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node \"C:/Users/Administrator/.claude/skills/web-access/scripts/check-deps.mjs\")",
+      "Bash(gh search:*)",
+      "WebFetch(domain:github.com)"
+    ]
+  }
+}

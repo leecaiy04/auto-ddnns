@@ -23,6 +23,17 @@ export class StateManager {
     this.initialized = false;
   }
 
+  getBackupKeepCount() {
+    const configured = this.config.backupKeepHistory ?? this.config.keepHistory ?? 10;
+    const parsed = Number.parseInt(configured, 10);
+
+    if (!Number.isFinite(parsed) || Number.isNaN(parsed)) {
+      return 1;
+    }
+
+    return Math.max(parsed, 1);
+  }
+
   async init() {
     try {
       await this.load();
@@ -88,11 +99,12 @@ export class StateManager {
     try {
       const files = await fs.readdir(this.config.backupPath);
       const backups = files.filter(f => f.startsWith('state-') && f.endsWith('.json'));
+      const keepCount = this.getBackupKeepCount();
 
-      if (backups.length > this.config.keepHistory) {
+      if (backups.length > keepCount) {
         // 按时间排序
         backups.sort();
-        const toDelete = backups.slice(0, backups.length - this.config.keepHistory);
+        const toDelete = backups.slice(0, backups.length - keepCount);
 
         for (const file of toDelete) {
           const filePath = path.join(this.config.backupPath, file);

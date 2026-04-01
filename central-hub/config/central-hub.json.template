@@ -33,7 +33,8 @@
   "state": {
     "path": "data/central-hub-state.json",
     "backupPath": "data/backups/",
-    "keepHistory": 10
+    "keepHistory": 10,
+    "backupKeepHistory": 1
   },
   "logging": {
     "level": "info",
