@@ -1,6 +1,6 @@
 {
   "server": {
-    "port": 51000,
+    "port": 51100,
     "host": "0.0.0.0",
     "cors": {
       "enabled": true,

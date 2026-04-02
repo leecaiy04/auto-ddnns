@@ -17,41 +17,72 @@ import cors from 'cors';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { loadEnvFileAsync } from '../lib/utils/env-loader.mjs';
+import { loadEnvFileAsync, getEnv } from '../lib/utils/env-loader.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT_DIR = path.resolve(__dirname, '..');
+const DEFAULT_DOMAIN = 'leecaiy.shop';
+const LOCAL_HOSTS_FOR_PROBE = ['127.0.0.1', 'localhost'];
+
+function getManagedDomain() {
+  return getEnv('ALIYUN_DOMAIN', DEFAULT_DOMAIN).trim() || DEFAULT_DOMAIN;
+}
+
+function createHealthProbeUrls(host, port) {
+  const normalizedHost = `${host || ''}`.trim();
+  const candidates = [];
+
+  if (!normalizedHost || normalizedHost === '0.0.0.0' || normalizedHost === '::') {
+    candidates.push(...LOCAL_HOSTS_FOR_PROBE);
+  } else {
+    candidates.push(normalizedHost);
+  }
+
+  return [...new Set(candidates)].map(candidate => `http://${candidate}:${port}/api/health`);
+}
+
+async function isHubAlreadyRunning(host, port) {
+  const probeUrls = createHealthProbeUrls(host, port);
+
+  for (const url of probeUrls) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        continue;
+      }
+
+      const payload = await response.json();
+      if (payload?.status === 'ok') {
+        return { running: true, url };
+      }
+    } catch {
+      // ignore probe failures and continue checking other local URLs
+    }
+  }
+
+  return { running: false, url: null };
+}
+
+function applyRuntimeConfigOverrides(config) {
+  const managedDomain = getManagedDomain();
+
+  if (config?.modules?.ddns?.domains) {
+    config.modules.ddns.domains = {
+      ipv4: [managedDomain, `*.${managedDomain}`],
+      ipv6: ['10', '200', '201', '254'].map(device => `${device}.v6.${managedDomain}`)
+    };
+  }
+
+  if (config?.modules?.lucky && !process.env.LUCKY_API_BASE) {
+    config.modules.lucky.apiBase = `https://lucky.${managedDomain}:50000/666`;
+  }
+
+  return config;
+}
 
 // ==================== 加载环境变量 ====================
 
 async function loadEnvFile() {
   return await loadEnvFileAsync();
-
-  const possiblePaths = [
-    path.join(ROOT_DIR, '.env'),
-    path.join(process.cwd(), '.env'),
-    '/home/leecaiy/workspace/auto-dnns/.env'
-  ];
-
-  for (const envPath of possiblePaths) {
-    try {
-      const content = await fs.readFile(envPath, 'utf-8');
-      content.split('\n').forEach(line => {
-        const trimmed = line.trim();
-        if (trimmed && !trimmed.startsWith('#')) {
-          const [key, ...valueParts] = trimmed.split('=');
-          if (key && valueParts.length > 0) {
-            process.env[key.trim()] = valueParts.join('=').trim();
-          }
-        }
-      });
-      console.log(`✅ 已加载 .env 文件: ${envPath}`);
-      return true;
-    } catch (error) {
-      // 继续尝试下一个路径
-    }
-  }
-  return false;
 }
 
 // 导入新模块
@@ -100,7 +131,7 @@ class CentralHub {
   async loadConfig() {
     try {
       const content = await fs.readFile(this.configPath, 'utf-8');
-      this.config = JSON.parse(content);
+      this.config = applyRuntimeConfigOverrides(JSON.parse(content));
       console.log('✅ 配置加载成功');
       return this.config;
     } catch (error) {
@@ -166,15 +197,21 @@ class CentralHub {
       this.modules.sunpanel = this.modules.luckyManager;
     }
 
-    // 初始化所有模块
-    for (const [name, module] of Object.entries(this.modules)) {
-      if (module && typeof module.init === 'function') {
+    // 初始化所有模块（避免别名指向同一实例时重复初始化）
+    const initializedModules = new Set();
+    for (const module of Object.values(this.modules)) {
+      if (module && typeof module.init === 'function' && !initializedModules.has(module)) {
+        initializedModules.add(module);
         await module.init();
       }
     }
 
     // 创建协调器
-    this.coordinator = new Coordinator(this.modules, this.config.coordinator, this.stateManager);
+    this.coordinator = new Coordinator(
+      this.modules,
+      this.config.modules?.coordinator || {},
+      this.stateManager
+    );
     await this.coordinator.init();
     this.modules.coordinator = this.coordinator;
 
@@ -253,7 +290,6 @@ class CentralHub {
     // 兼容旧的状态路由
     this.app.get('/api/status', (req, res) => {
       try {
-        const status = this.coordinator.getAllStatus();
         res.json({
           status: this.coordinator.isRunning ? 'healthy' : 'stopped',
           uptime: Math.floor((Date.now() - this.startTime) / 1000),
@@ -264,7 +300,7 @@ class CentralHub {
             ddns: this.modules.ddnsController?.getStatus()?.enabled ? 'ok' : 'disabled',
             lucky: this.modules.luckyManager?.getStatus()?.lucky?.enabled ? 'ok' : 'disabled',
             npm: this.modules.npmManager?.getStatus()?.enabled ? 'ok' : 'disabled',
-            sunpanel: this.modules.luckyManager?.getStatus()?.sunpanel?.cardsCount > 0 ? 'ok' : 'disabled'
+            sunpanel: this.modules.sunpanelManager?.config?.enabled ? 'ok' : 'disabled'
           }
         });
       } catch (error) {
@@ -299,6 +335,15 @@ class CentralHub {
       // 加载配置
       await this.loadConfig();
 
+      const port = this.config.server.port || 3000;
+      const host = this.config.server.host || '0.0.0.0';
+      const runningHub = await isHubAlreadyRunning(host, port);
+
+      if (runningHub.running) {
+        console.log(`ℹ️  Central Hub 已在运行，跳过重复启动: ${runningHub.url}`);
+        return;
+      }
+
       // 初始化模块
       await this.initModules();
 
@@ -309,9 +354,6 @@ class CentralHub {
       await this.coordinator.start();
 
       // 启动服务器
-      const port = this.config.server.port || 3000;
-      const host = this.config.server.host || '0.0.0.0';
-
       this.server = this.app.listen(port, host, () => {
         console.log('');
         console.log('🚀 Central Hub Service v2.0 已启动');
@@ -320,6 +362,20 @@ class CentralHub {
         console.log(`🏥 健康: http://${host}:${port}/api/health`);
         console.log(`📈 概览: http://${host}:${port}/api/dashboard/overview`);
         console.log('');
+      });
+
+      this.server.on('error', async (error) => {
+        if (error.code === 'EADDRINUSE') {
+          const activeHub = await isHubAlreadyRunning(host, port);
+          if (activeHub.running) {
+            console.log(`ℹ️  Central Hub 已在运行，跳过重复启动: ${activeHub.url}`);
+            process.exit(0);
+            return;
+          }
+        }
+
+        console.error('❌ 启动失败:', error);
+        process.exit(1);
       });
 
       // 处理退出信号
@@ -360,7 +416,7 @@ class CentralHub {
 // 主函数
 async function main() {
   const configPath = process.env.CONFIG_PATH ||
-    path.join(ROOT_DIR, 'config/hub.json');
+    path.join(__dirname, 'config', 'hub.json');
 
   const hub = new CentralHub(configPath);
   await hub.start();

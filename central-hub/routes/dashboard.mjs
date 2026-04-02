@@ -5,19 +5,57 @@
 
 import express from 'express';
 
+async function buildOverview(modules) {
+  const overview = modules.coordinator.getOverview();
+  const npmStatus = modules.npmManager?.getStatus?.() || {};
+
+  let luckyActual = overview.proxies?.lucky ?? 0;
+  let npmActual = overview.proxies?.npm ?? 0;
+
+  if (modules.luckyManager?.config?.enabled) {
+    try {
+      luckyActual = (await modules.luckyManager.getLuckyProxies()).length;
+    } catch (error) {
+      console.error('[Dashboard] 获取 Lucky 实际代理数失败:', error.message);
+    }
+  }
+
+  if (modules.npmManager?.config?.enabled) {
+    try {
+      npmActual = (await modules.npmManager.getProxyHosts()).length;
+    } catch (error) {
+      console.error('[Dashboard] 获取 NPM 实际代理数失败:', error.message);
+    }
+  }
+
+  return {
+    ...overview,
+    proxies: {
+      ...overview.proxies,
+      lucky: luckyActual,
+      luckyActual,
+      npm: npmActual,
+      npmActual,
+      npmSynced: npmStatus.syncCount || 0,
+      npmEnabled: npmStatus.enabled || false,
+      npmAuthMode: npmStatus.authMode || 'none'
+    }
+  };
+}
+
 export function dashboardRoutes(modules) {
   const router = express.Router();
 
   /**
    * 获取概览信息
    */
-  router.get('/overview', (req, res) => {
+  router.get('/overview', async (_req, res) => {
     try {
       if (!modules.coordinator) {
         return res.status(503).json({ error: '协调器未初始化' });
       }
 
-      const overview = modules.coordinator.getOverview();
+      const overview = await buildOverview(modules);
       res.json(overview);
     } catch (error) {
       console.error('[Dashboard] 获取概览失败:', error);
@@ -28,7 +66,7 @@ export function dashboardRoutes(modules) {
   /**
    * 获取完整状态
    */
-  router.get('/status', (req, res) => {
+  router.get('/status', (_req, res) => {
     try {
       if (!modules.coordinator) {
         return res.status(503).json({ error: '协调器未初始化' });

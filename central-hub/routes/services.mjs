@@ -11,7 +11,7 @@ export function serviceRoutes(modules) {
   /**
    * 获取所有服务
    */
-  router.get('/list', (req, res) => {
+  router.get('/list', (_req, res) => {
     try {
       if (!modules.serviceRegistry) {
         return res.status(503).json({ error: '服务清单模块未初始化' });
@@ -28,7 +28,7 @@ export function serviceRoutes(modules) {
   /**
    * 获取服务状态
    */
-  router.get('/status', (req, res) => {
+  router.get('/status', (_req, res) => {
     try {
       if (!modules.serviceRegistry) {
         return res.status(503).json({ error: '服务清单模块未初始化' });
@@ -53,17 +53,17 @@ export function serviceRoutes(modules) {
 
       const service = req.body;
 
-      // 验证服务配置
       const validation = modules.serviceRegistry.validateService(service);
       if (!validation.valid) {
         return res.status(400).json({ error: '配置验证失败', details: validation.errors });
       }
 
       const newService = await modules.serviceRegistry.addService(service);
-      res.json(newService);
+      res.json({ success: true, service: newService });
     } catch (error) {
       console.error('[Services] 添加服务失败:', error);
-      res.status(500).json({ error: error.message });
+      const status = error.message.includes('已存在') ? 400 : 500;
+      res.status(status).json({ error: error.message });
     }
   });
 
@@ -79,13 +79,52 @@ export function serviceRoutes(modules) {
         return res.status(503).json({ error: '服务清单模块未初始化' });
       }
 
+      const existingService = modules.serviceRegistry.getServiceById(id);
+      if (!existingService) {
+        return res.status(404).json({ error: `服务ID ${id} 不存在` });
+      }
+
+      const mergedService = {
+        ...existingService,
+        ...updates,
+        lucky: {
+          ...existingService.lucky,
+          ...updates.lucky
+        },
+        sunpanel: {
+          ...existingService.sunpanel,
+          ...updates.sunpanel
+        }
+      };
+
+      const validation = modules.serviceRegistry.validateService(mergedService);
+      if (!validation.valid) {
+        return res.status(400).json({ error: '配置验证失败', details: validation.errors });
+      }
+
       const updatedService = await modules.serviceRegistry.updateService(id, updates);
-      res.json(updatedService);
+      res.json({ success: true, service: updatedService });
     } catch (error) {
       console.error('[Services] 更新服务失败:', error);
+      const status = error.message.includes('不存在') ? 404 : 500;
+      res.status(status).json({ error: error.message });
+    }
+  });
+
+  router.post('/validate', (req, res) => {
+    try {
+      if (!modules.serviceRegistry) {
+        return res.status(503).json({ error: '服务清单模块未初始化' });
+      }
+
+      const validation = modules.serviceRegistry.validateService(req.body);
+      res.json(validation);
+    } catch (error) {
+      console.error('[Services] 验证服务失败:', error);
       res.status(500).json({ error: error.message });
     }
   });
+
 
   /**
    * 删除服务

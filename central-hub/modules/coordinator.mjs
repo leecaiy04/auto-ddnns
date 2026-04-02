@@ -4,10 +4,6 @@
  */
 
 import cron from 'node-cron';
-import { DeviceMonitor } from './device-monitor.mjs';
-import { ServiceRegistry } from './service-registry.mjs';
-import { LuckyManager } from './lucky-manager.mjs';
-import { NPMManager } from './npm-manager.mjs';
 
 export class Coordinator {
   constructor(modules, config, stateManager) {
@@ -23,21 +19,6 @@ export class Coordinator {
    */
   async init() {
     console.log('[Coordinator] 初始化总协调器...');
-
-    // 初始化各模块
-    if (this.modules.deviceMonitor) {
-      await this.modules.deviceMonitor.init();
-    }
-    if (this.modules.serviceRegistry) {
-      await this.modules.serviceRegistry.init();
-    }
-    if (this.modules.luckyManager) {
-      await this.modules.luckyManager.init();
-    }
-    if (this.modules.npmManager) {
-      await this.modules.npmManager.init();
-    }
-
     console.log('[Coordinator] ✅ 总协调器初始化完成');
   }
 
@@ -221,8 +202,8 @@ export class Coordinator {
   async runSunpanelSync() {
     if (!this.modules.luckyManager) return;
 
-    // 从Lucky同步到SunPanel
-    const result = await this.modules.luckyManager.syncToSunPanel();
+    const services = this.modules.serviceRegistry?.getProxiedServices() || [];
+    const result = await this.modules.luckyManager.syncToSunPanel(services);
 
     return result;
   }
@@ -356,7 +337,7 @@ export class Coordinator {
         enabled: status.ddns?.enabled || false
       },
       proxies: {
-        lucky: status.lucky?.sunpanel?.cardsCount || 0,
+        lucky: status.lucky?.lucky?.proxyCount || 0,
         npm: status.npm?.syncCount || 0
       },
       sunpanel: {
