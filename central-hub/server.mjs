@@ -14,10 +14,10 @@
 
 import express from 'express';
 import cors from 'cors';
-import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { loadEnvFileAsync, getEnv } from '../lib/utils/env-loader.mjs';
+import { loadConfigWithEnv } from './modules/config-loader.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_DOMAIN = 'leecaiy.shop';
@@ -130,8 +130,7 @@ class CentralHub {
 
   async loadConfig() {
     try {
-      const content = await fs.readFile(this.configPath, 'utf-8');
-      this.config = applyRuntimeConfigOverrides(JSON.parse(content));
+      this.config = applyRuntimeConfigOverrides(await loadConfigWithEnv(this.configPath));
       console.log('✅ 配置加载成功');
       return this.config;
     } catch (error) {
@@ -177,7 +176,8 @@ class CentralHub {
     if (this.config.modules.lucky?.enabled) {
       this.modules.luckyManager = new LuckyManager(
         this.config.modules.lucky,
-        this.stateManager
+        this.stateManager,
+        this.config.modules.sunpanel || null
       );
       // 用于兼容旧的接口
       this.modules.lucky = this.modules.luckyManager;

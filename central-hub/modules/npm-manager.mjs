@@ -19,18 +19,18 @@ export class NPMManager {
     this.config = config;
     this.stateManager = stateManager;
     this.npmConfig = {
-      apiBase: getEnv('NPM_API_BASE', 'http://192.168.3.200:50001'),
-      apiToken: getEnv('NPM_API_TOKEN', ''),
-      apiEmail: getEnv('NPM_API_EMAIL', ''),
-      apiPassword: getEnv('NPM_API_PASSWORD', ''),
-      httpsPort: parseInt(getEnv('NPM_HTTPS_PORT', '50001'), 10),
+      apiBase: config.apiBase || getEnv('NPM_API_BASE', 'http://192.168.3.200:50001'),
+      apiToken: config.apiToken || getEnv('NPM_API_TOKEN', ''),
+      apiEmail: config.apiEmail || config.apiIdentity || getEnv('NPM_API_EMAIL', getEnv('NPM_API_IDENTITY', '')),
+      apiPassword: config.apiPassword || config.apiSecret || getEnv('NPM_API_PASSWORD', getEnv('NPM_API_SECRET', '')),
+      httpsPort: parseInt(`${config.httpsPort || getEnv('NPM_HTTPS_PORT', '50001')}`, 10),
       syncFromLucky: config.syncFromLucky !== false,
       autoSync: config.autoSync !== false
     };
   }
 
   hasAuthConfig() {
-    return getNpmAuthConfig().mode !== 'none';
+    return getNpmAuthConfig(this.npmConfig).mode !== 'none';
   }
 
   ensureState() {
@@ -103,7 +103,7 @@ export class NPMManager {
         const targetHost = deviceIPv6 || `192.168.3.${service.device}`;
         const forward_port = parseInt(service.internalPort, 10);
         const forward_scheme = service.enableTLS ? 'https' : 'http';
-        const existing = await findProxyHostByDomain(service.proxyDomain);
+        const existing = await findProxyHostByDomain(service.proxyDomain, this.npmConfig);
 
         const proxyConfig = {
           domain_names: [service.proxyDomain],
@@ -123,11 +123,11 @@ export class NPMManager {
 
         let action = 'created';
         if (existing) {
-          await updateProxyHost(existing.id, proxyConfig);
+          await updateProxyHost(existing.id, proxyConfig, this.npmConfig);
           action = 'updated';
           results.updated += 1;
         } else {
-          await createProxyHost(proxyConfig);
+          await createProxyHost(proxyConfig, this.npmConfig);
         }
 
         results.success += 1;
@@ -175,7 +175,7 @@ export class NPMManager {
     }
 
     try {
-      const hosts = await getProxyHosts();
+      const hosts = await getProxyHosts(this.npmConfig);
       return hosts.map((host) => ({
         id: host.id,
         domain_names: host.domain_names,
@@ -204,13 +204,13 @@ export class NPMManager {
     this.ensureState();
 
     try {
-      const existing = await findProxyHostByDomain(domain);
+      const existing = await findProxyHostByDomain(domain, this.npmConfig);
       if (!existing) {
         console.warn(`[NPMManager] ⚠️  代理不存在: ${domain}`);
         return { success: false, message: '代理不存在' };
       }
 
-      await deleteProxyHost(existing.id);
+      await deleteProxyHost(existing.id, this.npmConfig);
       console.log(`[NPMManager] ✅ 删除代理: ${domain}`);
       delete this.stateManager.state.npm.syncStatus[domain];
       await this.stateManager.save();
@@ -233,13 +233,13 @@ export class NPMManager {
     }
 
     try {
-      const existing = await findProxyHostByDomain(domain);
+      const existing = await findProxyHostByDomain(domain, this.npmConfig);
       if (!existing) {
         console.warn(`[NPMManager] ⚠️  代理不存在: ${domain}`);
         return { success: false, message: '代理不存在' };
       }
 
-      await setProxyHostEnabled(existing.id, enabled);
+      await setProxyHostEnabled(existing.id, enabled, this.npmConfig);
       console.log(`[NPMManager] ✅ ${enabled ? '启用' : '禁用'}代理: ${domain}`);
       return { success: true };
     } catch (error) {
@@ -259,7 +259,7 @@ export class NPMManager {
       enabled: this.config.enabled && this.hasAuthConfig(),
       port: this.npmConfig.httpsPort,
       syncCount: Object.keys(this.stateManager.state.npm?.syncStatus || {}).length,
-      authMode: getNpmAuthConfig().mode
+      authMode: getNpmAuthConfig(this.npmConfig).mode
     };
   }
 }

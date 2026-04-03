@@ -113,17 +113,17 @@ async function syncSunPanelCard(upsert, cardConfig) {
 }
 
 export class LuckyManager {
-  constructor(config, stateManager) {
+  constructor(config, stateManager, sunpanelModuleConfig = null) {
     this.config = config;
     this.stateManager = stateManager;
     this.luckyConfig = {
-      apiBase: getEnv('LUCKY_API_BASE', 'http://192.168.3.200:16601'),
-      openToken: getEnv('LUCKY_OPEN_TOKEN', ''),
-      httpsPort: parseInt(getEnv('LUCKY_HTTPS_PORT', '50000'))
+      apiBase: config.apiBase || getEnv('LUCKY_API_BASE', 'http://192.168.3.200:16601'),
+      openToken: config.openToken || getEnv('LUCKY_OPEN_TOKEN', ''),
+      httpsPort: parseInt(`${config.httpsPort || getEnv('LUCKY_HTTPS_PORT', '50000')}`, 10)
     };
     this.sunpanelConfig = {
-      apiBase: getEnv('SUNPANEL_API_BASE', 'http://192.168.3.200:20001/openapi/v1'),
-      apiToken: getEnv('SUNPANEL_API_TOKEN', '')
+      apiBase: sunpanelModuleConfig?.apiBase || getEnv('SUNPANEL_API_BASE', 'http://192.168.3.200:20001/openapi/v1'),
+      apiToken: sunpanelModuleConfig?.apiToken || getEnv('SUNPANEL_API_TOKEN', '')
     };
     this.luckyLanHost = this.resolveLuckyLanHost();
   }
@@ -259,7 +259,7 @@ export class LuckyManager {
 
   async getLuckyProxies() {
     try {
-      const proxies = await getAllProxies();
+      const proxies = await getAllProxies(this.luckyConfig);
       return proxies.map(p => ({
         port: p.port,
         remark: p.remark,
@@ -327,7 +327,8 @@ export class LuckyManager {
           {
             enable: true,
             tls: service.enableTLS
-          }
+          },
+          this.luckyConfig
         );
 
         if (result.ret === 0) {
@@ -376,7 +377,7 @@ export class LuckyManager {
 
     try {
       const luckyProxies = await this.getLuckyProxies();
-      const groupsData = await getGroupList();
+      const groupsData = await getGroupList(this.sunpanelConfig);
       const groups = groupsData.list || [];
 
       const groupMap = new Map();
@@ -387,7 +388,7 @@ export class LuckyManager {
         const onlyName = this.buildGroupOnlyName(groupName);
         if (!groupMap.has(onlyName)) {
           try {
-            const result = await createGroup({ title: groupName, onlyName });
+            const result = await createGroup({ title: groupName, onlyName }, this.sunpanelConfig);
             groupMap.set(onlyName, result.itemGroupID);
             console.log(`[LuckyManager] ✅ 创建分组: ${groupName}`);
           } catch (error) {
@@ -461,15 +462,18 @@ export class LuckyManager {
 
           let action = 'created';
           try {
-            await getItemInfo(onlyName);
+            await getItemInfo(onlyName, this.sunpanelConfig);
             await syncSunPanelCard(
-              (payload) => updateItem({ onlyName, ...payload }),
+              (payload) => updateItem({ onlyName, ...payload }, this.sunpanelConfig),
               finalCardConfig
             );
             action = 'updated';
           } catch (error) {
             if (error.message.includes('1203')) {
-              await syncSunPanelCard(createItem, finalCardConfig);
+              await syncSunPanelCard(
+                (cardPayload) => createItem(cardPayload, this.sunpanelConfig),
+                finalCardConfig
+              );
             } else {
               throw error;
             }

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * 配置加载器
- * 优先从 .env 文件读取，如果没有则使用配置文件中的值
+ * 优先从 .env 文件读取，如果没有则使用配置文件中的值。
+ * 输出结构与 central-hub/server.mjs 当前期望的 config 结构保持一致。
  */
 
 import fs from 'node:fs/promises';
@@ -12,9 +13,6 @@ import { loadEnvFileAsync } from '../../lib/utils/env-loader.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, '../..');
 
-/**
- * 加载 .env 文件
- */
 async function loadEnv(envPath = null) {
   return loadEnvFileAsync({
     envPath,
@@ -28,12 +26,13 @@ async function loadEnv(envPath = null) {
   });
 }
 
-/**
- * 获取配置值（优先从环境变量）
- */
-function getConfig(env, configKey, configValue, defaultValue = null) {
-  if (env[configKey] !== undefined) {
-    return env[configKey];
+function getConfig(env, configKeys, configValue, defaultValue = null) {
+  const keys = Array.isArray(configKeys) ? configKeys : [configKeys];
+
+  for (const key of keys) {
+    if (key && env[key] !== undefined) {
+      return env[key];
+    }
   }
 
   if (configValue !== undefined) {
@@ -43,9 +42,36 @@ function getConfig(env, configKey, configValue, defaultValue = null) {
   return defaultValue;
 }
 
-/**
- * 合并配置（env 优先）
- */
+function toInt(value, defaultValue) {
+  const parsed = Number.parseInt(`${value ?? ''}`, 10);
+  return Number.isNaN(parsed) ? defaultValue : parsed;
+}
+
+function toBool(value, defaultValue) {
+  if (value === undefined || value === null || value === '') {
+    return defaultValue;
+  }
+
+  if (typeof value === 'boolean') {
+    return value;
+  }
+
+  const normalized = String(value).trim().toLowerCase();
+  if (['1', 'true', 'yes', 'on'].includes(normalized)) {
+    return true;
+  }
+
+  if (['0', 'false', 'no', 'off'].includes(normalized)) {
+    return false;
+  }
+
+  return defaultValue;
+}
+
+function getModuleConfig(jsonConfig, moduleName) {
+  return jsonConfig.modules?.[moduleName] ?? jsonConfig[moduleName] ?? {};
+}
+
 export async function loadConfigWithEnv(configPath, envPath = null) {
   const env = await loadEnv(envPath);
 
@@ -59,60 +85,162 @@ export async function loadConfigWithEnv(configPath, envPath = null) {
     }
   }
 
-  return {
-    server: {
-      port: parseInt(getConfig(env, 'HUB_PORT', jsonConfig.server?.port, 3000), 10),
-      host: getConfig(env, 'HUB_HOST', jsonConfig.server?.host, '0.0.0.0'),
-      cors: jsonConfig.server?.cors || { enabled: true, origin: '*' }
+  const serverConfig = jsonConfig.server ?? {};
+  const stateConfig = jsonConfig.state ?? {};
+  const loggingConfig = jsonConfig.logging ?? {};
+  const coordinatorConfig = getModuleConfig(jsonConfig, 'coordinator');
+  const deviceMonitorConfig = getModuleConfig(jsonConfig, 'deviceMonitor');
+  const serviceRegistryConfig = getModuleConfig(jsonConfig, 'serviceRegistry');
+  const ddnsConfig = getModuleConfig(jsonConfig, 'ddns');
+  const luckyConfig = getModuleConfig(jsonConfig, 'lucky');
+  const npmConfig = getModuleConfig(jsonConfig, 'npm');
+  const sunpanelConfig = getModuleConfig(jsonConfig, 'sunpanel');
+  const legacyRouterConfig = jsonConfig.router ?? {};
+  const routerConfig = deviceMonitorConfig.router ?? {};
+
+  const resolvedRouter = {
+    host: getConfig(
+      env,
+      ['ROUTER_HOST', 'ROUTER_IP'],
+      routerConfig.host ?? legacyRouterConfig.host ?? legacyRouterConfig.gateway,
+      '192.168.3.1'
+    ),
+    port: toInt(
+      getConfig(env, 'ROUTER_PORT', routerConfig.port ?? legacyRouterConfig.port, 22),
+      22
+    ),
+    username: getConfig(
+      env,
+      ['ROUTER_USERNAME', 'ROUTER_USER'],
+      routerConfig.username ?? legacyRouterConfig.username,
+      'root'
+    ),
+    password: getConfig(
+      env,
+      ['ROUTER_PASSWORD', 'ROUTER_PASS'],
+      routerConfig.password ?? legacyRouterConfig.password,
+      ''
+    ),
+    timeout: toInt(
+      getConfig(env, 'ROUTER_TIMEOUT', routerConfig.timeout ?? legacyRouterConfig.timeout, 10000),
+      10000
+    )
+  };
+
+  const modules = {
+    coordinator: {
+      enabled: toBool(coordinatorConfig.enabled, true),
+      schedule: coordinatorConfig.schedule ?? {}
     },
-    router: {
-      gateway: getConfig(env, 'ROUTER_GATEWAY', jsonConfig.router?.gateway, '192.168.3.1'),
-      checkInterval: parseInt(getConfig(env, 'ROUTER_CHECK_INTERVAL', jsonConfig.router?.checkInterval, 300), 10),
-      timeout: jsonConfig.router?.timeout || 10000
+    deviceMonitor: {
+      enabled: toBool(deviceMonitorConfig.enabled, true),
+      checkInterval: toInt(
+        getConfig(
+          env,
+          'ROUTER_CHECK_INTERVAL',
+          deviceMonitorConfig.checkInterval ?? legacyRouterConfig.checkInterval,
+          600
+        ),
+        600
+      ),
+      devices: deviceMonitorConfig.devices ?? [],
+      router: resolvedRouter
+    },
+    serviceRegistry: {
+      enabled: toBool(serviceRegistryConfig.enabled, true),
+      allowedDevices: serviceRegistryConfig.allowedDevices ?? serviceRegistryConfig.deviceIds ?? []
     },
     ddns: {
-      enabled: jsonConfig.ddns?.enabled !== false,
-      scriptPath: getConfig(env, 'DDNS_SCRIPT_PATH', jsonConfig.ddns?.scriptPath),
-      domains: jsonConfig.ddns?.domains || []
+      ...ddnsConfig,
+      enabled: toBool(getConfig(env, 'DDNS_ENABLED', ddnsConfig.enabled, true), true),
+      scriptPath: getConfig(env, 'DDNS_SCRIPT_PATH', ddnsConfig.scriptPath, './scripts/aliddns_sync.sh'),
+      updateInterval: toInt(
+        getConfig(env, 'DDNS_UPDATE_INTERVAL', ddnsConfig.updateInterval, 600),
+        600
+      )
     },
     lucky: {
-      enabled: jsonConfig.lucky?.enabled !== false,
-      apiBase: getConfig(env, 'LUCKY_API_BASE', jsonConfig.lucky?.apiBase),
-      openToken: getConfig(env, 'LUCKY_OPEN_TOKEN', jsonConfig.lucky?.openToken),
-      syncInterval: parseInt(getConfig(env, 'LUCKY_SYNC_INTERVAL', jsonConfig.lucky?.syncInterval, 600), 10)
+      ...luckyConfig,
+      enabled: toBool(getConfig(env, 'LUCKY_ENABLED', luckyConfig.enabled, true), true),
+      apiBase: getConfig(env, 'LUCKY_API_BASE', luckyConfig.apiBase),
+      openToken: getConfig(env, 'LUCKY_OPEN_TOKEN', luckyConfig.openToken, ''),
+      adminToken: getConfig(env, 'LUCKY_ADMIN_TOKEN', luckyConfig.adminToken, ''),
+      httpsPort: toInt(getConfig(env, 'LUCKY_HTTPS_PORT', luckyConfig.httpsPort, 50000), 50000),
+      autoSync: toBool(getConfig(env, 'LUCKY_AUTO_SYNC', luckyConfig.autoSync, true), true),
+      autoCreateProxy: toBool(
+        getConfig(env, 'LUCKY_AUTO_CREATE_PROXY', luckyConfig.autoCreateProxy, true),
+        true
+      )
+    },
+    npm: {
+      ...npmConfig,
+      enabled: toBool(getConfig(env, 'NPM_ENABLED', npmConfig.enabled, false), false),
+      apiBase: getConfig(env, 'NPM_API_BASE', npmConfig.apiBase),
+      apiToken: getConfig(env, 'NPM_API_TOKEN', npmConfig.apiToken, ''),
+      apiEmail: getConfig(env, ['NPM_API_EMAIL', 'NPM_API_IDENTITY'], npmConfig.apiEmail ?? npmConfig.apiIdentity, ''),
+      apiPassword: getConfig(
+        env,
+        ['NPM_API_PASSWORD', 'NPM_API_SECRET'],
+        npmConfig.apiPassword ?? npmConfig.apiSecret,
+        ''
+      ),
+      httpsPort: toInt(getConfig(env, 'NPM_HTTPS_PORT', npmConfig.httpsPort, 50001), 50001),
+      syncFromLucky: toBool(getConfig(env, 'NPM_SYNC_FROM_LUCKY', npmConfig.syncFromLucky, true), true),
+      autoSync: toBool(getConfig(env, 'NPM_AUTO_SYNC', npmConfig.autoSync, true), true)
     },
     sunpanel: {
-      enabled: jsonConfig.sunpanel?.enabled !== false,
-      apiBase: getConfig(env, 'SUNPANEL_API_BASE', jsonConfig.sunpanel?.apiBase),
-      apiToken: getConfig(env, 'SUNPANEL_API_TOKEN', jsonConfig.sunpanel?.apiToken),
-      syncOnProxyChange: jsonConfig.sunpanel?.syncOnProxyChange !== false
+      ...sunpanelConfig,
+      enabled: toBool(getConfig(env, 'SUNPANEL_ENABLED', sunpanelConfig.enabled, true), true),
+      apiBase: getConfig(env, 'SUNPANEL_API_BASE', sunpanelConfig.apiBase),
+      apiToken: getConfig(env, 'SUNPANEL_API_TOKEN', sunpanelConfig.apiToken, ''),
+      autoSync: toBool(getConfig(env, 'SUNPANEL_AUTO_SYNC', sunpanelConfig.autoSync, true), true),
+      autoCreateGroups: toBool(
+        getConfig(env, 'SUNPANEL_AUTO_CREATE_GROUPS', sunpanelConfig.autoCreateGroups, true),
+        true
+      )
+    }
+  };
+
+  return {
+    server: {
+      port: toInt(getConfig(env, 'HUB_PORT', serverConfig.port, 3000), 3000),
+      host: getConfig(env, 'HUB_HOST', serverConfig.host, '0.0.0.0'),
+      cors: serverConfig.cors || { enabled: true, origin: '*' }
     },
+    modules,
     state: {
-      path: getConfig(env, 'STATE_PATH', jsonConfig.state?.path, 'data/central-hub-state.json'),
-      backupPath: getConfig(env, 'STATE_BACKUP_PATH', jsonConfig.state?.backupPath, 'data/backups/'),
-      keepHistory: parseInt(getConfig(env, 'STATE_KEEP_HISTORY', jsonConfig.state?.keepHistory, 10), 10),
-      backupKeepHistory: parseInt(
-        getConfig(env, 'STATE_BACKUP_KEEP_HISTORY', jsonConfig.state?.backupKeepHistory, 1),
-        10
+      path: getConfig(env, 'STATE_PATH', stateConfig.path, 'data/hub-state.json'),
+      backupPath: getConfig(env, 'STATE_BACKUP_PATH', stateConfig.backupPath, 'data/backups/'),
+      keepHistory: toInt(getConfig(env, 'STATE_KEEP_HISTORY', stateConfig.keepHistory, 10), 10),
+      backupKeepHistory: toInt(
+        getConfig(env, 'STATE_BACKUP_KEEP_HISTORY', stateConfig.backupKeepHistory, 1),
+        1
       )
     },
     logging: {
-      level: getConfig(env, 'LOG_LEVEL', jsonConfig.logging?.level, 'info'),
-      file: getConfig(env, 'LOG_FILE', jsonConfig.logging?.file, 'logs/central-hub.log')
-    }
+      level: getConfig(env, 'LOG_LEVEL', loggingConfig.level, 'info'),
+      file: getConfig(env, 'LOG_FILE', loggingConfig.file, 'logs/hub.log')
+    },
+    router: {
+      gateway: resolvedRouter.host,
+      host: resolvedRouter.host,
+      port: resolvedRouter.port,
+      username: resolvedRouter.username,
+      password: resolvedRouter.password,
+      timeout: resolvedRouter.timeout,
+      checkInterval: modules.deviceMonitor.checkInterval
+    },
+    ddns: modules.ddns,
+    lucky: modules.lucky,
+    npm: modules.npm,
+    sunpanel: modules.sunpanel
   };
 }
 
-/**
- * 获取单个环境变量的辅助函数
- */
 export function getEnv(key, defaultValue = null) {
   return process.env[key] || defaultValue;
 }
 
-/**
- * 检查必需的环境变量
- */
 export function checkRequiredEnv(requiredKeys) {
   const missing = [];
 

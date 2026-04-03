@@ -6,7 +6,7 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 
 import { loadConfigWithEnv } from '../central-hub/modules/config-loader.mjs';
 
-test('loadConfigWithEnv lets env values override json config', async () => {
+test('loadConfigWithEnv lets env values override json config and returns server module shape', async () => {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), 'auto-dnns-config-'));
   const configPath = path.join(tempDir, 'hub.json');
   const envPath = path.join(tempDir, '.env');
@@ -16,8 +16,13 @@ test('loadConfigWithEnv lets env values override json config', async () => {
       configPath,
       JSON.stringify({
         server: { port: 3000, host: '0.0.0.0' },
-        router: { gateway: '192.168.3.1', checkInterval: 300 },
-        lucky: { apiBase: 'http://json-lucky', syncInterval: 600 },
+        router: {
+          gateway: '192.168.3.1',
+          checkInterval: 300,
+          username: 'json-root',
+          password: 'json-pass'
+        },
+        lucky: { apiBase: 'http://json-lucky', httpsPort: 50000 },
         sunpanel: { apiBase: 'http://json-sunpanel', apiToken: 'json-token' },
         logging: { level: 'info' }
       }),
@@ -29,9 +34,13 @@ test('loadConfigWithEnv lets env values override json config', async () => {
       [
         'HUB_PORT=61000',
         'HUB_HOST=127.0.0.1',
-        'ROUTER_GATEWAY=10.0.0.1',
+        'ROUTER_HOST=10.0.0.1',
+        'ROUTER_USERNAME=env-root',
         'LUCKY_API_BASE=http://env-lucky',
-        'LUCKY_SYNC_INTERVAL=60',
+        'LUCKY_OPEN_TOKEN=env-open-token',
+        'LUCKY_HTTPS_PORT=5443',
+        'NPM_API_EMAIL=env-npm@example.com',
+        'NPM_API_PASSWORD=env-npm-secret',
         'SUNPANEL_API_TOKEN=env-token',
         'LOG_LEVEL=debug'
       ].join('\n'),
@@ -42,12 +51,18 @@ test('loadConfigWithEnv lets env values override json config', async () => {
 
     assert.equal(config.server.port, 61000);
     assert.equal(config.server.host, '127.0.0.1');
+    assert.equal(config.modules.deviceMonitor.router.host, '10.0.0.1');
+    assert.equal(config.modules.deviceMonitor.router.username, 'env-root');
     assert.equal(config.router.gateway, '10.0.0.1');
     assert.equal(config.lucky.apiBase, 'http://env-lucky');
-    assert.equal(config.lucky.syncInterval, 60);
+    assert.equal(config.modules.lucky.openToken, 'env-open-token');
+    assert.equal(config.modules.lucky.httpsPort, 5443);
     assert.equal(config.sunpanel.apiToken, 'env-token');
+    assert.equal(config.modules.npm.apiEmail, 'env-npm@example.com');
+    assert.equal(config.modules.npm.apiPassword, 'env-npm-secret');
     assert.equal(config.logging.level, 'debug');
     assert.equal(config.sunpanel.apiBase, 'http://json-sunpanel');
+    assert.equal(config.modules.serviceRegistry.enabled, true);
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }

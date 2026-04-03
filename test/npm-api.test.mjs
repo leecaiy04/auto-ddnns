@@ -105,3 +105,62 @@ test('npm-api prefers static token over login flow', async () => {
     restoreEnv(previousEnv);
   }
 });
+
+test('npm-api accepts explicit instance config without relying on global env', async () => {
+  const keys = ['NPM_API_BASE', 'NPM_API_TOKEN', 'NPM_API_EMAIL', 'NPM_API_PASSWORD'];
+  const previousEnv = snapshotEnv(keys);
+  const previousFetch = globalThis.fetch;
+  const calls = [];
+  const instanceConfig = {
+    apiBase: 'http://npm-instance.local',
+    apiEmail: 'instance@example.com',
+    apiPassword: 'instance-secret'
+  };
+  const jwt = createJwt();
+
+  try {
+    delete process.env.NPM_API_BASE;
+    delete process.env.NPM_API_TOKEN;
+    delete process.env.NPM_API_EMAIL;
+    delete process.env.NPM_API_PASSWORD;
+
+    globalThis.fetch = async (url, options = {}) => {
+      calls.push({ url, options });
+
+      if (url === 'http://npm-instance.local/api/tokens') {
+        return new Response(JSON.stringify({ token: jwt }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      if (url === 'http://npm-instance.local/api/nginx/proxy-hosts') {
+        return new Response(JSON.stringify([]), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      throw new Error(`Unexpected URL: ${url}`);
+    };
+
+    const hosts = await getProxyHosts(instanceConfig);
+
+    assert.deepEqual(hosts, []);
+    assert.equal(calls.length, 2);
+    assert.equal(calls[0].url, 'http://npm-instance.local/api/tokens');
+    assert.match(calls[0].options.body, /instance@example.com/);
+    assert.equal(calls[1].url, 'http://npm-instance.local/api/nginx/proxy-hosts');
+    assert.equal(calls[1].options.headers.Authorization, `Bearer ${jwt}`);
+    assert.deepEqual(getNpmAuthConfig(instanceConfig), {
+      apiBase: 'http://npm-instance.local',
+      mode: 'password',
+      hasToken: false,
+      hasIdentity: true,
+      hasSecret: true
+    });
+  } finally {
+    globalThis.fetch = previousFetch;
+    restoreEnv(previousEnv);
+  }
+});
