@@ -259,7 +259,10 @@ export class LuckyManager {
 
   async getLuckyProxies() {
     try {
-      const proxies = await getAllProxies(this.luckyConfig);
+      const instances = this.luckyConfig.instances || [this.luckyConfig];
+      // 取第一个实例的规则作为主参考（假定所有实例会尽量保持一致）
+      const mainConfig = { ...this.luckyConfig, ...instances[0] };
+      const proxies = await getAllProxies(mainConfig);
       return proxies.map(p => ({
         port: p.port,
         remark: p.remark,
@@ -286,8 +289,9 @@ export class LuckyManager {
    * @param {object} ipv6Map - IPv6地址映射
    */
   async syncServicesToLucky(services, ipv6Map = {}) {
-    console.log('[LuckyManager] 🔄 开始同步服务到Lucky...');
+    console.log('[LuckyManager] 🔄 开始同步服务到Lucky实例...');
 
+    const instances = this.luckyConfig.instances || [this.luckyConfig];
     const results = {
       success: 0,
       failed: 0,
@@ -295,77 +299,56 @@ export class LuckyManager {
       details: []
     };
 
-    for (const service of services) {
-      if (!service.enableProxy) {
-        results.skipped++;
-        continue;
-      }
+    for (let i = 0; i < instances.length; i++) {
+      const instanceConfig = { ...this.luckyConfig, ...instances[i] };
+      console.log(`[LuckyManager] ➡️ 正在同步到 Lucky 实例 ${i + 1} (${instanceConfig.apiBase})`);
 
-      try {
-        // 获取设备的IPv6地址
-        const deviceIPv6 = ipv6Map[service.device] || null;
-
-        // 构建目标地址
-        const targetHost = deviceIPv6 || `192.168.3.${service.device}`;
-        const formattedTargetHost = formatTargetHost(targetHost);
-        const target = service.enableTLS
-          ? `https://${formattedTargetHost}:${service.internalPort}`
-          : `http://${formattedTargetHost}:${service.internalPort}`;
-
-        // 检查是否需要使用50000端口
-        if (service.lucky.port !== 50000) {
-          console.warn(`[LuckyManager] ⚠️  服务 ${service.id} 未使用统一的50000端口，当前端口: ${service.lucky.port}`);
+      for (const service of services) {
+        if (!service.enableProxy) {
+          if (i === 0) results.skipped++;
+          continue;
         }
 
-        // 使用智能添加/更新子规则
-        const result = await smartAddOrUpdateSubRule(
-          this.luckyConfig.httpsPort,
-          service.lucky.remark || service.name,
-          service.proxyType,
-          [service.proxyDomain],
-          [target],
-          {
-            enable: true,
-            tls: service.enableTLS
-          },
-          this.luckyConfig
-        );
+        try {
+          const deviceIPv6 = ipv6Map[service.device] || null;
+          const targetHost = deviceIPv6 || `192.168.3.${service.device}`;
+          const formattedTargetHost = formatTargetHost(targetHost);
+          const target = service.enableTLS
+            ? `https://${formattedTargetHost}:${service.internalPort}`
+            : `http://${formattedTargetHost}:${service.internalPort}`;
 
-        if (result.ret === 0) {
-          results.success++;
-          results.details.push({
-            service: service.id,
-            action: result.action,
-            domain: service.proxyDomain,
-            target
-          });
-          console.log(`[LuckyManager] ✅ ${result.action}: ${service.name} (${service.proxyDomain})`);
-        } else {
-          results.failed++;
-          console.error(`[LuckyManager] ❌ 同步失败: ${service.name} - ${result.msg}`);
-          results.details.push({
-            service: service.id,
-            action: 'failed',
-            error: result.msg
-          });
+          if (i === 0 && service.lucky.port !== 50000) {
+            console.warn(`[LuckyManager] ⚠️  服务 ${service.id} 未使用统一的50000端口，当前端口: ${service.lucky.port}`);
+          }
+
+          const result = await smartAddOrUpdateSubRule(
+            instanceConfig.httpsPort,
+            service.lucky.remark || service.name,
+            service.proxyType,
+            [service.proxyDomain],
+            [target],
+            { enable: true, tls: service.enableTLS },
+            instanceConfig
+          );
+
+          if (result.ret === 0) {
+            if (i === 0) results.success++;
+            results.details.push({ service: service.id, instance: i, action: result.action, domain: service.proxyDomain });
+            console.log(`[LuckyManager] ✅ [实例 ${i+1}] ${result.action}: ${service.name} (${service.proxyDomain})`);
+          } else {
+            if (i === 0) results.failed++;
+            console.error(`[LuckyManager] ❌ [实例 ${i+1}] 同步失败: ${service.name} - ${result.msg}`);
+          }
+        } catch (error) {
+          if (i === 0) results.failed++;
+          console.error(`[LuckyManager] ❌ [实例 ${i+1}] 同步异常: ${service.name} - ${error.message}`);
         }
-      } catch (error) {
-        results.failed++;
-        console.error(`[LuckyManager] ❌ 同步异常: ${service.name} - ${error.message}`);
-        results.details.push({
-          service: service.id,
-          action: 'error',
-          error: error.message
-        });
       }
     }
 
-    // 更新状态
     this.stateManager.state.lucky.lastSync = new Date().toISOString();
     await this.stateManager.save();
-
-    console.log(`[LuckyManager] 🎉 同步完成: 成功 ${results.success}, 失败 ${results.failed}, 跳过 ${results.skipped}`);
-
+    console.log(`[LuckyManager] 🎉 所有实例同步完成.`);
     return results;
   }
 
@@ -373,143 +356,105 @@ export class LuckyManager {
    * 同步Lucky代理到SunPanel
    */
   async syncToSunPanel(services = []) {
-    console.log('[LuckyManager] 🔄 开始同步Lucky到SunPanel...');
+    console.log('[LuckyManager] 🔄 开始同步Lucky到SunPanel实例...');
 
     try {
       const luckyProxies = await this.getLuckyProxies();
-      const groupsData = await getGroupList(this.sunpanelConfig);
-      const groups = groupsData.list || [];
+      const instances = this.sunpanelConfig.instances || [this.sunpanelConfig];
+      const results = { success: 0, failed: 0, updated: 0, details: [] };
 
-      const groupMap = new Map();
-      groups.forEach(group => groupMap.set(group.onlyName, group.itemGroupID));
+      for (let i = 0; i < instances.length; i++) {
+        const instanceConfig = { ...this.sunpanelConfig, ...instances[i] };
+        console.log(`[LuckyManager] ➡️ 正在同步到 SunPanel 实例 ${i + 1} (${instanceConfig.apiBase})`);
 
-      const defaultGroups = ['NAS', '服务器', '其他'];
-      for (const groupName of defaultGroups) {
-        const onlyName = this.buildGroupOnlyName(groupName);
-        if (!groupMap.has(onlyName)) {
-          try {
-            const result = await createGroup({ title: groupName, onlyName }, this.sunpanelConfig);
-            groupMap.set(onlyName, result.itemGroupID);
-            console.log(`[LuckyManager] ✅ 创建分组: ${groupName}`);
-          } catch (error) {
-            if (!error.message.includes('1202')) {
-              console.error(`[LuckyManager] ⚠️  创建分组失败: ${groupName} - ${error.message}`);
+        const groupsData = await getGroupList(instanceConfig);
+        const groups = groupsData.list || [];
+        const groupMap = new Map();
+        groups.forEach(group => groupMap.set(group.onlyName, group.itemGroupID));
+
+        const defaultGroups = ['NAS', '服务器', '其他'];
+        for (const groupName of defaultGroups) {
+          const onlyName = this.buildGroupOnlyName(groupName);
+          if (!groupMap.has(onlyName)) {
+            try {
+              const result = await createGroup({ title: groupName, onlyName }, instanceConfig);
+              groupMap.set(onlyName, result.itemGroupID);
+              console.log(`[LuckyManager] ✅ [实例 ${i+1}] 创建分组: ${groupName}`);
+            } catch (error) {
+              if (!error.message.includes('1202')) {
+                console.error(`[LuckyManager] ⚠️  [实例 ${i+1}] 创建分组失败: ${groupName} - ${error.message}`);
+              }
             }
           }
         }
-      }
 
-      const results = {
-        success: 0,
-        failed: 0,
-        updated: 0,
-        details: []
-      };
-
-      for (const proxy of luckyProxies) {
-        try {
-          const domain = proxy.domains[0];
-          if (!domain) continue;
-
-          const matchedService = this.getServiceByDomain(services, domain);
-          const configuredGroupName = matchedService?.sunpanel?.group || '其他';
-          const groupOnlyName = this.buildGroupOnlyName(configuredGroupName);
-          const groupId = groupMap.get(groupOnlyName);
-
-          if (!groupId) {
-            console.warn(`[LuckyManager] ⚠️  分组不存在: ${configuredGroupName}`);
-            continue;
-          }
-
-          const publicUrl = this.buildSunPanelPublicUrl(proxy, domain);
-          const lanUrl = matchedService?.sunpanel?.lanUrl || this.buildSunPanelLanUrl(proxy.target);
-          const iconUrl = matchedService?.sunpanel?.icon || `https://${domain}/favicon.ico`;
-          const onlyName = matchedService
-            ? `svc-${matchedService.id}`
-            : this.generateOnlyName(domain);
-
-          const finalCardConfig = matchedService
-            ? {
-                title: matchedService.name,
-                url: publicUrl,
-                onlyName,
-                iconUrl,
-                lanUrl,
-                description: matchedService.description,
-                itemGroupID: groupId,
-                itemGroupOnlyName: groupOnlyName,
-                isSaveIcon: false
-              }
-            : {
-                title: proxy.remark || domain,
-                url: publicUrl,
-                onlyName,
-                iconUrl,
-                lanUrl,
-                description: proxy.remark || `反向代理: ${domain}`,
-                itemGroupID: groupId,
-                itemGroupOnlyName: groupOnlyName,
-                isSaveIcon: true
-              };
-
-          const hash = this.calculateSunPanelHash(proxy, finalCardConfig);
-          const currentState = this.stateManager.state.sunpanel.syncStatus[onlyName];
-
-          if (currentState && currentState.hash === hash) {
-            results.details.push({ domain, action: 'skipped', reason: 'hash_unchanged' });
-            continue;
-          }
-
-          let action = 'created';
+        for (const proxy of luckyProxies) {
           try {
-            await getItemInfo(onlyName, this.sunpanelConfig);
-            await syncSunPanelCard(
-              (payload) => updateItem({ onlyName, ...payload }, this.sunpanelConfig),
-              finalCardConfig
-            );
-            action = 'updated';
-          } catch (error) {
-            if (error.message.includes('1203')) {
-              await syncSunPanelCard(
-                (cardPayload) => createItem(cardPayload, this.sunpanelConfig),
-                finalCardConfig
-              );
-            } else {
-              throw error;
+            const domain = proxy.domains[0];
+            if (!domain) continue;
+
+            const matchedService = this.getServiceByDomain(services, domain);
+            const configuredGroupName = matchedService?.sunpanel?.group || '其他';
+            const groupOnlyName = this.buildGroupOnlyName(configuredGroupName);
+            const groupId = groupMap.get(groupOnlyName);
+
+            if (!groupId) {
+              console.warn(`[LuckyManager] ⚠️  [实例 ${i+1}] 分组不存在: ${configuredGroupName}`);
+              continue;
             }
+
+            const publicUrl = this.buildSunPanelPublicUrl(proxy, domain);
+            const lanUrl = matchedService?.sunpanel?.lanUrl || this.buildSunPanelLanUrl(proxy.target);
+            const iconUrl = matchedService?.sunpanel?.icon || `https://${domain}/favicon.ico`;
+            const onlyName = matchedService
+              ? `svc-${matchedService.id}`
+              : this.generateOnlyName(domain);
+
+            const finalCardConfig = matchedService
+              ? { title: matchedService.name, url: publicUrl, onlyName, iconUrl, lanUrl, description: matchedService.description, itemGroupID: groupId, itemGroupOnlyName: groupOnlyName, isSaveIcon: false }
+              : { title: proxy.remark || domain, url: publicUrl, onlyName, iconUrl, lanUrl, description: proxy.remark || `反向代理: ${domain}`, itemGroupID: groupId, itemGroupOnlyName: groupOnlyName, isSaveIcon: true };
+
+            const hash = this.calculateSunPanelHash(proxy, finalCardConfig);
+            // 这里我们用带实例下标的键暂不进行深层区分，简化起见还是靠同一个 hash 管理
+            const currentState = this.stateManager.state.sunpanel.syncStatus[`${onlyName}_${i}`];
+
+            if (currentState && currentState.hash === hash) {
+              results.details.push({ instance: i, domain, action: 'skipped', reason: 'hash_unchanged' });
+              continue;
+            }
+
+            let action = 'created';
+            try {
+              await getItemInfo(onlyName, instanceConfig);
+              await syncSunPanelCard((payload) => updateItem({ onlyName, ...payload }, instanceConfig), finalCardConfig);
+              action = 'updated';
+            } catch (error) {
+              if (error.message.includes('1203')) {
+                await syncSunPanelCard((cardPayload) => createItem(cardPayload, instanceConfig), finalCardConfig);
+              } else {
+                throw error;
+              }
+            }
+
+            if (i === 0) results.success++;
+            if (i === 0 && action === 'updated') results.updated++;
+
+            this.stateManager.state.sunpanel.syncStatus[`${onlyName}_${i}`] = {
+              hash, domain, remark: proxy.remark, target: proxy.target, serviceId: matchedService?.id || null, groupId, groupOnlyName, lastSync: new Date().toISOString()
+            };
+
+            console.log(`[LuckyManager] ✅ [实例 ${i+1}] ${action === 'created' ? '创建' : '更新'}卡片: ${finalCardConfig.title}`);
+          } catch (error) {
+            if (i === 0) results.failed++;
+            console.error(`[LuckyManager] ❌ [实例 ${i+1}] 同步失败: ${proxy.domains[0]} - ${error.message}`);
           }
-
-          results.success++;
-          if (action === 'updated') results.updated++;
-
-          this.stateManager.state.sunpanel.syncStatus[onlyName] = {
-            hash,
-            domain,
-            remark: proxy.remark,
-            target: proxy.target,
-            serviceId: matchedService?.id || null,
-            groupId,
-            groupOnlyName,
-            lastSync: new Date().toISOString()
-          };
-
-          console.log(`[LuckyManager] ✅ ${action === 'created' ? '创建' : '更新'}卡片: ${finalCardConfig.title}`);
-        } catch (error) {
-          results.failed++;
-          console.error(`[LuckyManager] ❌ 同步失败: ${proxy.domains[0]} - ${error.message}`);
-          results.details.push({
-            domain: proxy.domains[0],
-            action: 'error',
-            error: error.message
-          });
         }
       }
 
       this.stateManager.state.sunpanel.lastSync = new Date().toISOString();
       await this.stateManager.save();
 
-      console.log(`[LuckyManager] 🎉 SunPanel同步完成: 成功 ${results.success}, 更新 ${results.updated}, 失败 ${results.failed}`);
-
+      console.log(`[LuckyManager] 🎉 所有 SunPanel 实例同步完成.`);
       return results;
     } catch (error) {
       console.error('[LuckyManager] ❌ 同步到SunPanel失败:', error.message);

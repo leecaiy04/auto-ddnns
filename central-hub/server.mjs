@@ -70,10 +70,51 @@ function applyRuntimeConfigOverrides(config) {
       ipv4: [managedDomain, `*.${managedDomain}`],
       ipv6: ['10', '200', '201', '254'].map(device => `${device}.v6.${managedDomain}`)
     };
+
+    // 保持 extraDomains 配置（用于 222869.xyz 等额外域名）
+    // extraDomains 在 hub.json 中静态配置，不做覆盖
   }
 
-  if (config?.modules?.lucky && !process.env.LUCKY_API_BASE) {
-    config.modules.lucky.apiBase = `https://lucky.${managedDomain}:50000/666`;
+  if (config?.modules?.lucky) {
+    const luckyInstances = [];
+    if (process.env.LUCKY_API_BASE) {
+      luckyInstances.push({
+        apiBase: process.env.LUCKY_API_BASE,
+        token: process.env.LUCKY_TOKEN || process.env.LUCKY_API_TOKEN,
+        username: process.env.LUCKY_USERNAME,
+        password: process.env.LUCKY_PASSWORD
+      });
+    } else {
+      luckyInstances.push({
+        apiBase: `https://lucky.${managedDomain}:50000/666`
+      });
+    }
+    if (process.env.LUCKY_BACKUP_API_BASE) {
+      luckyInstances.push({
+        apiBase: process.env.LUCKY_BACKUP_API_BASE,
+        token: process.env.LUCKY_BACKUP_TOKEN || process.env.LUCKY_BACKUP_API_TOKEN,
+        username: process.env.LUCKY_BACKUP_USERNAME,
+        password: process.env.LUCKY_BACKUP_PASSWORD
+      });
+    }
+    config.modules.lucky.instances = luckyInstances;
+  }
+
+  if (config?.modules?.sunpanel) {
+    const sunInstances = [];
+    if (process.env.SUNPANEL_API_BASE) {
+      sunInstances.push({
+        apiBase: process.env.SUNPANEL_API_BASE,
+        apiToken: process.env.SUNPANEL_API_TOKEN
+      });
+    }
+    if (process.env.SUNPANEL_BACKUP_API_BASE) {
+      sunInstances.push({
+        apiBase: process.env.SUNPANEL_BACKUP_API_BASE,
+        apiToken: process.env.SUNPANEL_BACKUP_API_TOKEN
+      });
+    }
+    config.modules.sunpanel.instances = sunInstances;
   }
 
   return config;
@@ -90,6 +131,7 @@ import { DeviceMonitor } from './modules/device-monitor.mjs';
 import { ServiceRegistry } from './modules/service-registry.mjs';
 import { LuckyManager } from './modules/lucky-manager.mjs';
 import { NPMManager } from './modules/npm-manager.mjs';
+import { CloudflareManager } from './modules/cloudflare-manager.mjs';
 import { Coordinator } from './modules/coordinator.mjs';
 import { StateManager } from './modules/state-manager.mjs';
 import { DDNSController } from './modules/ddns-controller.mjs';
@@ -100,6 +142,8 @@ import { deviceRoutes } from './routes/devices.mjs';
 import { serviceRoutes } from './routes/services.mjs';
 import ddnsRoutes from './routes/ddns.mjs';
 import proxyRoutes from './routes/proxy.mjs';
+import cloudflareRoutes from './routes/cloudflare.mjs';
+import bookmarkRoutes from './routes/bookmarks.mjs';
 
 class CentralHub {
   constructor(configPath) {
@@ -191,6 +235,14 @@ class CentralHub {
       );
     }
 
+    // Cloudflare DNS 管理模块
+    if (this.config.modules.cloudflare?.enabled) {
+      this.modules.cloudflareManager = new CloudflareManager(
+        this.config.modules.cloudflare,
+        this.stateManager
+      );
+    }
+
     // SunPanel 管理（集成在 LuckyManager 中）
     if (this.config.modules.sunpanel?.enabled) {
       this.modules.sunpanelManager = this.modules.luckyManager;
@@ -235,6 +287,8 @@ class CentralHub {
     this.app.use('/api/services', serviceRoutes(this.modules));
     this.app.use('/api/ddns', ddnsRoutes(this.modules));
     this.app.use('/api/proxies', proxyRoutes(this.modules));
+    this.app.use('/api/cloudflare', cloudflareRoutes(this.modules));
+    this.app.use('/api/bookmarks', bookmarkRoutes(this.modules));
 
     // 同步控制路由
     this.app.post('/api/sync/full', async (req, res) => {
@@ -287,6 +341,16 @@ class CentralHub {
       }
     });
 
+    this.app.post('/api/cloudflare/sync', async (req, res) => {
+      try {
+        const result = await this.coordinator.runCloudflareSync();
+        res.json(result);
+      } catch (error) {
+        console.error('[Cloudflare] Cloudflare同步失败:', error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+
     // 兼容旧的状态路由
     this.app.get('/api/status', (req, res) => {
       try {
@@ -300,7 +364,8 @@ class CentralHub {
             ddns: this.modules.ddnsController?.getStatus()?.enabled ? 'ok' : 'disabled',
             lucky: this.modules.luckyManager?.getStatus()?.lucky?.enabled ? 'ok' : 'disabled',
             npm: this.modules.npmManager?.getStatus()?.enabled ? 'ok' : 'disabled',
-            sunpanel: this.modules.sunpanelManager?.config?.enabled ? 'ok' : 'disabled'
+            sunpanel: this.modules.sunpanelManager?.config?.enabled ? 'ok' : 'disabled',
+            cloudflare: this.modules.cloudflareManager?.getStatus()?.enabled ? 'ok' : 'disabled'
           }
         });
       } catch (error) {

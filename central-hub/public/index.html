@@ -597,7 +597,7 @@
             </div>
 
             <div class="card">
-                <h2><span class="card-icon">🌞</span>SunPanel</h2>
+                <h2><span class="card-icon">🌞</span>SunPanel <a href="http://192.168.3.200:20001" target="_blank" style="font-size:13px;color:#667eea;text-decoration:none;margin-left:8px;">↗ 打开面板</a></h2>
                 <div class="stat">
                     <span class="stat-label">卡片数量</span>
                     <span class="stat-value" id="sunpanelCards">-</span>
@@ -617,6 +617,26 @@
                 <div class="stat">
                     <span class="stat-label">最后更新</span>
                     <span class="stat-value" id="ddnsLastUpdate">-</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><span class="card-icon">☁️</span>Cloudflare</h2>
+                <div class="stat">
+                    <span class="stat-label">状态</span>
+                    <span class="stat-value" id="cfStatus">-</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">域名</span>
+                    <span class="stat-value" id="cfDomain">-</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">DNS 记录数</span>
+                    <span class="stat-value" id="cfRecordCount">-</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">最后同步</span>
+                    <span class="stat-value" id="cfLastSync">-</span>
                 </div>
             </div>
         </div>
@@ -724,6 +744,25 @@
             </div>
         </div>
 
+        <div class="card section-card">
+            <div class="services-toolbar">
+                <h2><span class="card-icon">⭐</span>收藏管理</h2>
+                <div>
+                    <button class="button button-small" type="button" onclick="loadBookmarks(true)">刷新</button>
+                    <button class="button button-small button-secondary" type="button" id="syncBookmarksButton" onclick="syncBookmarks()">同步到 SunPanel</button>
+                </div>
+            </div>
+            <p class="muted-text section-description">收藏外部页面，可同步到 SunPanel 统一展示。</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+                <input id="bmId" placeholder="ID（英文）" style="flex:1;min-width:80px;padding:8px;border:1px solid #d1d5db;border-radius:6px;">
+                <input id="bmName" placeholder="名称" style="flex:1;min-width:80px;padding:8px;border:1px solid #d1d5db;border-radius:6px;">
+                <input id="bmUrl" placeholder="URL" style="flex:2;min-width:120px;padding:8px;border:1px solid #d1d5db;border-radius:6px;">
+                <input id="bmGroup" placeholder="分组" value="收藏" style="flex:1;min-width:60px;padding:8px;border:1px solid #d1d5db;border-radius:6px;">
+                <button class="button button-small button-secondary" type="button" onclick="addBookmark()">添加</button>
+            </div>
+            <div id="bookmarkList">加载中...</div>
+        </div>
+
         <div class="actions">
             <h2>🎮 操作</h2>
             <div class="action-grid">
@@ -733,6 +772,7 @@
                 <button class="button" id="runLuckySyncButton" type="button" onclick="runLuckySync()">🎲 Lucky同步</button>
                 <button class="button" id="runNPMSyncButton" type="button" onclick="runNPMSync()">📋 NPM同步</button>
                 <button class="button" id="runSunpanelSyncButton" type="button" onclick="runSunpanelSync()">🌞 SunPanel同步</button>
+                <button class="button" id="runCFSyncButton" type="button" onclick="runCFSync()">☁️ Cloudflare同步</button>
             </div>
         </div>
 
@@ -1027,6 +1067,15 @@
                 document.getElementById('sunpanelLastSync').textContent = formatTime(data.sunpanel.lastSync);
                 document.getElementById('ddnsStatus').textContent = data.ddns.enabled ? '启用' : '禁用';
                 document.getElementById('ddnsLastUpdate').textContent = formatTime(data.ddns.lastUpdate);
+
+                // Cloudflare
+                if (data.cloudflare) {
+                    document.getElementById('cfStatus').textContent = data.cloudflare.enabled ? '启用' : '禁用';
+                    document.getElementById('cfDomain').textContent = data.cloudflare.domain || '-';
+                    document.getElementById('cfRecordCount').textContent = data.cloudflare.recordCount ?? '-';
+                    document.getElementById('cfLastSync').textContent = formatTime(data.cloudflare.lastSync);
+                }
+
                 document.getElementById('pageLastUpdate').textContent = new Date().toLocaleString('zh-CN');
 
                 await Promise.all([loadDeviceList(false), loadServices(false)]);
@@ -1070,13 +1119,13 @@
             }
 
             list.innerHTML = services.map(service => `
-                <div class="service-item">
+                <div class="service-item" style="${service.hidden ? 'opacity:0.5;' : ''}">
                     <div class="service-item-header">
                         <div>
-                            <div class="service-item-title">${escapeHtml(service.name)}</div>
+                            <div class="service-item-title">${service.hidden ? '🙈 ' : ''}${escapeHtml(service.name)}</div>
                             <div class="service-item-subtitle">${escapeHtml(service.id)} · ${escapeHtml(service.proxyDomain)}</div>
                         </div>
-                        <div class="muted-text">${service.enableProxy ? '代理已启用' : '代理关闭'}</div>
+                        <div class="muted-text">${service.hidden ? '已隐藏' : (service.enableProxy ? '代理已启用' : '代理关闭')}</div>
                     </div>
                     <div class="service-item-meta">
                         <div>设备: ${escapeHtml(service.device)}</div>
@@ -1085,7 +1134,8 @@
                         <div>分组: ${escapeHtml(service.sunpanel?.group || '未设置')}</div>
                     </div>
                     <div class="service-actions">
-                        <button class="button button-small" type="button" onclick="editService('${escapeHtml(service.id)}')">编辑</button>
+                        <button class="button button-small" type="button" onclick="editService('${escapeHtml(service.id)}')">${service.hidden ? '取消隐藏' : '编辑'}</button>
+                        <button class="button button-small" type="button" onclick="toggleServiceHidden('${escapeHtml(service.id)}', ${!service.hidden})">${service.hidden ? '👁 显示' : '🙈 隐藏'}</button>
                         <button class="button button-small button-danger" type="button" onclick="deleteService('${escapeHtml(service.id)}')">删除</button>
                     </div>
                 </div>
@@ -1253,10 +1303,120 @@
             });
         }
 
+        async function runCFSync() {
+            await runAction({
+                buttonId: 'runCFSyncButton',
+                busyText: '同步中...',
+                startMessage: '正在执行 Cloudflare DNS 同步...',
+                url: `${API_BASE}/cloudflare/sync`,
+                actionName: 'Cloudflare同步'
+            });
+        }
+
+        async function toggleServiceHidden(id, hidden) {
+            try {
+                const service = serviceFormState.services.find(s => s.id === id);
+                if (!service) return;
+                await requestJson(`${API_BASE}/services/${encodeURIComponent(id)}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ ...service, hidden })
+                });
+                showMessage(`服务 ${id} 已${hidden ? '隐藏' : '显示'}`, 'success');
+                await loadServices(false);
+            } catch (error) {
+                showMessage('切换隐藏状态失败: ' + error.message, 'error');
+            }
+        }
+        // 收藏管理逻辑
+        let bookmarksData = [];
+
+        async function loadBookmarks(showToast = false) {
+            try {
+                bookmarksData = await requestJson(`${API_BASE}/bookmarks/list`);
+                renderBookmarks();
+                if (showToast) showMessage('收藏列表已刷新', 'success');
+            } catch (error) {
+                document.getElementById('bookmarkList').innerHTML = `<p>加载失败：${escapeHtml(error.message)}</p>`;
+            }
+        }
+
+        function renderBookmarks() {
+            const list = document.getElementById('bookmarkList');
+            if (!bookmarksData.length) {
+                list.innerHTML = '<p class="muted-text">暂无收藏内容，请在上方添加。</p>';
+                return;
+            }
+            list.innerHTML = bookmarksData.map(bm => `
+                <div class="service-item" style="padding:10px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <div>
+                            <strong>${escapeHtml(bm.name)}</strong> 
+                            <span class="muted-text" style="font-size:0.9em;">(${escapeHtml(bm.id)})</span>
+                            <div style="font-size:0.85em;color:#6b7280;margin-top:4px;">${escapeHtml(bm.url)}</div>
+                        </div>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <span class="tag">${escapeHtml(bm.group || '收藏')}</span>
+                            <button class="button button-small button-danger" type="button" onclick="deleteBookmark('${escapeHtml(bm.id)}')">删除</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function addBookmark() {
+            const id = document.getElementById('bmId').value.trim();
+            const name = document.getElementById('bmName').value.trim();
+            const url = document.getElementById('bmUrl').value.trim();
+            const group = document.getElementById('bmGroup').value.trim();
+
+            if (!id || !name || !url) {
+                return showMessage('ID、名称、URL均不能为空', 'error');
+            }
+
+            try {
+                await requestJson(`${API_BASE}/bookmarks/add`, {
+                    method: 'POST',
+                    body: JSON.stringify({ id, name, url, group })
+                });
+                document.getElementById('bmId').value = '';
+                document.getElementById('bmName').value = '';
+                document.getElementById('bmUrl').value = '';
+                showMessage(`收藏 ${name} 已添加`, 'success');
+                await loadBookmarks(false);
+            } catch (error) {
+                showMessage('添加收藏失败: ' + error.message, 'error');
+            }
+        }
+
+        async function deleteBookmark(id) {
+            if (!window.confirm(`确认删除收藏 ${id} 吗？`)) return;
+            try {
+                await requestJson(`${API_BASE}/bookmarks/${encodeURIComponent(id)}`, { method: 'DELETE' });
+                showMessage(`收藏 ${id} 已删除`, 'success');
+                await loadBookmarks(false);
+            } catch (error) {
+                showMessage('删除失败: ' + error.message, 'error');
+            }
+        }
+
+        async function syncBookmarks() {
+            setButtonBusy('syncBookmarksButton', true, '同步中...');
+            try {
+                const result = await requestJson(`${API_BASE}/bookmarks/sync`, { method: 'POST' });
+                showMessage(`收藏同步成功，共覆盖 ${result.synced} 条`, 'success');
+                await refreshStatus(); // 刷新顶部的 sunpanel 卡片数
+            } catch (error) {
+                showMessage('收藏同步失败: ' + error.message, 'error');
+            } finally {
+                setButtonBusy('syncBookmarksButton', false);
+            }
+        }
+
         window.addEventListener('load', () => {
             document.getElementById('serviceForm').addEventListener('submit', submitServiceForm);
             resetServiceForm();
             refreshStatus();
+            loadBookmarks(false);
             setInterval(() => refreshStatus(false), 30000);
         });
     </script>

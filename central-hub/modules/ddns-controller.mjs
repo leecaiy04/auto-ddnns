@@ -74,46 +74,72 @@ export class DDNSController {
       const bashCommand = resolveBashCommand();
       const execOptions = {
         cwd: PROJECT_ROOT,
-        env: process.env,
+        env: { ...process.env },
         maxBuffer: 10 * 1024 * 1024,
         windowsHide: true
       };
 
       const lanDevicesLines = buildLanDevicesCacheLines(this.stateManager);
-      let stdout = '';
-      let stderr = '';
 
-      if (lanDevicesLines.length > 0) {
-        const cachePath = path.resolve(PROJECT_ROOT, '.lan_devices.txt');
-        fs.writeFileSync(cachePath, `${lanDevicesLines.join('\n')}\n`, 'utf8');
+      // 收集需要更新的域名列表（主域名 + extraDomains）
+      const primaryDomain = process.env.ALIYUN_DOMAIN || process.env.DOMAIN || 'leecaiy.shop';
+      const domains = [primaryDomain];
 
-        const ddnsResult = await execFileAsync(
-          bashCommand,
-          [scriptPath, 'ddns'],
-          execOptions
-        );
-        const htmlResult = await execFileAsync(
-          bashCommand,
-          [scriptPath, 'html'],
-          execOptions
-        );
+      if (this.config.extraDomains && Array.isArray(this.config.extraDomains)) {
+        for (const extra of this.config.extraDomains) {
+          if (extra.domain && !domains.includes(extra.domain)) {
+            domains.push(extra.domain);
+          }
+        }
+      }
 
-        stdout = [ddnsResult.stdout, htmlResult.stdout].filter(Boolean).join('\n');
-        stderr = [ddnsResult.stderr, htmlResult.stderr].filter(Boolean).join('\n');
-      } else {
-        const fullResult = await execFileAsync(
-          bashCommand,
-          [scriptPath, 'all'],
-          execOptions
-        );
-        stdout = fullResult.stdout;
-        stderr = fullResult.stderr;
+      let allStdout = '';
+      let allStderr = '';
+
+      for (const domain of domains) {
+        console.log(`🌐 DDNS 更新域名: ${domain}`);
+        const domainEnv = { ...execOptions.env, DOMAIN: domain };
+        const domainExecOptions = { ...execOptions, env: domainEnv };
+
+        let stdout = '';
+        let stderr = '';
+
+        if (lanDevicesLines.length > 0) {
+          const cachePath = path.resolve(PROJECT_ROOT, '.lan_devices.txt');
+          fs.writeFileSync(cachePath, `${lanDevicesLines.join('\n')}\n`, 'utf8');
+
+          const ddnsResult = await execFileAsync(
+            bashCommand,
+            [scriptPath, 'ddns'],
+            domainExecOptions
+          );
+          const htmlResult = await execFileAsync(
+            bashCommand,
+            [scriptPath, 'html'],
+            domainExecOptions
+          );
+
+          stdout = [ddnsResult.stdout, htmlResult.stdout].filter(Boolean).join('\n');
+          stderr = [ddnsResult.stderr, htmlResult.stderr].filter(Boolean).join('\n');
+        } else {
+          const fullResult = await execFileAsync(
+            bashCommand,
+            [scriptPath, 'all'],
+            domainExecOptions
+          );
+          stdout = fullResult.stdout;
+          stderr = fullResult.stderr;
+        }
+
+        allStdout += `\n--- ${domain} ---\n${stdout}`;
+        allStderr += stderr;
       }
 
       const result = {
-        success: !stderr,
-        output: stdout,
-        error: stderr,
+        success: !allStderr,
+        output: allStdout,
+        error: allStderr,
+        domains,
         timestamp: new Date().toISOString()
       };
 
@@ -126,11 +152,12 @@ export class DDNSController {
       this.stateManager.addHistory('ddns', {
         event: 'update',
         success: result.success,
+        domains,
         output: result.output
       });
 
       if (result.success) {
-        console.log('✅ DDNS 更新成功');
+        console.log(`✅ DDNS 更新成功 (${domains.join(', ')})`);
       } else {
         console.warn('⚠️  DDNS 更新失败:', result.error);
       }

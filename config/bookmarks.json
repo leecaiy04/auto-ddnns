@@ -1,0 +1,20 @@
+{
+  "bookmarks": [
+    {
+      "id": "github",
+      "name": "GitHub",
+      "url": "https://github.com",
+      "icon": "https://github.com/favicon.ico",
+      "group": "开发工具",
+      "description": "代码托管平台"
+    },
+    {
+      "id": "cloudflare-dash",
+      "name": "Cloudflare Dashboard",
+      "url": "https://dash.cloudflare.com",
+      "icon": "https://dash.cloudflare.com/favicon.ico",
+      "group": "管理面板",
+      "description": "Cloudflare 管理面板"
+    }
+  ]
+}
