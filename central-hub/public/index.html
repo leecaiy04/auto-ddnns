@@ -118,8 +118,45 @@
             margin-top: 16px;
         }
 
+        .device-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .device-toolbar h2 {
+            margin-bottom: 0;
+        }
+
+        .toolbar-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .device-pills,
+        .proxy-pills {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .device-summary {
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
         .device-list {
             margin-top: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
         }
 
         .device-item {
@@ -134,15 +171,63 @@
             border-left-color: #ef4444;
         }
 
+        .device-item.is-priority {
+            background: #eef2ff;
+            border-color: #4f46e5;
+        }
+
+        .device-item.is-missing {
+            background: #fff7ed;
+            border-left-color: #f59e0b;
+        }
+
+        .device-item.is-missing .device-name {
+            color: #92400e;
+        }
+
         .device-name {
             font-weight: bold;
             color: #333;
             margin-bottom: 5px;
         }
 
+        .device-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .tag-priority {
+            background: #c7d2fe;
+            color: #3730a3;
+        }
+
+        .tag-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .tag-warning {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
         .device-info {
             font-size: 14px;
             color: #666;
+            line-height: 1.6;
+            word-break: break-all;
         }
 
         .actions {
@@ -273,17 +358,88 @@
         }
 
         .summary-pill {
-            background: #f3f4f6;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
             border-radius: 999px;
-            padding: 8px 14px;
+            background: #f3f4f6;
+            color: #4b5563;
             font-size: 13px;
-            color: #374151;
+            border: 1px solid #e5e7eb;
         }
 
-        .service-list {
+        .summary-pill strong {
+            color: #111827;
+        }
+
+        .proxy-explanation {
+            border: 1px solid #dbeafe;
+            background: #eff6ff;
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: #1e3a8a;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: 12px;
+        }
+
+        .proxy-explanation strong {
+            color: #1d4ed8;
+        }
+
+        .action-grid {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .button.is-busy {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.9;
+        }
+
+        .button-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .message-card {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: flex-start;
+            padding: 14px 16px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .message-card strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .message-card.error-message {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .message-card.success-message {
+            background: #ecfdf5;
+            color: #065f46;
+        }
+
+        .message-dismiss {
+            border: none;
+            background: transparent;
+            color: inherit;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            padding: 0;
         }
 
         .service-item {
@@ -424,21 +580,19 @@
 
             <div class="card">
                 <h2><span class="card-icon">🌐</span>反向代理</h2>
-                <div class="stat">
-                    <span class="stat-label">Lucky (50000)</span>
-                    <span class="stat-value" id="luckyProxies">-</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">NPM 实际代理</span>
-                    <span class="stat-value" id="npmProxies">-</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">NPM 已同步</span>
-                    <span class="stat-value" id="npmSynced">-</span>
+                <div class="proxy-pills">
+                    <span class="summary-pill">Lucky 实际代理: <strong id="luckyProxies">-</strong></span>
+                    <span class="summary-pill">NPM 实际代理: <strong id="npmProxies">-</strong></span>
+                    <span class="summary-pill">服务清单启用代理: <strong id="proxyServicesSummaryProxied">-</strong></span>
+                    <span class="summary-pill">NPM 已同步: <strong id="npmSynced">-</strong></span>
                 </div>
                 <div class="stat">
                     <span class="stat-label">NPM 鉴权</span>
                     <span class="stat-value" id="npmAuthMode">-</span>
+                </div>
+                <div class="proxy-explanation">
+                    <strong>口径说明</strong>
+                    Lucky 和 NPM 当前都以“服务清单中的启用代理服务”为同步源，并不是 NPM 直接从 Lucky 拉取。Lucky 实际代理数可能包含历史手工配置，所以它可能比 NPM 实际代理数更多。
                 </div>
             </div>
 
@@ -468,7 +622,23 @@
         </div>
 
         <div class="card section-card">
-            <h2><span class="card-icon">📱</span>设备列表</h2>
+            <div class="device-toolbar">
+                <div>
+                    <h2><span class="card-icon">📱</span>设备列表</h2>
+                    <p class="muted-text section-description">默认优先展示常看设备；展开后可查看全部扫描结果。</p>
+                </div>
+                <div class="toolbar-actions">
+                    <button class="button button-small" type="button" id="toggleDevicesButton" onclick="toggleDeviceList()">展开全部设备</button>
+                    <button class="button button-small" type="button" id="refreshDevicesButton" onclick="loadDeviceList(true)">刷新设备</button>
+                </div>
+            </div>
+            <div class="device-pills">
+                <span class="summary-pill">默认关注: <strong id="priorityDeviceCount">5</strong></span>
+                <span class="summary-pill">当前显示: <strong id="deviceVisibleCount">-</strong></span>
+                <span class="summary-pill">IPv6 就绪: <strong id="deviceVisibleIPv6Ready">-</strong></span>
+                <span class="summary-pill">全量设备: <strong id="deviceTotalPill">-</strong></span>
+            </div>
+            <div id="deviceSummary" class="device-summary">加载中...</div>
             <div id="deviceList" class="device-list">加载中...</div>
         </div>
 
@@ -556,12 +726,14 @@
 
         <div class="actions">
             <h2>🎮 操作</h2>
-            <button class="button" type="button" onclick="refreshStatus()">🔄 刷新状态</button>
-            <button class="button button-secondary" type="button" onclick="runFullSync()">⚡ 完整同步</button>
-            <button class="button" type="button" onclick="runDeviceMonitor()">📡 设备监控</button>
-            <button class="button" type="button" onclick="runLuckySync()">🎲 Lucky同步</button>
-            <button class="button" type="button" onclick="runNPMSync()">📋 NPM同步</button>
-            <button class="button" type="button" onclick="runSunpanelSync()">🌞 SunPanel同步</button>
+            <div class="action-grid">
+                <button class="button" id="refreshStatusButton" type="button" onclick="refreshStatus(true)">🔄 刷新状态</button>
+                <button class="button button-secondary" id="runFullSyncButton" type="button" onclick="runFullSync()">⚡ 完整同步</button>
+                <button class="button" id="runDeviceMonitorButton" type="button" onclick="runDeviceMonitor()">📡 设备监控</button>
+                <button class="button" id="runLuckySyncButton" type="button" onclick="runLuckySync()">🎲 Lucky同步</button>
+                <button class="button" id="runNPMSyncButton" type="button" onclick="runNPMSync()">📋 NPM同步</button>
+                <button class="button" id="runSunpanelSyncButton" type="button" onclick="runSunpanelSync()">🌞 SunPanel同步</button>
+            </div>
         </div>
 
         <div class="last-update">
@@ -571,6 +743,11 @@
 
     <script>
         const API_BASE = '/api';
+        const PRIORITY_DEVICE_IPS = ['192.168.3.2', '192.168.3.10', '192.168.3.200', '192.168.3.201', '192.168.3.254'];
+        const deviceListState = {
+            expanded: false,
+            devices: []
+        };
         const serviceFormState = {
             editingId: null,
             services: []
@@ -591,13 +768,28 @@
                 .replace(/'/g, '&#39;');
         }
 
+        function dismissMessage() {
+            document.getElementById('messageArea').innerHTML = '';
+        }
+
         function showMessage(message, type = 'info') {
             const messageArea = document.getElementById('messageArea');
-            const className = type === 'error' ? 'error-message' : 'success-message';
-            messageArea.innerHTML = `<div class="${className}">${message}</div>`;
-            setTimeout(() => {
-                messageArea.innerHTML = '';
-            }, 5000);
+            const isError = type === 'error';
+            const title = isError ? '操作失败' : (type === 'info' ? '处理中' : '操作完成');
+            const messageClass = isError ? 'error-message' : 'success-message';
+            messageArea.innerHTML = `
+                <div class="message-card ${messageClass}">
+                    <div>
+                        <strong>${title}</strong>
+                        <div>${escapeHtml(message)}</div>
+                    </div>
+                    <button class="message-dismiss" type="button" onclick="dismissMessage()" aria-label="关闭提示">×</button>
+                </div>
+            `;
+            window.clearTimeout(showMessage.timer);
+            showMessage.timer = window.setTimeout(() => {
+                dismissMessage();
+            }, isError ? 7000 : 5000);
         }
 
         function getActionMessage(actionName, result) {
@@ -629,7 +821,7 @@
         function setValidationResult(validation, fallbackMessage = '配置校验通过') {
             const area = document.getElementById('serviceValidationArea');
             if (validation.valid) {
-                area.innerHTML = `<div class="success-message">${fallbackMessage}</div>`;
+                area.innerHTML = `<div class="message-card success-message"><div><strong>校验通过</strong><div>${escapeHtml(fallbackMessage)}</div></div></div>`;
                 return;
             }
 
@@ -697,6 +889,96 @@
             clearValidationResult();
         }
 
+        function renderDeviceCard(device, { isPriority = false, isMissing = false } = {}) {
+            const tags = [];
+            if (isPriority) tags.push('<span class="tag tag-priority">默认关注</span>');
+            tags.push(device.ipv6 ? '<span class="tag tag-success">IPv6 就绪</span>' : '<span class="tag tag-warning">未发现 IPv6</span>');
+            if (device.mac) tags.push(`<span class="tag">MAC ${escapeHtml(device.mac)}</span>`);
+
+            return `
+                <div class="device-item ${!device.ipv6 ? 'no-ipv6' : ''} ${isPriority ? 'is-priority' : ''} ${isMissing ? 'is-missing' : ''}">
+                    <div class="device-tags">${tags.join('')}</div>
+                    <div class="device-name">${escapeHtml(device.ipv4 || '未知设备')}</div>
+                    <div class="device-info">
+                        IPv6: ${escapeHtml(device.ipv6 || '未找到')}<br>
+                        MAC: ${escapeHtml(device.mac || '未知')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderMissingPriorityDevice(ipv4) {
+            return renderDeviceCard({ ipv4, ipv6: '', mac: '' }, { isPriority: true, isMissing: true });
+        }
+
+        function updateDeviceToolbar(visibleDevices, totalDevices) {
+            const visibleIPv6Ready = visibleDevices.filter(device => device.ipv6).length;
+            document.getElementById('priorityDeviceCount').textContent = PRIORITY_DEVICE_IPS.length;
+            document.getElementById('deviceVisibleCount').textContent = visibleDevices.length;
+            document.getElementById('deviceVisibleIPv6Ready').textContent = visibleIPv6Ready;
+            document.getElementById('deviceTotalPill').textContent = totalDevices.length;
+
+            const toggleButton = document.getElementById('toggleDevicesButton');
+            toggleButton.textContent = deviceListState.expanded ? '收起为默认设备' : '展开全部设备';
+
+            const hiddenCount = Math.max(totalDevices.length - visibleDevices.length, 0);
+            document.getElementById('deviceSummary').textContent = deviceListState.expanded
+                ? `当前展示全部 ${totalDevices.length} 台设备。`
+                : `当前展示 ${visibleDevices.length} 台默认关注设备，另有 ${hiddenCount} 台设备已折叠。`;
+        }
+
+        function renderDeviceList() {
+            const deviceList = document.getElementById('deviceList');
+            const allDevices = [...deviceListState.devices].sort((a, b) => (a.ipv4 || '').localeCompare(b.ipv4 || '', 'zh-CN', { numeric: true }));
+
+            if (!allDevices.length) {
+                document.getElementById('deviceSummary').textContent = '暂无设备数据。';
+                updateDeviceToolbar([], []);
+                deviceList.innerHTML = '<p>暂无设备</p>';
+                return;
+            }
+
+            let visibleDevices;
+            if (deviceListState.expanded) {
+                visibleDevices = allDevices;
+            } else {
+                const priorityDevices = PRIORITY_DEVICE_IPS.map(ip => allDevices.find(device => device.ipv4 === ip)).filter(Boolean);
+                const missingPriorityDevices = PRIORITY_DEVICE_IPS.filter(ip => !priorityDevices.some(device => device.ipv4 === ip));
+                visibleDevices = [
+                    ...priorityDevices,
+                    ...missingPriorityDevices.map(ip => ({ ipv4: ip, ipv6: '', mac: '', __missing: true }))
+                ];
+            }
+
+            updateDeviceToolbar(visibleDevices, allDevices);
+            deviceList.innerHTML = visibleDevices.map(device => {
+                if (device.__missing) {
+                    return renderMissingPriorityDevice(device.ipv4);
+                }
+                return renderDeviceCard(device, { isPriority: PRIORITY_DEVICE_IPS.includes(device.ipv4) });
+            }).join('');
+        }
+
+        function toggleDeviceList() {
+            deviceListState.expanded = !deviceListState.expanded;
+            renderDeviceList();
+        }
+
+        function setButtonBusy(buttonId, busy, busyText = '处理中...') {
+            const button = document.getElementById(buttonId);
+            if (!button) return;
+
+            if (!button.dataset.defaultLabel) {
+                button.dataset.defaultLabel = button.innerHTML;
+            }
+
+            button.disabled = busy;
+            button.classList.toggle('is-busy', busy);
+            button.innerHTML = busy
+                ? `<span class="button-label">${escapeHtml(busyText)}<span class="loading"></span></span>`
+                : button.dataset.defaultLabel;
+        }
+
         async function requestJson(url, options = {}) {
             const response = await fetch(url, {
                 headers: {
@@ -717,7 +999,8 @@
             return data;
         }
 
-        async function refreshStatus() {
+        async function refreshStatus(showToast = false) {
+            setButtonBusy('refreshStatusButton', true, '刷新中...');
             try {
                 const data = await requestJson(`${API_BASE}/dashboard/overview`, { headers: {} });
 
@@ -733,46 +1016,49 @@
                 document.getElementById('deviceTotal').textContent = data.devices.total;
                 document.getElementById('deviceIPv6Ready').textContent = data.devices.ipv6Ready;
                 document.getElementById('deviceLastUpdate').textContent = formatTime(data.devices.lastUpdate);
-                document.getElementById('luckyProxies').textContent = data.proxies.lucky;
-                document.getElementById('npmProxies').textContent = data.proxies.npm;
+                document.getElementById('luckyProxies').textContent = data.proxies.luckyActual ?? data.proxies.lucky ?? 0;
+                document.getElementById('npmProxies').textContent = data.proxies.npmActual ?? data.proxies.npm ?? 0;
                 document.getElementById('npmSynced').textContent = data.proxies.npmSynced ?? 0;
                 document.getElementById('npmAuthMode').textContent = data.proxies.npmAuthMode || 'none';
                 document.getElementById('servicesSummaryTotal').textContent = data.services.total ?? 0;
                 document.getElementById('servicesSummaryProxied').textContent = data.services.proxied ?? 0;
+                document.getElementById('proxyServicesSummaryProxied').textContent = data.services.proxied ?? 0;
                 document.getElementById('sunpanelCards').textContent = data.sunpanel.cardsCount;
                 document.getElementById('sunpanelLastSync').textContent = formatTime(data.sunpanel.lastSync);
                 document.getElementById('ddnsStatus').textContent = data.ddns.enabled ? '启用' : '禁用';
                 document.getElementById('ddnsLastUpdate').textContent = formatTime(data.ddns.lastUpdate);
                 document.getElementById('pageLastUpdate').textContent = new Date().toLocaleString('zh-CN');
 
-                await Promise.all([loadDeviceList(), loadServices()]);
+                await Promise.all([loadDeviceList(false), loadServices(false)]);
+                if (showToast) {
+                    showMessage('状态已刷新', 'success');
+                }
             } catch (error) {
                 console.error('刷新状态失败:', error);
                 showMessage('刷新状态失败: ' + error.message, 'error');
+            } finally {
+                setButtonBusy('refreshStatusButton', false);
             }
         }
 
-        async function loadDeviceList() {
+        async function loadDeviceList(showToast = false) {
+            setButtonBusy('refreshDevicesButton', true, '刷新中...');
             try {
                 const devices = await requestJson(`${API_BASE}/devices/list`, { headers: {} });
-                const deviceList = document.getElementById('deviceList');
-
-                if (!devices.length) {
-                    deviceList.innerHTML = '<p>暂无设备</p>';
-                    return;
+                deviceListState.devices = Array.isArray(devices) ? devices : [];
+                renderDeviceList();
+                if (showToast) {
+                    showMessage('设备列表已刷新', 'success');
                 }
-
-                deviceList.innerHTML = devices.map(device => `
-                    <div class="device-item ${!device.ipv6 ? 'no-ipv6' : ''}">
-                        <div class="device-name">${escapeHtml(device.ipv4)} ${device.ipv6 ? '✅' : '❌'}</div>
-                        <div class="device-info">
-                            IPv6: ${escapeHtml(device.ipv6 || '未找到')}<br>
-                            MAC: ${escapeHtml(device.mac || '未知')}
-                        </div>
-                    </div>
-                `).join('');
             } catch (error) {
                 console.error('加载设备列表失败:', error);
+                document.getElementById('deviceSummary').textContent = '设备列表加载失败。';
+                document.getElementById('deviceList').innerHTML = `<p>加载失败：${escapeHtml(error.message)}</p>`;
+                if (showToast) {
+                    showMessage('加载设备列表失败: ' + error.message, 'error');
+                }
+            } finally {
+                setButtonBusy('refreshDevicesButton', false);
             }
         }
 
@@ -901,76 +1187,77 @@
             }
         }
 
-        async function runFullSync() {
+        async function runAction({ buttonId, busyText, startMessage, url, actionName }) {
+            setButtonBusy(buttonId, true, busyText);
             try {
-                showMessage('正在执行完整同步...', 'info');
-                const result = await requestJson(`${API_BASE}/sync/full`, { method: 'POST' });
-                const message = getActionMessage('完整同步', result);
+                showMessage(startMessage, 'success');
+                const result = await requestJson(url, { method: 'POST' });
+                const message = getActionMessage(actionName, result);
                 showMessage(message.text, message.type);
                 await refreshStatus();
             } catch (error) {
-                console.error('完整同步失败:', error);
-                showMessage('完整同步失败: ' + error.message, 'error');
+                console.error(`${actionName}失败:`, error);
+                showMessage(`${actionName}失败: ` + error.message, 'error');
+            } finally {
+                setButtonBusy(buttonId, false);
             }
+        }
+
+        async function runFullSync() {
+            await runAction({
+                buttonId: 'runFullSyncButton',
+                busyText: '同步中...',
+                startMessage: '正在执行完整同步...',
+                url: `${API_BASE}/sync/full`,
+                actionName: '完整同步'
+            });
         }
 
         async function runDeviceMonitor() {
-            try {
-                showMessage('正在执行设备监控...', 'info');
-                const result = await requestJson(`${API_BASE}/devices/refresh`, { method: 'POST' });
-                const message = getActionMessage('设备监控', result);
-                showMessage(message.text, message.type);
-                await refreshStatus();
-            } catch (error) {
-                console.error('设备监控失败:', error);
-                showMessage('设备监控失败: ' + error.message, 'error');
-            }
+            await runAction({
+                buttonId: 'runDeviceMonitorButton',
+                busyText: '执行中...',
+                startMessage: '正在执行设备监控...',
+                url: `${API_BASE}/devices/refresh`,
+                actionName: '设备监控'
+            });
         }
 
         async function runLuckySync() {
-            try {
-                showMessage('正在执行Lucky同步...', 'info');
-                const result = await requestJson(`${API_BASE}/proxies/sync`, { method: 'POST' });
-                const message = getActionMessage('Lucky同步', result);
-                showMessage(message.text, message.type);
-                await refreshStatus();
-            } catch (error) {
-                console.error('Lucky同步失败:', error);
-                showMessage('Lucky同步失败: ' + error.message, 'error');
-            }
+            await runAction({
+                buttonId: 'runLuckySyncButton',
+                busyText: '同步中...',
+                startMessage: '正在执行 Lucky 同步...',
+                url: `${API_BASE}/proxies/sync`,
+                actionName: 'Lucky同步'
+            });
         }
 
         async function runNPMSync() {
-            try {
-                showMessage('正在执行NPM同步...', 'info');
-                const result = await requestJson(`${API_BASE}/npm/sync`, { method: 'POST' });
-                const message = getActionMessage('NPM同步', result);
-                showMessage(message.text, message.type);
-                await refreshStatus();
-            } catch (error) {
-                console.error('NPM同步失败:', error);
-                showMessage('NPM同步失败: ' + error.message, 'error');
-            }
+            await runAction({
+                buttonId: 'runNPMSyncButton',
+                busyText: '同步中...',
+                startMessage: '正在执行 NPM 同步...',
+                url: `${API_BASE}/npm/sync`,
+                actionName: 'NPM同步'
+            });
         }
 
         async function runSunpanelSync() {
-            try {
-                showMessage('正在执行SunPanel同步...', 'info');
-                const result = await requestJson(`${API_BASE}/sunpanel/sync`, { method: 'POST' });
-                const message = getActionMessage('SunPanel同步', result);
-                showMessage(message.text, message.type);
-                await refreshStatus();
-            } catch (error) {
-                console.error('SunPanel同步失败:', error);
-                showMessage('SunPanel同步失败: ' + error.message, 'error');
-            }
+            await runAction({
+                buttonId: 'runSunpanelSyncButton',
+                busyText: '同步中...',
+                startMessage: '正在执行 SunPanel 同步...',
+                url: `${API_BASE}/sunpanel/sync`,
+                actionName: 'SunPanel同步'
+            });
         }
 
         window.addEventListener('load', () => {
             document.getElementById('serviceForm').addEventListener('submit', submitServiceForm);
             resetServiceForm();
             refreshStatus();
-            setInterval(refreshStatus, 30000);
+            setInterval(() => refreshStatus(false), 30000);
         });
     </script>
 </body>

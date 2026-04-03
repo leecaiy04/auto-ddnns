@@ -1,5 +1,5 @@
 {
-  "claude.allowShellCommands": true,
+  "skipDangerousModePermissionPrompt": true,
   "permissions": {
     "allow": [
       "Bash(node \"C:/Users/Administrator/.claude/skills/web-access/scripts/check-deps.mjs\")",
