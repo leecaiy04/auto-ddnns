@@ -3,1422 +3,756 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Central Hub - 局域网部署自动化</title>
+    <title>Auto-DNNS Central Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 20px;
+            overflow-x: hidden;
         }
 
+        /* Dynamic Background */
+        .bg-shapes {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            overflow: hidden;
+            z-index: -1;
+            background: linear-gradient(125deg, #0f172a, #1a1025);
+        }
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 20s infinite ease-in-out alternate;
+        }
+        .shape-1 { background: #3b82f6; width: 400px; height: 400px; top: -10%; left: -10%; animation-delay: 0s; }
+        .shape-2 { background: #8b5cf6; width: 500px; height: 500px; bottom: -10%; right: -10%; animation-delay: -5s; }
+        .shape-3 { background: #06b6d4; width: 300px; height: 300px; top: 40%; left: 60%; animation-delay: -10s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 50px) scale(1.1); }
+        }
+
+        /* Layout */
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        /* Glass Panel */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glass-panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
         }
 
         .header {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
         }
-
         .header h1 {
-            color: #333;
-            margin-bottom: 10px;
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .header p {
-            color: #666;
-        }
+        /* Typography & Utilities */
+        h2 { font-size: 18px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .text-sm { font-size: 13px; }
+        .text-muted { color: var(--text-secondary); }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: 8px; }
+        .gap-4 { gap: 16px; }
+        .mt-4 { margin-top: 16px; }
+        .mb-4 { margin-bottom: 16px; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
 
-        .status-badge {
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
+        /* Buttons */
+        .btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
             font-size: 14px;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-
-        .status-running {
-            background: #10b981;
-            color: white;
-        }
-
-        .status-stopped {
-            background: #ef4444;
-            color: white;
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .card h2 {
-            color: #333;
-            margin-bottom: 15px;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .card-icon {
-            font-size: 24px;
-        }
-
-        .stat {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .stat:last-child {
-            border-bottom: none;
-        }
-
-        .stat-label {
-            color: #666;
-        }
-
-        .stat-value {
-            font-weight: bold;
-            color: #333;
-        }
-
-        .section-card {
-            margin-bottom: 20px;
-        }
-
-        .section-description {
-            margin-bottom: 15px;
-        }
-
-        .service-form-actions {
-            margin-top: 16px;
-        }
-
-        .device-toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-
-        .device-toolbar h2 {
-            margin-bottom: 0;
-        }
-
-        .toolbar-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .device-pills,
-        .proxy-pills {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-
-        .device-summary {
-            color: #6b7280;
-            font-size: 13px;
-            margin-bottom: 12px;
-        }
-
-        .device-list {
-            margin-top: 15px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 12px;
-        }
-
-        .device-item {
-            background: #f9fafb;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            border-left: 3px solid #10b981;
-        }
-
-        .device-item.no-ipv6 {
-            border-left-color: #ef4444;
-        }
-
-        .device-item.is-priority {
-            background: #eef2ff;
-            border-color: #4f46e5;
-        }
-
-        .device-item.is-missing {
-            background: #fff7ed;
-            border-left-color: #f59e0b;
-        }
-
-        .device-item.is-missing .device-name {
-            color: #92400e;
-        }
-
-        .device-name {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .device-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 8px;
-        }
-
-        .tag {
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn:hover:not(:disabled) { background: rgba(255,255,255,0.2); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary { background: var(--accent-color); border-color: var(--accent-color); }
+        .btn-primary:hover:not(:disabled) { background: var(--accent-hover); box-shadow: 0 0 15px rgba(99, 102, 241, 0.4); }
+        .btn-success { background: var(--success); border-color: var(--success); }
+        .btn-success:hover:not(:disabled) { filter: brightness(1.1); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+        .btn-danger { background: var(--danger); border-color: var(--danger); }
+        .btn-danger:hover:not(:disabled) { filter: brightness(1.1); box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+        .btn-sm { padding: 4px 10px; font-size: 12px; }
+
+        /* Status & Badges */
+        .badge {
             padding: 4px 10px;
-            border-radius: 999px;
+            border-radius: 9999px;
             font-size: 12px;
-            background: #e5e7eb;
-            color: #374151;
+            font-weight: 500;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--glass-border);
         }
+        .badge.success { color: #34d399; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); }
+        .badge.warning { color: #fbbf24; background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); }
+        .badge.danger { color: #f87171; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); }
 
-        .tag-priority {
-            background: #c7d2fe;
-            color: #3730a3;
-        }
-
-        .tag-success {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .tag-warning {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .device-info {
-            font-size: 14px;
-            color: #666;
-            line-height: 1.6;
-            word-break: break-all;
-        }
-
-        .actions {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .actions h2 {
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .button {
-            background: #667eea;
+        /* Forms */
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
+        .form-control {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
             color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
+            padding: 10px 14px;
+            border-radius: 8px;
             font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            transition: background 0.3s;
+            transition: all 0.2s ease;
+            font-family: inherit;
         }
+        .form-control:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2); }
 
-        .button:hover {
-            background: #5568d3;
+        /* Tables & Lists */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
         }
-
-        .button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
+        .data-table th {
+            text-align: left;
+            padding: 10px 16px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-
-        .button-secondary {
-            background: #10b981;
+        .data-table td {
+            background: rgba(255,255,255,0.03);
+            padding: 12px 16px;
+            font-size: 14px;
         }
+        .data-table td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+        .data-table td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
 
-        .button-secondary:hover {
-            background: #059669;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 14px;
-            height: 14px;
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-left: 5px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .services-layout {
-            display: grid;
-            grid-template-columns: minmax(320px, 380px) minmax(0, 1fr);
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-        }
-
-        .form-field {
+        /* Device & Scan Cards */
+        .device-card {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-        }
-
-        .form-field.full-width {
-            grid-column: 1 / -1;
-        }
-
-        .form-field label {
-            color: #555;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .form-field input,
-        .form-field select,
-        .form-field textarea {
-            width: 100%;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            padding: 10px 12px;
-            font: inherit;
-            background: white;
-        }
-
-        .form-field textarea {
-            min-height: 88px;
-            resize: vertical;
-        }
-
-        .checkbox-field {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding-top: 26px;
-        }
-
-        .services-toolbar {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .services-summary {
-            display: flex;
             gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
         }
-
-        .summary-pill {
+        
+        .port-tag {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 8px 12px;
-            border-radius: 999px;
-            background: #f3f4f6;
-            color: #4b5563;
+            justify-content: space-between;
+            padding: 6px 12px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 6px;
+            font-family: monospace;
             font-size: 13px;
-            border: 1px solid #e5e7eb;
+        }
+        .port-tag.registered {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #34d399;
         }
 
-        .summary-pill strong {
-            color: #111827;
-        }
-
-        .proxy-explanation {
-            border: 1px solid #dbeafe;
-            background: #eff6ff;
-            border-radius: 10px;
-            padding: 14px 16px;
-            color: #1e3a8a;
-            font-size: 13px;
-            line-height: 1.6;
-            margin-top: 12px;
-        }
-
-        .proxy-explanation strong {
-            color: #1d4ed8;
-        }
-
-        .action-grid {
+        /* Modals */
+        .modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .button.is-busy {
-            position: relative;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
             pointer-events: none;
-            opacity: 0.9;
+            transition: opacity 0.3s ease;
         }
-
-        .button-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+        .modal-backdrop.show { opacity: 1; pointer-events:all; }
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+            padding: 24px;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
         }
+        .modal-backdrop.show .modal { transform: translateY(0); }
 
-        .message-card {
-            display: flex;
-            justify-content: space-between;
-            gap: 16px;
-            align-items: flex-start;
-            padding: 14px 16px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-        }
-
-        .message-card strong {
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .message-card.error-message {
-            background: #fef2f2;
-            color: #991b1b;
-        }
-
-        .message-card.success-message {
-            background: #ecfdf5;
-            color: #065f46;
-        }
-
-        .message-dismiss {
-            border: none;
-            background: transparent;
-            color: inherit;
-            cursor: pointer;
-            font-size: 16px;
-            line-height: 1;
-            padding: 0;
-        }
-
-        .service-item {
-            border: 1px solid #e5e7eb;
+        /* Timeline (Changelog) */
+        .timeline { margin-top: 10px; padding-left: 10px; }
+        .timeline-item { position: relative; padding-bottom: 20px; padding-left: 20px; border-left: 2px solid rgba(255,255,255,0.1); }
+        .timeline-item:last-child { border-left: 2px solid transparent; }
+        .timeline-dot { position: absolute; left: -6px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent-color); }
+        .timeline-time { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+        .timeline-content { font-size: 14px; }
+        
+        /* Loading Spinner */
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
+        
+        /* Toast Notifications */
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
+        .toast {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 12px 20px;
             border-radius: 8px;
-            padding: 14px;
-            background: #f9fafb;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
-        .service-item-header {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            align-items: flex-start;
-            margin-bottom: 10px;
-        }
-
-        .service-item-title {
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 4px;
-        }
-
-        .service-item-subtitle {
-            font-size: 13px;
-            color: #6b7280;
-            word-break: break-all;
-        }
-
-        .service-item-meta {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-            gap: 8px;
-            font-size: 13px;
-            color: #4b5563;
-            margin-bottom: 12px;
-        }
-
-        .service-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .button-danger {
-            background: #ef4444;
-        }
-
-        .button-danger:hover {
-            background: #dc2626;
-        }
-
-        .button-small {
-            padding: 8px 14px;
-            font-size: 13px;
-        }
-
-        .muted-text {
-            color: #6b7280;
-            font-size: 13px;
-        }
-
-        .validation-errors {
-            margin-top: 12px;
-            padding: 12px 14px;
-            border-radius: 6px;
-            background: #fff7ed;
-            color: #9a3412;
-            font-size: 13px;
-        }
-
-        .validation-errors ul {
-            margin: 8px 0 0 18px;
-        }
-
-        .last-update {
-            text-align: center;
-            color: #666;
-            font-size: 14px;
-            margin-top: 20px;
-        }
-
-        @media (max-width: 960px) {
-            .services-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .error-message {
-            background: #fee;
-            color: #c33;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-        }
-
-        .success-message {
-            background: #efe;
-            color: #3c3;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-        }
+        .toast.show { transform: translateX(0); }
+        .toast.success { border-left: 4px solid var(--success); }
+        .toast.error { border-left: 4px solid var(--danger); }
     </style>
 </head>
 <body>
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <div id="toast-container"></div>
+
     <div class="container">
-        <div class="header">
-            <h1>
-                🚀 Central Hub
-                <span class="status-badge" id="coordinatorStatus">加载中...</span>
-            </h1>
-            <p>局域网对外部署自动化管理平台</p>
-        </div>
-
-        <div id="messageArea"></div>
-
-        <div class="dashboard">
-            <div class="card">
-                <h2><span class="card-icon">📡</span>设备监控</h2>
-                <div class="stat">
-                    <span class="stat-label">设备总数</span>
-                    <span class="stat-value" id="deviceTotal">-</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">IPv6就绪</span>
-                    <span class="stat-value" id="deviceIPv6Ready">-</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">最后更新</span>
-                    <span class="stat-value" id="deviceLastUpdate">-</span>
-                </div>
+        <!-- Header -->
+        <header class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 30px;">
+            <div>
+                <h1>⚡ Auto-DNNS</h1>
+                <p class="text-sm text-muted mt-2">下一代基础设施自动化控制枢纽</p>
             </div>
-
-            <div class="card">
-                <h2><span class="card-icon">🌐</span>反向代理</h2>
-                <div class="proxy-pills">
-                    <span class="summary-pill">Lucky 实际代理: <strong id="luckyProxies">-</strong></span>
-                    <span class="summary-pill">NPM 实际代理: <strong id="npmProxies">-</strong></span>
-                    <span class="summary-pill">服务清单启用代理: <strong id="proxyServicesSummaryProxied">-</strong></span>
-                    <span class="summary-pill">NPM 已同步: <strong id="npmSynced">-</strong></span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">NPM 鉴权</span>
-                    <span class="stat-value" id="npmAuthMode">-</span>
-                </div>
-                <div class="proxy-explanation">
-                    <strong>口径说明</strong>
-                    Lucky 和 NPM 当前都以“服务清单中的启用代理服务”为同步源，并不是 NPM 直接从 Lucky 拉取。Lucky 实际代理数可能包含历史手工配置，所以它可能比 NPM 实际代理数更多。
-                </div>
+            <div class="flex gap-2">
+                <button class="btn btn-primary" onclick="apiCall('/api/sync/full', 'POST', '完整同步')">🚀 完整同步</button>
+                <button class="btn btn-danger" onclick="purgeRemote()">☢️ 清空远端数据库</button>
             </div>
+        </header>
 
-            <div class="card">
-                <h2><span class="card-icon">🌞</span>SunPanel <a href="http://192.168.3.200:20001" target="_blank" style="font-size:13px;color:#667eea;text-decoration:none;margin-left:8px;">↗ 打开面板</a></h2>
-                <div class="stat">
-                    <span class="stat-label">卡片数量</span>
-                    <span class="stat-value" id="sunpanelCards">-</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">最后同步</span>
-                    <span class="stat-value" id="sunpanelLastSync">-</span>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2><span class="card-icon">🌍</span>DDNS</h2>
-                <div class="stat">
-                    <span class="stat-label">状态</span>
-                    <span class="stat-value" id="ddnsStatus">-</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">最后更新</span>
-                    <span class="stat-value" id="ddnsLastUpdate">-</span>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2><span class="card-icon">☁️</span>Cloudflare</h2>
-                <div class="stat">
-                    <span class="stat-label">状态</span>
-                    <span class="stat-value" id="cfStatus">-</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">域名</span>
-                    <span class="stat-value" id="cfDomain">-</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">DNS 记录数</span>
-                    <span class="stat-value" id="cfRecordCount">-</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">最后同步</span>
-                    <span class="stat-value" id="cfLastSync">-</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="card section-card">
-            <div class="device-toolbar">
-                <div>
-                    <h2><span class="card-icon">📱</span>设备列表</h2>
-                    <p class="muted-text section-description">默认优先展示常看设备；展开后可查看全部扫描结果。</p>
-                </div>
-                <div class="toolbar-actions">
-                    <button class="button button-small" type="button" id="toggleDevicesButton" onclick="toggleDeviceList()">展开全部设备</button>
-                    <button class="button button-small" type="button" id="refreshDevicesButton" onclick="loadDeviceList(true)">刷新设备</button>
-                </div>
-            </div>
-            <div class="device-pills">
-                <span class="summary-pill">默认关注: <strong id="priorityDeviceCount">5</strong></span>
-                <span class="summary-pill">当前显示: <strong id="deviceVisibleCount">-</strong></span>
-                <span class="summary-pill">IPv6 就绪: <strong id="deviceVisibleIPv6Ready">-</strong></span>
-                <span class="summary-pill">全量设备: <strong id="deviceTotalPill">-</strong></span>
-            </div>
-            <div id="deviceSummary" class="device-summary">加载中...</div>
-            <div id="deviceList" class="device-list">加载中...</div>
-        </div>
-
-        <div class="services-layout">
-            <div class="card">
-                <h2><span class="card-icon">🛠️</span>服务管理</h2>
-                <p class="muted-text section-description">统一维护 Lucky / NPM / SunPanel 的服务源数据。</p>
-                <form id="serviceForm">
-                    <div class="form-grid">
-                        <div class="form-field">
-                            <label for="serviceId">服务 ID</label>
-                            <input id="serviceId" name="id" placeholder="例如 nas200-web" required>
-                        </div>
-                        <div class="form-field">
-                            <label for="serviceName">服务名称</label>
-                            <input id="serviceName" name="name" placeholder="例如 飞牛OS Web界面" required>
-                        </div>
-                        <div class="form-field">
-                            <label for="serviceDevice">设备 ID</label>
-                            <input id="serviceDevice" name="device" placeholder="例如 200" required>
-                        </div>
-                        <div class="form-field">
-                            <label for="servicePort">内部端口</label>
-                            <input id="servicePort" name="internalPort" type="number" min="1" max="65535" placeholder="443" required>
-                        </div>
-                        <div class="form-field full-width">
-                            <label for="serviceDomain">代理域名</label>
-                            <input id="serviceDomain" name="proxyDomain" placeholder="例如 nas200.leecaiy.shop" required>
-                        </div>
-                        <div class="form-field">
-                            <label for="serviceProxyType">代理类型</label>
-                            <input id="serviceProxyType" name="proxyType" value="reverseproxy">
-                        </div>
-                        <div class="form-field">
-                            <label for="serviceLuckyRemark">Lucky 备注</label>
-                            <input id="serviceLuckyRemark" name="luckyRemark" placeholder="默认跟随服务名称">
-                        </div>
-                        <div class="form-field">
-                            <label for="serviceSunpanelGroup">SunPanel 分组</label>
-                            <input id="serviceSunpanelGroup" name="sunpanelGroup" placeholder="例如 NAS">
-                        </div>
-                        <div class="form-field full-width">
-                            <label for="serviceDescription">描述</label>
-                            <textarea id="serviceDescription" name="description" placeholder="服务描述"></textarea>
-                        </div>
-                        <div class="form-field full-width">
-                            <label for="serviceSunpanelIcon">SunPanel 图标</label>
-                            <input id="serviceSunpanelIcon" name="sunpanelIcon" placeholder="例如 https://nas200.leecaiy.shop/favicon.ico">
-                        </div>
-                        <div class="form-field full-width">
-                            <label for="serviceSunpanelLanUrl">SunPanel 局域网地址</label>
-                            <input id="serviceSunpanelLanUrl" name="sunpanelLanUrl" placeholder="例如 https://192.168.3.200:443">
-                        </div>
-                        <div class="checkbox-field">
-                            <input id="serviceEnableProxy" name="enableProxy" type="checkbox" checked>
-                            <label for="serviceEnableProxy">启用代理</label>
-                        </div>
-                        <div class="checkbox-field">
-                            <input id="serviceEnableTLS" name="enableTLS" type="checkbox">
-                            <label for="serviceEnableTLS">启用 TLS</label>
-                        </div>
+        <!-- Stats Overview & Global Config -->
+        <div class="grid-2">
+            <!-- Systems Status -->
+            <div class="glass-panel">
+                <h2>📊 系统状态</h2>
+                <div class="flex flex-col gap-4 mt-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-muted">路由 DDNS</span>
+                        <span class="badge success" id="status-ddns">检测中</span>
                     </div>
-                    <div class="service-actions service-form-actions">
-                        <button class="button button-secondary" type="submit" id="serviceSubmitButton">新增服务</button>
-                        <button class="button" type="button" onclick="validateCurrentService()">校验配置</button>
-                        <button class="button" type="button" onclick="resetServiceForm()">重置表单</button>
+                    <div class="flex justify-between items-center">
+                        <span class="text-muted">Lucky 反代</span>
+                        <span class="badge success" id="status-lucky">检测中</span>
                     </div>
-                    <div id="serviceValidationArea"></div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-muted">Nginx Proxy Manager</span>
+                        <span class="badge success" id="status-npm">检测中</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-muted">SunPanel 面板</span>
+                        <span class="badge success" id="status-sunpanel">检测中</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global Proxy Configs -->
+            <div class="glass-panel">
+                <div class="flex justify-between items-center mb-4">
+                    <h2>⚙️ 全局反代参数 (proxy-defaults)</h2>
+                    <button class="btn btn-sm" onclick="fetchProxyDefaults()">刷新</button>
+                </div>
+                <form id="proxyDefaultsForm" class="grid-2" style="gap: 10px;" onsubmit="saveProxyDefaults(event)">
+                    <div>
+                        <label class="form-label">协议</label>
+                        <input class="form-control" id="pd-protocol" value="https">
+                    </div>
+                    <div>
+                        <label class="form-label">管理域名 (多域名逗号分隔)</label>
+                        <input class="form-control" id="pd-domains" placeholder="leecaiy.shop, 222869.xyz">
+                    </div>
+                    <div>
+                        <label class="form-label">Lucky 暴露端口</label>
+                        <input class="form-control" id="pd-port-lucky" type="number" value="50000">
+                    </div>
+                    <div>
+                        <label class="form-label">NPM 暴露端口</label>
+                        <input class="form-control" id="pd-port-npm" type="number" value="50001">
+                    </div>
+                    <div style="grid-column: 1 / -1; display:flex; justify-content:flex-end;">
+                        <button type="submit" class="btn btn-primary btn-sm">保存设置</button>
+                    </div>
                 </form>
             </div>
+        </div>
 
-            <div class="card">
-                <div class="services-toolbar">
-                    <h2><span class="card-icon">📦</span>服务清单</h2>
-                    <button class="button" type="button" onclick="loadServices(true)">刷新服务</button>
+        <!-- Radar & Key Machines -->
+        <div class="glass-panel">
+            <div class="flex justify-between items-center mb-4">
+                <h2>📡 智能端口雷达 & 关键机器</h2>
+                <div class="flex gap-2">
+                    <button class="btn" onclick="fetchKeyMachines()">刷新设备</button>
+                    <button class="btn btn-primary" onclick="scanAllKeyMachines()">全网深层端口扫描</button>
                 </div>
-                <div class="services-summary">
-                    <span class="summary-pill">总服务: <strong id="servicesSummaryTotal">-</strong></span>
-                    <span class="summary-pill">启用代理: <strong id="servicesSummaryProxied">-</strong></span>
-                    <span class="summary-pill">最后更新: <strong id="servicesSummaryUpdated">-</strong></span>
-                </div>
-                <div id="serviceList" class="service-list">加载中...</div>
+            </div>
+            <p class="text-sm text-muted mb-4">自动探索基础设施，快速将本地应用加入白名单代理网络。</p>
+            
+            <div id="keyMachinesArea" class="grid-3">
+                <!-- Data injected via JS -->
+                <div class="text-muted text-sm">加载中...</div>
             </div>
         </div>
 
-        <div class="card section-card">
-            <div class="services-toolbar">
-                <h2><span class="card-icon">⭐</span>收藏管理</h2>
-                <div>
-                    <button class="button button-small" type="button" onclick="loadBookmarks(true)">刷新</button>
-                    <button class="button button-small button-secondary" type="button" id="syncBookmarksButton" onclick="syncBookmarks()">同步到 SunPanel</button>
+        <!-- Services Whitelist -->
+        <div class="glass-panel">
+            <div class="flex justify-between items-center mb-4">
+                <h2>🛡️ 服务白名单网络</h2>
+                <div class="flex gap-2">
+                    <button class="btn" onclick="checkConnectivity()">⚡ 连通性测速</button>
+                    <button class="btn btn-primary" onclick="openAddServiceModal()">+ 手动添加服务</button>
                 </div>
             </div>
-            <p class="muted-text section-description">收藏外部页面，可同步到 SunPanel 统一展示。</p>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
-                <input id="bmId" placeholder="ID（英文）" style="flex:1;min-width:80px;padding:8px;border:1px solid #d1d5db;border-radius:6px;">
-                <input id="bmName" placeholder="名称" style="flex:1;min-width:80px;padding:8px;border:1px solid #d1d5db;border-radius:6px;">
-                <input id="bmUrl" placeholder="URL" style="flex:2;min-width:120px;padding:8px;border:1px solid #d1d5db;border-radius:6px;">
-                <input id="bmGroup" placeholder="分组" value="收藏" style="flex:1;min-width:60px;padding:8px;border:1px solid #d1d5db;border-radius:6px;">
-                <button class="button button-small button-secondary" type="button" onclick="addBookmark()">添加</button>
-            </div>
-            <div id="bookmarkList">加载中...</div>
-        </div>
-
-        <div class="actions">
-            <h2>🎮 操作</h2>
-            <div class="action-grid">
-                <button class="button" id="refreshStatusButton" type="button" onclick="refreshStatus(true)">🔄 刷新状态</button>
-                <button class="button button-secondary" id="runFullSyncButton" type="button" onclick="runFullSync()">⚡ 完整同步</button>
-                <button class="button" id="runDeviceMonitorButton" type="button" onclick="runDeviceMonitor()">📡 设备监控</button>
-                <button class="button" id="runLuckySyncButton" type="button" onclick="runLuckySync()">🎲 Lucky同步</button>
-                <button class="button" id="runNPMSyncButton" type="button" onclick="runNPMSync()">📋 NPM同步</button>
-                <button class="button" id="runSunpanelSyncButton" type="button" onclick="runSunpanelSync()">🌞 SunPanel同步</button>
-                <button class="button" id="runCFSyncButton" type="button" onclick="runCFSync()">☁️ Cloudflare同步</button>
+            
+            <div style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>状态</th>
+                            <th>服务ID</th>
+                            <th>设备:端口</th>
+                            <th>IPv4 域名映射 (外网)</th>
+                            <th>IPv6 直连通道 (直连)</th>
+                            <th>测速延时</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="servicesTableBody">
+                        <!-- Data injected via JS -->
+                        <tr><td colspan="7" class="text-muted text-sm" style="text-align:center;">加载中...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <div class="last-update">
-            页面最后更新: <span id="pageLastUpdate">-</span>
+        <!-- Externals & Changelog -->
+        <div class="grid-2">
+            <!-- Bookmarks -->
+            <div class="glass-panel">
+                <div class="flex justify-between items-center mb-4">
+                    <h2>⭐ 外部书签同步</h2>
+                    <button class="btn btn-sm" onclick="apiCall('/api/bookmarks/sync', 'POST', '书签同步')">同步到面板</button>
+                </div>
+                <form id="addBookmarkForm" class="flex gap-2 mb-4" onsubmit="addBookmark(event)">
+                    <input class="form-control" id="bm-title" placeholder="名称" required style="width:30%">
+                    <input class="form-control" id="bm-url" placeholder="URL" required>
+                    <button type="submit" class="btn btn-success">+</button>
+                </form>
+                <div id="bookmarksList" class="flex flex-col gap-2"></div>
+            </div>
+
+            <!-- Changelog -->
+            <div class="glass-panel">
+                <div class="flex justify-between items-center mb-4">
+                    <h2>📜 配置变更审计 (Changelog)</h2>
+                    <button class="btn btn-sm" onclick="fetchChangelog()">刷新</button>
+                </div>
+                <div class="timeline" id="changelogList" style="max-height: 300px; overflow-y: auto;">
+                    <!-- Data injected via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Quick Add Modal -->
+    <div class="modal-backdrop" id="quickAddModal">
+        <div class="modal">
+            <h2 class="mb-4">✨ 快速注册白名单服务</h2>
+            <form onsubmit="submitQuickAdd(event)">
+                <input type="hidden" id="qa-deviceId">
+                <input type="hidden" id="qa-port">
+                
+                <div class="form-group">
+                    <label class="form-label">机器与端口</label>
+                    <div class="form-control" id="qa-target-display" style="opacity:0.7"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">服务标识 (英文ID, 生成域名前缀)</label>
+                    <input class="form-control" id="qa-id" placeholder="如: nas-web" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">服务展示名称</label>
+                    <input class="form-control" id="qa-name" placeholder="如: 群晖控制台" required>
+                </div>
+                
+                <div class="flex justify-between mt-4">
+                    <button type="button" class="btn" onclick="closeModal('quickAddModal')">取消</button>
+                    <button type="submit" class="btn btn-primary">一键注册并加入代理</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <script>
-        const API_BASE = '/api';
-        const PRIORITY_DEVICE_IPS = ['192.168.3.2', '192.168.3.10', '192.168.3.200', '192.168.3.201', '192.168.3.254'];
-        const deviceListState = {
-            expanded: false,
-            devices: []
-        };
-        const serviceFormState = {
-            editingId: null,
-            services: []
-        };
-
-        function formatTime(isoString) {
-            if (!isoString) return '-';
-            const date = new Date(isoString);
-            return date.toLocaleString('zh-CN');
+        // Utilities
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<div class="flex items-center gap-2">
+                <span>${type === 'success' ? '✅' : '❌'}</span>
+                <span>${message}</span>
+            </div>`;
+            document.getElementById('toast-container').appendChild(toast);
+            
+            // Trigger reflow
+            toast.offsetHeight;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
         }
 
-        function escapeHtml(value) {
-            return String(value ?? '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
-
-        function dismissMessage() {
-            document.getElementById('messageArea').innerHTML = '';
-        }
-
-        function showMessage(message, type = 'info') {
-            const messageArea = document.getElementById('messageArea');
-            const isError = type === 'error';
-            const title = isError ? '操作失败' : (type === 'info' ? '处理中' : '操作完成');
-            const messageClass = isError ? 'error-message' : 'success-message';
-            messageArea.innerHTML = `
-                <div class="message-card ${messageClass}">
-                    <div>
-                        <strong>${title}</strong>
-                        <div>${escapeHtml(message)}</div>
-                    </div>
-                    <button class="message-dismiss" type="button" onclick="dismissMessage()" aria-label="关闭提示">×</button>
-                </div>
-            `;
-            window.clearTimeout(showMessage.timer);
-            showMessage.timer = window.setTimeout(() => {
-                dismissMessage();
-            }, isError ? 7000 : 5000);
-        }
-
-        function getActionMessage(actionName, result) {
-            const payload = result?.result || result || {};
-            const failed = Array.isArray(payload.failedSteps) ? payload.failedSteps.length : 0;
-            const hasPartialFailure = failed > 0 || payload.success === false || ((typeof payload.failed === 'number') && payload.failed > 0);
-
-            if (hasPartialFailure) {
-                if (failed > 0) {
-                    return {
-                        type: 'error',
-                        text: `${actionName}完成，但有失败步骤：${payload.failedSteps.join('、')}`
-                    };
+        async function apiCall(endpoint, method = 'GET', actionName = '', body = null) {
+            try {
+                const options = { method, headers: { 'Content-Type': 'application/json' } };
+                if (body) options.body = JSON.stringify(body);
+                
+                const res = await fetch(endpoint, options);
+                let data = {};
+                try { data = await res.json(); } catch(e){}
+                
+                if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+                
+                if (['POST', 'PUT', 'DELETE'].includes(method) && actionName) {
+                    showToast(`${actionName} 成功`);
+                    refreshAll();
                 }
+                return data;
+            } catch (err) {
+                console.error(err);
+                if (actionName) showToast(`${actionName} 失败: ${err.message}`, 'error');
+                throw err;
+            }
+        }
 
-                return {
-                    type: 'error',
-                    text: `${actionName}未完全成功`
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+        function openModal(id) { document.getElementById(id).classList.add('show'); }
+
+        // Data Fetching
+        async function fetchSystemStatus() {
+            try {
+                const data = await apiCall('/api/dashboard/overview');
+                const updateStatus = (id, valid, text) => {
+                    const el = document.getElementById(id);
+                    el.className = `badge ${valid ? 'success' : 'danger'}`;
+                    el.textContent = text;
                 };
+                
+                updateStatus('status-ddns', data.ddns?.enabled, data.ddns?.enabled ? '激活' : '未激活');
+                updateStatus('status-lucky', true, `共 ${data.proxies?.lucky || 0} 条规则`);
+                updateStatus('status-npm', true, `已同步 ${data.proxies?.npmSynced || 0} 条`);
+                updateStatus('status-sunpanel', true, `卡片数: ${data.sunpanel?.cardsCount || 0}`);
+            } catch(e){}
+        }
+
+        async function fetchProxyDefaults() {
+            const data = await apiCall('/api/services/proxy-defaults');
+            if(data) {
+                document.getElementById('pd-protocol').value = data.protocol || 'https';
+                document.getElementById('pd-domains').value = (data.domains || []).join(', ');
+                document.getElementById('pd-port-lucky').value = data.externalPorts?.lucky || 50000;
+                document.getElementById('pd-port-npm').value = data.externalPorts?.npm || 50001;
             }
-
-            const completed = typeof payload.completed === 'number' ? `，完成 ${payload.completed} 项` : '';
-            return {
-                type: 'success',
-                text: `${actionName}完成${completed}`
-            };
         }
 
-        function setValidationResult(validation, fallbackMessage = '配置校验通过') {
-            const area = document.getElementById('serviceValidationArea');
-            if (validation.valid) {
-                area.innerHTML = `<div class="message-card success-message"><div><strong>校验通过</strong><div>${escapeHtml(fallbackMessage)}</div></div></div>`;
-                return;
-            }
-
-            area.innerHTML = `
-                <div class="validation-errors">
-                    <strong>配置校验失败</strong>
-                    <ul>${validation.errors.map(error => `<li>${escapeHtml(error)}</li>`).join('')}</ul>
-                </div>
-            `;
-        }
-
-        function clearValidationResult() {
-            document.getElementById('serviceValidationArea').innerHTML = '';
-        }
-
-        function getServicePayloadFromForm() {
-            return {
-                id: document.getElementById('serviceId').value.trim(),
-                name: document.getElementById('serviceName').value.trim(),
-                device: document.getElementById('serviceDevice').value.trim(),
-                internalPort: Number(document.getElementById('servicePort').value),
-                proxyDomain: document.getElementById('serviceDomain').value.trim(),
-                proxyType: document.getElementById('serviceProxyType').value.trim() || 'reverseproxy',
-                enableProxy: document.getElementById('serviceEnableProxy').checked,
-                enableTLS: document.getElementById('serviceEnableTLS').checked,
-                description: document.getElementById('serviceDescription').value.trim(),
-                lucky: {
-                    remark: document.getElementById('serviceLuckyRemark').value.trim()
-                },
-                sunpanel: {
-                    group: document.getElementById('serviceSunpanelGroup').value.trim(),
-                    icon: document.getElementById('serviceSunpanelIcon').value.trim(),
-                    lanUrl: document.getElementById('serviceSunpanelLanUrl').value.trim()
+        async function saveProxyDefaults(e) {
+            e.preventDefault();
+            const domains = document.getElementById('pd-domains').value.split(',').map(d=>d.trim()).filter(Boolean);
+            const payload = {
+                protocol: document.getElementById('pd-protocol').value,
+                domains,
+                externalPorts: {
+                    lucky: parseInt(document.getElementById('pd-port-lucky').value) || 50000,
+                    npm: parseInt(document.getElementById('pd-port-npm').value) || 50001
                 }
             };
+            await apiCall('/api/services/proxy-defaults', 'PUT', '保存代理默认配置', payload);
         }
 
-        function fillServiceForm(service) {
-            serviceFormState.editingId = service.id;
-            document.getElementById('serviceId').value = service.id || '';
-            document.getElementById('serviceId').disabled = true;
-            document.getElementById('serviceName').value = service.name || '';
-            document.getElementById('serviceDevice').value = service.device || '';
-            document.getElementById('servicePort').value = service.internalPort || '';
-            document.getElementById('serviceDomain').value = service.proxyDomain || '';
-            document.getElementById('serviceProxyType').value = service.proxyType || 'reverseproxy';
-            document.getElementById('serviceLuckyRemark').value = service.lucky?.remark || '';
-            document.getElementById('serviceSunpanelGroup').value = service.sunpanel?.group || '';
-            document.getElementById('serviceDescription').value = service.description || '';
-            document.getElementById('serviceSunpanelIcon').value = service.sunpanel?.icon || '';
-            document.getElementById('serviceSunpanelLanUrl').value = service.sunpanel?.lanUrl || '';
-            document.getElementById('serviceEnableProxy').checked = Boolean(service.enableProxy);
-            document.getElementById('serviceEnableTLS').checked = Boolean(service.enableTLS);
-            document.getElementById('serviceSubmitButton').textContent = '保存修改';
-            clearValidationResult();
-        }
-
-        function resetServiceForm() {
-            document.getElementById('serviceForm').reset();
-            document.getElementById('serviceId').disabled = false;
-            document.getElementById('serviceEnableProxy').checked = true;
-            document.getElementById('serviceProxyType').value = 'reverseproxy';
-            document.getElementById('serviceSubmitButton').textContent = '新增服务';
-            serviceFormState.editingId = null;
-            clearValidationResult();
-        }
-
-        function renderDeviceCard(device, { isPriority = false, isMissing = false } = {}) {
-            const tags = [];
-            if (isPriority) tags.push('<span class="tag tag-priority">默认关注</span>');
-            tags.push(device.ipv6 ? '<span class="tag tag-success">IPv6 就绪</span>' : '<span class="tag tag-warning">未发现 IPv6</span>');
-            if (device.mac) tags.push(`<span class="tag">MAC ${escapeHtml(device.mac)}</span>`);
-
-            return `
-                <div class="device-item ${!device.ipv6 ? 'no-ipv6' : ''} ${isPriority ? 'is-priority' : ''} ${isMissing ? 'is-missing' : ''}">
-                    <div class="device-tags">${tags.join('')}</div>
-                    <div class="device-name">${escapeHtml(device.ipv4 || '未知设备')}</div>
-                    <div class="device-info">
-                        IPv6: ${escapeHtml(device.ipv6 || '未找到')}<br>
-                        MAC: ${escapeHtml(device.mac || '未知')}
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderMissingPriorityDevice(ipv4) {
-            return renderDeviceCard({ ipv4, ipv6: '', mac: '' }, { isPriority: true, isMissing: true });
-        }
-
-        function updateDeviceToolbar(visibleDevices, totalDevices) {
-            const visibleIPv6Ready = visibleDevices.filter(device => device.ipv6).length;
-            document.getElementById('priorityDeviceCount').textContent = PRIORITY_DEVICE_IPS.length;
-            document.getElementById('deviceVisibleCount').textContent = visibleDevices.length;
-            document.getElementById('deviceVisibleIPv6Ready').textContent = visibleIPv6Ready;
-            document.getElementById('deviceTotalPill').textContent = totalDevices.length;
-
-            const toggleButton = document.getElementById('toggleDevicesButton');
-            toggleButton.textContent = deviceListState.expanded ? '收起为默认设备' : '展开全部设备';
-
-            const hiddenCount = Math.max(totalDevices.length - visibleDevices.length, 0);
-            document.getElementById('deviceSummary').textContent = deviceListState.expanded
-                ? `当前展示全部 ${totalDevices.length} 台设备。`
-                : `当前展示 ${visibleDevices.length} 台默认关注设备，另有 ${hiddenCount} 台设备已折叠。`;
-        }
-
-        function renderDeviceList() {
-            const deviceList = document.getElementById('deviceList');
-            const allDevices = [...deviceListState.devices].sort((a, b) => (a.ipv4 || '').localeCompare(b.ipv4 || '', 'zh-CN', { numeric: true }));
-
-            if (!allDevices.length) {
-                document.getElementById('deviceSummary').textContent = '暂无设备数据。';
-                updateDeviceToolbar([], []);
-                deviceList.innerHTML = '<p>暂无设备</p>';
-                return;
-            }
-
-            let visibleDevices;
-            if (deviceListState.expanded) {
-                visibleDevices = allDevices;
-            } else {
-                const priorityDevices = PRIORITY_DEVICE_IPS.map(ip => allDevices.find(device => device.ipv4 === ip)).filter(Boolean);
-                const missingPriorityDevices = PRIORITY_DEVICE_IPS.filter(ip => !priorityDevices.some(device => device.ipv4 === ip));
-                visibleDevices = [
-                    ...priorityDevices,
-                    ...missingPriorityDevices.map(ip => ({ ipv4: ip, ipv6: '', mac: '', __missing: true }))
-                ];
-            }
-
-            updateDeviceToolbar(visibleDevices, allDevices);
-            deviceList.innerHTML = visibleDevices.map(device => {
-                if (device.__missing) {
-                    return renderMissingPriorityDevice(device.ipv4);
-                }
-                return renderDeviceCard(device, { isPriority: PRIORITY_DEVICE_IPS.includes(device.ipv4) });
-            }).join('');
-        }
-
-        function toggleDeviceList() {
-            deviceListState.expanded = !deviceListState.expanded;
-            renderDeviceList();
-        }
-
-        function setButtonBusy(buttonId, busy, busyText = '处理中...') {
-            const button = document.getElementById(buttonId);
-            if (!button) return;
-
-            if (!button.dataset.defaultLabel) {
-                button.dataset.defaultLabel = button.innerHTML;
-            }
-
-            button.disabled = busy;
-            button.classList.toggle('is-busy', busy);
-            button.innerHTML = busy
-                ? `<span class="button-label">${escapeHtml(busyText)}<span class="loading"></span></span>`
-                : button.dataset.defaultLabel;
-        }
-
-        async function requestJson(url, options = {}) {
-            const response = await fetch(url, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...(options.headers || {})
-                },
-                ...options
-            });
-
-            const data = await response.json().catch(() => ({}));
-            if (!response.ok) {
-                const details = Array.isArray(data.details) && data.details.length
-                    ? `：${data.details.join('；')}`
-                    : '';
-                throw new Error(`${data.error || '请求失败'}${details}`);
-            }
-
-            return data;
-        }
-
-        async function refreshStatus(showToast = false) {
-            setButtonBusy('refreshStatusButton', true, '刷新中...');
-            try {
-                const data = await requestJson(`${API_BASE}/dashboard/overview`, { headers: {} });
-
-                const coordinatorStatus = document.getElementById('coordinatorStatus');
-                if (data.coordinator.isRunning) {
-                    coordinatorStatus.textContent = '运行中';
-                    coordinatorStatus.className = 'status-badge status-running';
-                } else {
-                    coordinatorStatus.textContent = '已停止';
-                    coordinatorStatus.className = 'status-badge status-stopped';
-                }
-
-                document.getElementById('deviceTotal').textContent = data.devices.total;
-                document.getElementById('deviceIPv6Ready').textContent = data.devices.ipv6Ready;
-                document.getElementById('deviceLastUpdate').textContent = formatTime(data.devices.lastUpdate);
-                document.getElementById('luckyProxies').textContent = data.proxies.luckyActual ?? data.proxies.lucky ?? 0;
-                document.getElementById('npmProxies').textContent = data.proxies.npmActual ?? data.proxies.npm ?? 0;
-                document.getElementById('npmSynced').textContent = data.proxies.npmSynced ?? 0;
-                document.getElementById('npmAuthMode').textContent = data.proxies.npmAuthMode || 'none';
-                document.getElementById('servicesSummaryTotal').textContent = data.services.total ?? 0;
-                document.getElementById('servicesSummaryProxied').textContent = data.services.proxied ?? 0;
-                document.getElementById('proxyServicesSummaryProxied').textContent = data.services.proxied ?? 0;
-                document.getElementById('sunpanelCards').textContent = data.sunpanel.cardsCount;
-                document.getElementById('sunpanelLastSync').textContent = formatTime(data.sunpanel.lastSync);
-                document.getElementById('ddnsStatus').textContent = data.ddns.enabled ? '启用' : '禁用';
-                document.getElementById('ddnsLastUpdate').textContent = formatTime(data.ddns.lastUpdate);
-
-                // Cloudflare
-                if (data.cloudflare) {
-                    document.getElementById('cfStatus').textContent = data.cloudflare.enabled ? '启用' : '禁用';
-                    document.getElementById('cfDomain').textContent = data.cloudflare.domain || '-';
-                    document.getElementById('cfRecordCount').textContent = data.cloudflare.recordCount ?? '-';
-                    document.getElementById('cfLastSync').textContent = formatTime(data.cloudflare.lastSync);
-                }
-
-                document.getElementById('pageLastUpdate').textContent = new Date().toLocaleString('zh-CN');
-
-                await Promise.all([loadDeviceList(false), loadServices(false)]);
-                if (showToast) {
-                    showMessage('状态已刷新', 'success');
-                }
-            } catch (error) {
-                console.error('刷新状态失败:', error);
-                showMessage('刷新状态失败: ' + error.message, 'error');
-            } finally {
-                setButtonBusy('refreshStatusButton', false);
-            }
-        }
-
-        async function loadDeviceList(showToast = false) {
-            setButtonBusy('refreshDevicesButton', true, '刷新中...');
-            try {
-                const devices = await requestJson(`${API_BASE}/devices/list`, { headers: {} });
-                deviceListState.devices = Array.isArray(devices) ? devices : [];
-                renderDeviceList();
-                if (showToast) {
-                    showMessage('设备列表已刷新', 'success');
-                }
-            } catch (error) {
-                console.error('加载设备列表失败:', error);
-                document.getElementById('deviceSummary').textContent = '设备列表加载失败。';
-                document.getElementById('deviceList').innerHTML = `<p>加载失败：${escapeHtml(error.message)}</p>`;
-                if (showToast) {
-                    showMessage('加载设备列表失败: ' + error.message, 'error');
-                }
-            } finally {
-                setButtonBusy('refreshDevicesButton', false);
-            }
-        }
-
-        function renderServices(services) {
-            const list = document.getElementById('serviceList');
-            if (!services.length) {
-                list.innerHTML = '<p>暂无服务，请先新增。</p>';
-                return;
-            }
-
-            list.innerHTML = services.map(service => `
-                <div class="service-item" style="${service.hidden ? 'opacity:0.5;' : ''}">
-                    <div class="service-item-header">
+        async function fetchKeyMachines() {
+            const machines = await apiCall('/api/devices/key-machines');
+            const html = machines.map(m => `
+                <div class="device-card">
+                    <div class="flex justify-between items-center">
                         <div>
-                            <div class="service-item-title">${service.hidden ? '🙈 ' : ''}${escapeHtml(service.name)}</div>
-                            <div class="service-item-subtitle">${escapeHtml(service.id)} · ${escapeHtml(service.proxyDomain)}</div>
+                            <div style="font-weight: 600; color: #fff;">${m.name}</div>
+                            <div class="text-sm text-muted mt-1">${m.ipv4}</div>
                         </div>
-                        <div class="muted-text">${service.hidden ? '已隐藏' : (service.enableProxy ? '代理已启用' : '代理关闭')}</div>
+                        <button class="btn btn-sm btn-primary" onclick="scanDevice('${m.id}')">扫描端口</button>
                     </div>
-                    <div class="service-item-meta">
-                        <div>设备: ${escapeHtml(service.device)}</div>
-                        <div>端口: ${escapeHtml(service.internalPort)}</div>
-                        <div>TLS: ${service.enableTLS ? '开启' : '关闭'}</div>
-                        <div>分组: ${escapeHtml(service.sunpanel?.group || '未设置')}</div>
+                    ${m.ipv6 ? `<div class="text-sm text-muted" style="word-break: break-all;">[${m.ipv6}]</div>` : ''}
+                    <div id="scan-res-${m.id}" class="flex gap-2 mt-2" style="flex-wrap: wrap;"></div>
+                </div>
+            `).join('');
+            document.getElementById('keyMachinesArea').innerHTML = html;
+        }
+
+        async function scanDevice(deviceId) {
+            const resArea = document.getElementById(`scan-res-${deviceId}`);
+            resArea.innerHTML = `<div class="spinner"></div><span class="text-sm text-muted">深层探测中...</span>`;
+            try {
+                const data = await apiCall(`/api/devices/${deviceId}/scan`, 'POST');
+                if(!data.openPorts || data.openPorts.length === 0) {
+                    resArea.innerHTML = `<span class="text-sm" style="color:#a8b2c1;">全网静默，无暴露端口</span>`;
+                    return;
+                }
+                
+                resArea.innerHTML = data.openPorts.map(p => {
+                    if(p.isRegistered) {
+                         return `<span class="port-tag registered" title="服务已注册: ${p.registeredService}">:${p.port} ✓</span>`;
+                    } else {
+                         return `<div class="port-tag" style="cursor:pointer" onclick="prepareQuickAdd('${deviceId}', ${p.port}, '${data.deviceName}', '${data.ipv4}')" title="点击一键注册">${p.protocol} :${p.port} <span style="font-weight:bold;margin-left:4px">+</span></div>`;
+                    }
+                }).join('');
+            } catch(e) {
+                resArea.innerHTML = `<span class="text-sm text-danger">扫描失败</span>`;
+            }
+        }
+        
+        async function scanAllKeyMachines() {
+            try {
+                // Fetch list first
+                const machines = await apiCall('/api/devices/key-machines');
+                showToast(`开始对 ${machines.length} 台关键设备进行雷达探测...`);
+                for(const m of machines) {
+                    await scanDevice(m.id);
+                }
+            } catch(e){}
+        }
+
+        function prepareQuickAdd(deviceId, port, deviceName, ipv4) {
+            document.getElementById('qa-deviceId').value = deviceId;
+            document.getElementById('qa-port').value = port;
+            document.getElementById('qa-target-display').textContent = `${deviceName} (${ipv4}:${port})`;
+            document.getElementById('qa-id').value = '';
+            document.getElementById('qa-name').value = '';
+            openModal('quickAddModal');
+            document.getElementById('qa-id').focus();
+        }
+
+        async function submitQuickAdd(e) {
+            e.preventDefault();
+            const payload = {
+                deviceId: document.getElementById('qa-deviceId').value,
+                port: document.getElementById('qa-port').value,
+                id: document.getElementById('qa-id').value,
+                name: document.getElementById('qa-name').value
+            };
+            await apiCall('/api/services/quick-add', 'POST', '快速注册服务', payload);
+            closeModal('quickAddModal');
+        }
+
+        async function fetchServices() {
+            const services = await apiCall('/api/services/list');
+            const tbody = document.getElementById('servicesTableBody');
+            
+            if(!services.length) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">安全白名单完全空白，请进行网络探索或纯手动添加。</td></tr>`;
+                return;
+            }
+            
+            tbody.innerHTML = services.map(s => {
+                const ipv4Url = `https://${s.proxyDomain}:50000`; // Will be mapped by defaults
+                
+                return `
+                <tr>
+                    <td><span class="badge ${s.enableProxy ? 'success' : 'warning'}"></span></td>
+                    <td style="font-family:monospace; color:#93c5fd">${s.id}</td>
+                    <td class="text-sm text-muted">${s.device}:${s.internalPort}</td>
+                    <td>
+                        <a href="${ipv4Url}" target="_blank" style="color:#a78bfa; text-decoration:none; display:block; font-size:13px;" id="link-v4-${s.id}">${s.proxyDomain}</a>
+                        <div class="text-muted" style="font-size:11px;" id="latency-v4-${s.id}">-</div>
+                    </td>
+                    <td>
+                        <a href="#" target="_blank" style="color:#a78bfa; text-decoration:none; display:none; font-size:13px;" id="link-v6-${s.id}">IPv6 直连通道</a>
+                        <div class="text-muted" style="font-size:11px;" id="latency-v6-${s.id}">-</div>
+                    </td>
+                    <td><button class="btn btn-sm btn-danger" onclick="apiCall('/api/services/${s.id}', 'DELETE', '删除服务')">移除</button></td>
+                </tr>
+            `}).join('');
+            
+            // Do passive connectivity check silently behind scenes
+            checkConnectivity(true);
+        }
+
+        async function checkConnectivity(silent = false) {
+            if(!silent) showToast('开始探测服务连通性及延时...');
+            const data = await apiCall('/api/services/connectivity');
+            if(!data.services) return;
+            
+            for(const sc of data.services) {
+                // Update IPv4
+                const v4Span = document.getElementById(`latency-v4-${sc.id}`);
+                const v4Link = document.getElementById(`link-v4-${sc.id}`);
+                if(v4Span && v4Link) {
+                    if(sc.ipv4Proxy.ok) {
+                        v4Link.style.color = '#34d399';
+                        v4Span.innerHTML = `<span style="color:#10b981">${sc.ipv4Proxy.latency}ms (HTTP ${sc.ipv4Proxy.status})</span>`;
+                    } else {
+                        v4Link.style.color = '#ef4444';
+                        v4Span.innerHTML = `<span style="color:#ef4444">连接超时或拒绝</span>`;
+                    }
+                    if(sc.ipv4Proxy.url) v4Link.href = sc.ipv4Proxy.url;
+                }
+                
+                // Update IPv6
+                const v6Span = document.getElementById(`latency-v6-${sc.id}`);
+                const v6Link = document.getElementById(`link-v6-${sc.id}`);
+                if(v6Span && v6Link && sc.ipv6Direct.url) {
+                    v6Link.style.display = 'block';
+                    v6Link.href = sc.ipv6Direct.url;
+                    
+                    if(sc.ipv6Direct.ok) {
+                        v6Link.style.color = '#34d399';
+                        v6Span.innerHTML = `<span style="color:#10b981">${sc.ipv6Direct.latency}ms (HTTP ${sc.ipv6Direct.status})</span>`;
+                    } else {
+                        v6Link.style.color = '#ef4444';
+                        v6Span.innerHTML = `<span style="color:#ef4444">未通</span>`;
+                    }
+                } else if(v6Span) {
+                    v6Span.textContent = '无 IPv6 通道';
+                }
+            }
+        }
+
+        async function purgeRemote() {
+            if(confirm('☢️ 警告: 真的要批量清空 Lucky、NPM、SunPanel 等反向代理远程环境数据，并重置白名单系统吗？\n当前本地列表将化为灰烬！')) {
+                await apiCall('/api/services/purge-remote', 'POST', '广域数据库重置');
+            }
+        }
+
+        // Bookmarks
+        async function fetchBookmarks() {
+            const records = await apiCall('/api/bookmarks/list');
+            document.getElementById('bookmarksList').innerHTML = records.map(bm => `
+                <div class="flex justify-between items-center" style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
+                    <div>
+                        <div class="text-sm" style="font-weight:600;">${bm.name} <span class="badge" style="transform:scale(0.85);">${bm.group}</span></div>
+                        <div class="text-muted" style="font-size:11px; margin-top:2px;">${bm.url}</div>
                     </div>
-                    <div class="service-actions">
-                        <button class="button button-small" type="button" onclick="editService('${escapeHtml(service.id)}')">${service.hidden ? '取消隐藏' : '编辑'}</button>
-                        <button class="button button-small" type="button" onclick="toggleServiceHidden('${escapeHtml(service.id)}', ${!service.hidden})">${service.hidden ? '👁 显示' : '🙈 隐藏'}</button>
-                        <button class="button button-small button-danger" type="button" onclick="deleteService('${escapeHtml(service.id)}')">删除</button>
-                    </div>
+                    <button class="btn btn-sm btn-danger" onclick="apiCall('/api/bookmarks/${bm.id}', 'DELETE', '删除书签')">X</button>
                 </div>
             `).join('');
         }
-
-        async function loadServices(showToast = false) {
-            try {
-                const [services, status] = await Promise.all([
-                    requestJson(`${API_BASE}/services/list`, { headers: {} }),
-                    requestJson(`${API_BASE}/services/status`, { headers: {} })
-                ]);
-
-                serviceFormState.services = services;
-                document.getElementById('servicesSummaryTotal').textContent = status.totalServices ?? services.length;
-                document.getElementById('servicesSummaryProxied').textContent = status.proxiedServices ?? services.filter(service => service.enableProxy).length;
-                document.getElementById('servicesSummaryUpdated').textContent = formatTime(status.lastUpdate);
-                renderServices(services);
-
-                if (showToast) {
-                    showMessage('服务列表已刷新', 'success');
-                }
-            } catch (error) {
-                console.error('加载服务列表失败:', error);
-                document.getElementById('serviceList').innerHTML = `<p>加载失败：${escapeHtml(error.message)}</p>`;
-                if (showToast) {
-                    showMessage('加载服务列表失败: ' + error.message, 'error');
-                }
-            }
+        
+        async function addBookmark(e) {
+            e.preventDefault();
+            const id = 'bm-' + Date.now();
+            const payload = {
+                id,
+                name: document.getElementById('bm-title').value,
+                url: document.getElementById('bm-url').value,
+                group: '外部笔记'
+            };
+            await apiCall('/api/bookmarks/add', 'POST', '添加书签/笔记', payload);
+            document.getElementById('bm-title').value = '';
+            document.getElementById('bm-url').value = '';
         }
 
-        function editService(id) {
-            const service = serviceFormState.services.find(item => item.id === id);
-            if (!service) {
-                showMessage(`未找到服务 ${id}`, 'error');
-                return;
-            }
-
-            fillServiceForm(service);
-            window.scrollTo({ top: document.getElementById('serviceForm').offsetTop - 20, behavior: 'smooth' });
-        }
-
-        async function deleteService(id) {
-            if (!window.confirm(`确认删除服务 ${id} 吗？`)) {
-                return;
-            }
-
-            try {
-                await requestJson(`${API_BASE}/services/${encodeURIComponent(id)}`, {
-                    method: 'DELETE'
-                });
-                if (serviceFormState.editingId === id) {
-                    resetServiceForm();
-                }
-                showMessage(`服务 ${id} 已删除`, 'success');
-                await refreshStatus();
-            } catch (error) {
-                console.error('删除服务失败:', error);
-                showMessage('删除服务失败: ' + error.message, 'error');
-            }
-        }
-
-        async function validateCurrentService() {
-            try {
-                const validation = await requestJson(`${API_BASE}/services/validate`, {
-                    method: 'POST',
-                    body: JSON.stringify(getServicePayloadFromForm())
-                });
-                setValidationResult(validation);
-            } catch (error) {
-                console.error('校验服务失败:', error);
-                showMessage('校验服务失败: ' + error.message, 'error');
-            }
-        }
-
-        async function submitServiceForm(event) {
-            event.preventDefault();
-
-            const payload = getServicePayloadFromForm();
-            const isEditing = Boolean(serviceFormState.editingId);
-            const url = isEditing
-                ? `${API_BASE}/services/${encodeURIComponent(serviceFormState.editingId)}`
-                : `${API_BASE}/services/add`;
-            const method = isEditing ? 'PUT' : 'POST';
-
-            try {
-                const result = await requestJson(url, {
-                    method,
-                    body: JSON.stringify(payload)
-                });
-                setValidationResult({ valid: true, errors: [] }, isEditing ? '服务更新成功' : '服务新增成功');
-                showMessage(isEditing ? `服务 ${result.service.id} 已更新` : `服务 ${result.service.id} 已新增`, 'success');
-                resetServiceForm();
-                await refreshStatus();
-            } catch (error) {
-                console.error('保存服务失败:', error);
-                clearValidationResult();
-                showMessage('保存服务失败: ' + error.message, 'error');
-            }
-        }
-
-        async function runAction({ buttonId, busyText, startMessage, url, actionName }) {
-            setButtonBusy(buttonId, true, busyText);
-            try {
-                showMessage(startMessage, 'success');
-                const result = await requestJson(url, { method: 'POST' });
-                const message = getActionMessage(actionName, result);
-                showMessage(message.text, message.type);
-                await refreshStatus();
-            } catch (error) {
-                console.error(`${actionName}失败:`, error);
-                showMessage(`${actionName}失败: ` + error.message, 'error');
-            } finally {
-                setButtonBusy(buttonId, false);
-            }
-        }
-
-        async function runFullSync() {
-            await runAction({
-                buttonId: 'runFullSyncButton',
-                busyText: '同步中...',
-                startMessage: '正在执行完整同步...',
-                url: `${API_BASE}/sync/full`,
-                actionName: '完整同步'
-            });
-        }
-
-        async function runDeviceMonitor() {
-            await runAction({
-                buttonId: 'runDeviceMonitorButton',
-                busyText: '执行中...',
-                startMessage: '正在执行设备监控...',
-                url: `${API_BASE}/devices/refresh`,
-                actionName: '设备监控'
-            });
-        }
-
-        async function runLuckySync() {
-            await runAction({
-                buttonId: 'runLuckySyncButton',
-                busyText: '同步中...',
-                startMessage: '正在执行 Lucky 同步...',
-                url: `${API_BASE}/proxies/sync`,
-                actionName: 'Lucky同步'
-            });
-        }
-
-        async function runNPMSync() {
-            await runAction({
-                buttonId: 'runNPMSyncButton',
-                busyText: '同步中...',
-                startMessage: '正在执行 NPM 同步...',
-                url: `${API_BASE}/npm/sync`,
-                actionName: 'NPM同步'
-            });
-        }
-
-        async function runSunpanelSync() {
-            await runAction({
-                buttonId: 'runSunpanelSyncButton',
-                busyText: '同步中...',
-                startMessage: '正在执行 SunPanel 同步...',
-                url: `${API_BASE}/sunpanel/sync`,
-                actionName: 'SunPanel同步'
-            });
-        }
-
-        async function runCFSync() {
-            await runAction({
-                buttonId: 'runCFSyncButton',
-                busyText: '同步中...',
-                startMessage: '正在执行 Cloudflare DNS 同步...',
-                url: `${API_BASE}/cloudflare/sync`,
-                actionName: 'Cloudflare同步'
-            });
-        }
-
-        async function toggleServiceHidden(id, hidden) {
-            try {
-                const service = serviceFormState.services.find(s => s.id === id);
-                if (!service) return;
-                await requestJson(`${API_BASE}/services/${encodeURIComponent(id)}`, {
-                    method: 'PUT',
-                    body: JSON.stringify({ ...service, hidden })
-                });
-                showMessage(`服务 ${id} 已${hidden ? '隐藏' : '显示'}`, 'success');
-                await loadServices(false);
-            } catch (error) {
-                showMessage('切换隐藏状态失败: ' + error.message, 'error');
-            }
-        }
-        // 收藏管理逻辑
-        let bookmarksData = [];
-
-        async function loadBookmarks(showToast = false) {
-            try {
-                bookmarksData = await requestJson(`${API_BASE}/bookmarks/list`);
-                renderBookmarks();
-                if (showToast) showMessage('收藏列表已刷新', 'success');
-            } catch (error) {
-                document.getElementById('bookmarkList').innerHTML = `<p>加载失败：${escapeHtml(error.message)}</p>`;
-            }
-        }
-
-        function renderBookmarks() {
-            const list = document.getElementById('bookmarkList');
-            if (!bookmarksData.length) {
-                list.innerHTML = '<p class="muted-text">暂无收藏内容，请在上方添加。</p>';
-                return;
-            }
-            list.innerHTML = bookmarksData.map(bm => `
-                <div class="service-item" style="padding:10px;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;">
-                        <div>
-                            <strong>${escapeHtml(bm.name)}</strong> 
-                            <span class="muted-text" style="font-size:0.9em;">(${escapeHtml(bm.id)})</span>
-                            <div style="font-size:0.85em;color:#6b7280;margin-top:4px;">${escapeHtml(bm.url)}</div>
-                        </div>
-                        <div style="display:flex;gap:8px;align-items:center;">
-                            <span class="tag">${escapeHtml(bm.group || '收藏')}</span>
-                            <button class="button button-small button-danger" type="button" onclick="deleteBookmark('${escapeHtml(bm.id)}')">删除</button>
-                        </div>
+        // Changelog
+        async function fetchChangelog() {
+            const data = await apiCall('/api/changelog?limit=20');
+            const html = (data.entries || []).map(entry => `
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-time">${new Date(entry.timestamp).toLocaleString('zh-CN')} - [${entry.action}]</div>
+                    <div class="timeline-content" style="color: #cbd5e1; font-weight:500;">
+                        ★ ${entry.detail}
                     </div>
+                    ${entry.target ? `<div class="text-muted" style="font-size:11px; margin-top:4px;">标的物: ${entry.target}</div>` : ''}
                 </div>
             `).join('');
+            document.getElementById('changelogList').innerHTML = html || '<div class="text-muted">无历史记录。</div>';
         }
 
-        async function addBookmark() {
-            const id = document.getElementById('bmId').value.trim();
-            const name = document.getElementById('bmName').value.trim();
-            const url = document.getElementById('bmUrl').value.trim();
-            const group = document.getElementById('bmGroup').value.trim();
-
-            if (!id || !name || !url) {
-                return showMessage('ID、名称、URL均不能为空', 'error');
-            }
-
-            try {
-                await requestJson(`${API_BASE}/bookmarks/add`, {
-                    method: 'POST',
-                    body: JSON.stringify({ id, name, url, group })
-                });
-                document.getElementById('bmId').value = '';
-                document.getElementById('bmName').value = '';
-                document.getElementById('bmUrl').value = '';
-                showMessage(`收藏 ${name} 已添加`, 'success');
-                await loadBookmarks(false);
-            } catch (error) {
-                showMessage('添加收藏失败: ' + error.message, 'error');
-            }
+        // Init
+        function refreshAll() {
+            fetchSystemStatus();
+            fetchProxyDefaults();
+            fetchKeyMachines();
+            fetchServices();
+            fetchBookmarks();
+            fetchChangelog();
         }
 
-        async function deleteBookmark(id) {
-            if (!window.confirm(`确认删除收藏 ${id} 吗？`)) return;
-            try {
-                await requestJson(`${API_BASE}/bookmarks/${encodeURIComponent(id)}`, { method: 'DELETE' });
-                showMessage(`收藏 ${id} 已删除`, 'success');
-                await loadBookmarks(false);
-            } catch (error) {
-                showMessage('删除失败: ' + error.message, 'error');
-            }
-        }
-
-        async function syncBookmarks() {
-            setButtonBusy('syncBookmarksButton', true, '同步中...');
-            try {
-                const result = await requestJson(`${API_BASE}/bookmarks/sync`, { method: 'POST' });
-                showMessage(`收藏同步成功，共覆盖 ${result.synced} 条`, 'success');
-                await refreshStatus(); // 刷新顶部的 sunpanel 卡片数
-            } catch (error) {
-                showMessage('收藏同步失败: ' + error.message, 'error');
-            } finally {
-                setButtonBusy('syncBookmarksButton', false);
-            }
-        }
-
-        window.addEventListener('load', () => {
-            document.getElementById('serviceForm').addEventListener('submit', submitServiceForm);
-            resetServiceForm();
-            refreshStatus();
-            loadBookmarks(false);
-            setInterval(() => refreshStatus(false), 30000);
-        });
+        window.onload = refreshAll;
     </script>
 </body>
 </html>

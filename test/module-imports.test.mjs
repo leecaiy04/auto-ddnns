@@ -10,7 +10,8 @@ test('lucky-api falls back to LUCKY_OPEN_TOKEN', async () => {
     delete process.env.LUCKY_ADMIN_TOKEN;
     process.env.LUCKY_OPEN_TOKEN = 'fallback-open-token';
 
-    assert.equal(luckyApi.getAdminToken(), 'fallback-open-token');
+    assert.equal(luckyApi.getAdminToken(), '');
+    assert.equal(luckyApi.getOpenToken(), 'fallback-open-token');
   } finally {
     if (previousAdminToken === undefined) {
       delete process.env.LUCKY_ADMIN_TOKEN;

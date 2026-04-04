@@ -1,0 +1,14 @@
+{
+  "protocol": "https",
+  "domains": ["leecaiy.shop", "222869.xyz"],
+  "externalPorts": {
+    "lucky": 50000,
+    "npm": 50001
+  },
+  "dns": {
+    "wildcardDomains": ["*.leecaiy.shop", "*.222869.xyz"],
+    "sslCertDomains": ["leecaiy.shop", "*.leecaiy.shop", "222869.xyz", "*.222869.xyz"]
+  },
+  "defaultProxyTemplate": "https://{serviceId}.{domain}:{port}",
+  "defaultIpv6Template": "{lanProtocol}://[{ipv6}]:{lanPort}"
+}

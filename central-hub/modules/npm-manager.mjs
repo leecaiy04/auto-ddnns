@@ -105,6 +105,20 @@ export class NPMManager {
         const forward_scheme = service.enableTLS ? 'https' : 'http';
         const existing = await findProxyHostByDomain(service.proxyDomain, this.npmConfig);
 
+        const advanced = service.advanced || {};
+        let advanced_config = `
+# ${service.name}
+# ${service.description || ''}
+# Created by Central Hub from Service Registry
+        `.trim();
+
+        if (advanced.ignoreTlsVerify !== undefined ? advanced.ignoreTlsVerify : true) {
+           advanced_config += '\nproxy_ssl_verify off;';
+        }
+        if (advanced.useTargetHost !== undefined ? advanced.useTargetHost : true) {
+           advanced_config += '\nproxy_set_header Host $proxy_host;';
+        }
+
         const proxyConfig = {
           domain_names: [service.proxyDomain],
           forward_host: targetHost,
@@ -112,13 +126,13 @@ export class NPMManager {
           forward_scheme,
           ssl_enabled: service.enableTLS,
           http2_support: service.enableTLS,
-          advanced_config: `
-# ${service.name}
-# ${service.description}
-# Created by Central Hub from Service Registry
-          `.trim(),
+          advanced_config: advanced_config,
           allow_websocket_upgrade: true,
-          block_exploits: true
+          block_exploits: advanced.waf === true,
+          hsts_enabled: advanced.securityPresets !== false,
+          hsts_subdomains: advanced.securityPresets !== false,
+          ssl_forced: advanced.autoRedirect !== false,
+          access_list_id: (advanced.authentication?.enabled && advanced.authentication?.type === 'web') ? 1 : 0
         };
 
         let action = 'created';

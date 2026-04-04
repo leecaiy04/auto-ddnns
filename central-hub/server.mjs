@@ -135,6 +135,7 @@ import { CloudflareManager } from './modules/cloudflare-manager.mjs';
 import { Coordinator } from './modules/coordinator.mjs';
 import { StateManager } from './modules/state-manager.mjs';
 import { DDNSController } from './modules/ddns-controller.mjs';
+import { ChangelogManager } from './modules/changelog-manager.mjs';
 
 // 导入路由
 import { dashboardRoutes } from './routes/dashboard.mjs';
@@ -144,6 +145,7 @@ import ddnsRoutes from './routes/ddns.mjs';
 import proxyRoutes from './routes/proxy.mjs';
 import cloudflareRoutes from './routes/cloudflare.mjs';
 import bookmarkRoutes from './routes/bookmarks.mjs';
+import changelogRoutes from './routes/changelog.mjs';
 
 class CentralHub {
   constructor(configPath) {
@@ -189,7 +191,15 @@ class CentralHub {
     // 状态管理器
     this.stateManager = new StateManager(this.config.state);
     await this.stateManager.init();
+
+    // 变更日志管理器
+    this.changelogManager = new ChangelogManager();
+    await this.changelogManager.init();
+    
+    // Inject root config for routers
+    this.modules.config = this.config;
     this.modules.stateManager = this.stateManager;
+    this.modules.changelogManager = this.changelogManager;
 
     // 设备监控模块
     if (this.config.modules.deviceMonitor?.enabled) {
@@ -203,7 +213,8 @@ class CentralHub {
     if (this.config.modules.serviceRegistry?.enabled !== false) {
       this.modules.serviceRegistry = new ServiceRegistry(
         { enabled: true },
-        this.stateManager
+        this.stateManager,
+        this.changelogManager
       );
     }
 
@@ -251,7 +262,7 @@ class CentralHub {
 
     // 初始化所有模块（避免别名指向同一实例时重复初始化）
     const initializedModules = new Set();
-    for (const module of Object.values(this.modules)) {
+    for (const [name, module] of Object.entries(this.modules)) {
       if (module && typeof module.init === 'function' && !initializedModules.has(module)) {
         initializedModules.add(module);
         await module.init();
@@ -289,6 +300,7 @@ class CentralHub {
     this.app.use('/api/proxies', proxyRoutes(this.modules));
     this.app.use('/api/cloudflare', cloudflareRoutes(this.modules));
     this.app.use('/api/bookmarks', bookmarkRoutes(this.modules));
+    this.app.use('/api/changelog', changelogRoutes(this.modules));
 
     // 同步控制路由
     this.app.post('/api/sync/full', async (req, res) => {

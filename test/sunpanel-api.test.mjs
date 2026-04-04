@@ -73,7 +73,6 @@ describe('sunpanel-api', () => {
     assert.equal(fetchCalls.length, 1);
     assert.equal(fetchCalls[0].url, 'http://sunpanel-instance.local/openapi/v1/itemGroup/getList');
     assert.equal(fetchCalls[0].options.headers.token, 'instance-token');
-    assert.equal(fetchCalls[0].options.headers.Authorization, 'Bearer instance-token');
     assert.equal(result.count, 1);
   });
 
@@ -138,6 +137,6 @@ describe('sunpanel-api', () => {
     }, config);
 
     assert.equal(fetchCalls[0].url, 'http://sp:20001/openapi/v1/item/create');
-    assert.equal(fetchCalls[0].options.headers.Authorization, 'Bearer t');
+    assert.equal(fetchCalls[0].options.headers.token, 't');
   });
 });

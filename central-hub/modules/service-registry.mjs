@@ -1,6 +1,7 @@
 /**
- * 服务清单管理模块
- * 负责管理需要反向代理的服务配置
+ * 服务清单管理模块 v2.0
+ * 白名单制：通过端口扫描发现 → 手动确认 → 自动生成反代配置
+ * 所有变更记录到 changelog
  */
 
 import fs from 'fs';
@@ -9,9 +10,21 @@ import { fileURLToPath } from 'url';
 import { getEnv } from '../../lib/utils/env-loader.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const REGISTRY_PATH = path.resolve(__dirname, '..', 'config', 'services-registry.json');
+const REGISTRY_PATH = path.resolve(__dirname, '..', '..', 'config', 'services-registry.json');
+const PROXY_DEFAULTS_PATH = path.resolve(__dirname, '..', '..', 'config', 'proxy-defaults.json');
+const DEVICES_PATH = path.resolve(__dirname, '..', '..', 'config', 'devices.json');
 
 const MANAGED_DOMAIN = getEnv('ALIYUN_DOMAIN', 'leecaiy.shop');
+
+// ==================== 工具函数 ====================
+
+function loadJSON(filePath) {
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  } catch {
+    return null;
+  }
+}
 
 function buildManagedDomain(domainPrefix) {
   return `${domainPrefix}.${MANAGED_DOMAIN}`;
@@ -37,7 +50,6 @@ function denormalizeServiceDomains(service) {
   if (!service?.domainPrefix) {
     return service;
   }
-
   const normalized = normalizeServiceDomains(service);
   return {
     ...service,
@@ -46,8 +58,13 @@ function denormalizeServiceDomains(service) {
   };
 }
 
+function inferInternalProtocol(port) {
+  const securePorts = [443, 5001, 8006, 8443, 9443];
+  return securePorts.includes(port) ? 'https' : 'http';
+}
+
 function buildDefaultLanUrl(service) {
-  const protocol = service.enableTLS ? 'https' : 'http';
+  const protocol = inferInternalProtocol(service.internalPort);
   return `${protocol}://192.168.3.${service.device}:${service.internalPort}`;
 }
 
@@ -59,24 +76,30 @@ function isManagedDomain(domain) {
   return domain === MANAGED_DOMAIN || domain.endsWith(`.${MANAGED_DOMAIN}`);
 }
 
+function sanitizeId(id) {
+  return id.toLowerCase().replace(/[^a-z0-9_-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+}
+
+// ==================== 主类 ====================
+
 export class ServiceRegistry {
-  constructor(config, stateManager) {
+  constructor(config, stateManager, changelogManager = null) {
     this.config = config;
     this.stateManager = stateManager;
+    this.changelog = changelogManager;
     this.registryPath = REGISTRY_PATH;
     this.services = [];
+    this.proxyDefaults = null;
+    this.devices = [];
   }
 
-  /**
-   * 初始化模块
-   */
-  async init() {
-    console.log('[ServiceRegistry] 初始化服务清单管理模块...');
+  // ==================== 初始化 ====================
 
-    // 加载服务清单
+  async init() {
+    this.loadProxyDefaults();
+    this.loadDevices();
     await this.loadRegistry();
 
-    // 初始化状态中的服务信息
     if (!this.stateManager.state.services) {
       this.stateManager.state.services = {
         lastUpdate: null,
@@ -88,9 +111,62 @@ export class ServiceRegistry {
     console.log(`[ServiceRegistry] ✅ 服务清单管理模块初始化完成，共加载 ${this.services.length} 个服务`);
   }
 
+  loadProxyDefaults() {
+    this.proxyDefaults = loadJSON(PROXY_DEFAULTS_PATH) || {
+      protocol: 'https',
+      domains: [MANAGED_DOMAIN],
+      externalPorts: { lucky: 50000, npm: 50001 },
+      dns: { wildcardDomains: [`*.${MANAGED_DOMAIN}`], sslCertDomains: [MANAGED_DOMAIN, `*.${MANAGED_DOMAIN}`] },
+      defaultProxyTemplate: 'https://{serviceId}.{domain}:{port}',
+      defaultIpv6Template: '{lanProtocol}://[{ipv6}]:{lanPort}'
+    };
+  }
+
+  loadDevices() {
+    const data = loadJSON(DEVICES_PATH);
+    this.devices = data?.devices || [];
+  }
+
   /**
-   * 加载服务清单
+   * 获取全局反代默认配置
    */
+  getProxyDefaults() {
+    return this.proxyDefaults;
+  }
+
+  /**
+   * 更新全局反代默认配置
+   */
+  async updateProxyDefaults(updates) {
+    this.proxyDefaults = { ...this.proxyDefaults, ...updates };
+    fs.writeFileSync(PROXY_DEFAULTS_PATH, JSON.stringify(this.proxyDefaults, null, 2));
+    this.changelog?.append('update_proxy_defaults', 'proxy-defaults', '更新全局反代配置', updates);
+    return this.proxyDefaults;
+  }
+
+  /**
+   * 获取关键机器列表
+   */
+  getKeyMachines() {
+    return this.devices.filter(d => d.isKeyMachine);
+  }
+
+  /**
+   * 获取所有设备列表
+   */
+  getDeviceList() {
+    return this.devices;
+  }
+
+  /**
+   * 获取设备 by ID
+   */
+  getDeviceById(deviceId) {
+    return this.devices.find(d => d.id === deviceId) || null;
+  }
+
+  // ==================== 加载/保存 ====================
+
   async loadRegistry() {
     try {
       const content = fs.readFileSync(this.registryPath, 'utf-8');
@@ -102,9 +178,6 @@ export class ServiceRegistry {
     }
   }
 
-  /**
-   * 保存服务清单
-   */
   async saveRegistry() {
     try {
       const data = { services: this.services.map(denormalizeServiceDomains) };
@@ -116,97 +189,149 @@ export class ServiceRegistry {
     }
   }
 
-  /**
-   * 获取所有服务
-   * @returns {Array>} 服务列表
-   */
+  // ==================== 服务 CRUD ====================
+
   getAllServices() {
     return this.services;
   }
 
-  /**
-   * 获取启用了代理的服务
-   * @returns {Array>} 启用代理的服务列表
-   */
   getProxiedServices() {
     return this.services.filter(s => s.enableProxy);
   }
 
-  /**
-   * 根据ID获取服务
-   * @param {string} id - 服务ID
-   * @returns {object|null>} 服务信息或null
-   */
   getServiceById(id) {
     return this.services.find(s => s.id === id) || null;
   }
 
-  /**
-   * 根据设备获取服务
-   * @param {string} device - 设备ID
-   * @returns {Array>} 服务列表
-   */
   getServicesByDevice(device) {
     return this.services.filter(s => s.device === device);
   }
 
-  /**
-   * 根据域名获取服务
-   * @param {string} domain - 域名
-   * @returns {object|null>} 服务信息或null
-   */
   getServiceByDomain(domain) {
     return this.services.find(s => s.proxyDomain === domain) || null;
   }
 
   /**
-   * 添加新服务
-   * @param {object} service - 服务配置
-   * @returns {object>} 添加的服务
+   * 从端口扫描结果快速添加服务
+   * @param {object} params
+   * @param {string} params.deviceId - 设备ID
+   * @param {number} params.port - 端口号
+   * @param {string} params.name - 服务名称
+   * @param {string} params.id - 服务ID (英文，kebab-case)
+   * @param {string} [params.group] - 分组
+   * @param {string} [params.description] - 描述
+   */
+  async quickAddFromScan(params) {
+    const { deviceId, port, name, id, group, description } = params;
+    const serviceId = sanitizeId(id || name);
+    const device = this.getDeviceById(deviceId);
+
+    if (!device) {
+      throw new Error(`设备 ${deviceId} 不存在`);
+    }
+    if (this.services.some(s => s.id === serviceId)) {
+      throw new Error(`服务ID ${serviceId} 已存在`);
+    }
+
+    const internalProtocol = inferInternalProtocol(port);
+    const primaryDomain = this.proxyDefaults?.domains?.[0] || MANAGED_DOMAIN;
+    const proxyDomain = `${serviceId}.${primaryDomain}`;
+    const luckyPort = this.proxyDefaults?.externalPorts?.lucky || 50000;
+
+    const service = {
+      id: serviceId,
+      name: name,
+      device: deviceId,
+      internalPort: port,
+      internalProtocol: internalProtocol,
+      enableProxy: true,
+      proxyType: 'reverseproxy',
+      enableTLS: internalProtocol === 'https',
+      proxyDomain: proxyDomain,
+      description: description || `${name} on ${device.name}`,
+      lucky: {
+        port: luckyPort,
+        remark: name,
+        advancedConfig: ''
+      },
+      sunpanel: {
+        group: group || '其他',
+        icon: `https://${proxyDomain}/favicon.ico`,
+        lanUrl: `${internalProtocol}://${device.ipv4}:${port}`
+      }
+    };
+
+    this.services.push(service);
+    await this.saveRegistry();
+    await this.updateState();
+
+    this.changelog?.append('add_service', serviceId, `从端口扫描快速添加: ${name} (${device.name}:${port})`, { service });
+    console.log(`[ServiceRegistry] ✅ 快速添加服务: ${name} (${serviceId})`);
+    return service;
+  }
+
+  /**
+   * 添加新服务（完整模式）
    */
   async addService(service) {
-    // 检查ID是否已存在
-    if (this.services.some(s => s.id === service.id)) {
-      throw new Error(`服务ID ${service.id} 已存在`);
+    const serviceId = sanitizeId(service.id);
+    if (this.services.some(s => s.id === serviceId)) {
+      throw new Error(`服务ID ${serviceId} 已存在`);
     }
 
     const normalizedInput = normalizeServiceDomains(service);
 
-    // 设置默认值
+    const advanced = service.advanced || {};
+    const normalizedAdvanced = {
+      waf: Boolean(advanced.waf || false),
+      ignoreTlsVerify: advanced.ignoreTlsVerify !== undefined ? Boolean(advanced.ignoreTlsVerify) : true,
+      autoRedirect: advanced.autoRedirect !== undefined ? Boolean(advanced.autoRedirect) : true,
+      useTargetHost: advanced.useTargetHost !== undefined ? Boolean(advanced.useTargetHost) : true,
+      accessLog: advanced.accessLog !== undefined ? Boolean(advanced.accessLog) : true,
+      securityPresets: advanced.securityPresets !== undefined ? Boolean(advanced.securityPresets) : true,
+      authentication: {
+        enabled: Boolean(advanced.authentication?.enabled || false),
+        type: advanced.authentication?.type || 'web'
+      }
+    };
+
+    const primaryDomain = this.proxyDefaults?.domains?.[0] || MANAGED_DOMAIN;
+    const luckyPort = this.proxyDefaults?.externalPorts?.lucky || 50000;
+
     const newService = {
       enableProxy: true,
       proxyType: 'reverseproxy',
       enableTLS: false,
       ...normalizedInput,
+      id: serviceId,
+      proxyDomain: normalizedInput.proxyDomain || `${serviceId}.${primaryDomain}`,
+      internalProtocol: normalizedInput.internalProtocol || inferInternalProtocol(normalizedInput.internalPort),
       lucky: {
-        port: 50000,
+        port: luckyPort,
         remark: normalizedInput.name,
         advancedConfig: '',
         ...normalizedInput.lucky
       },
       sunpanel: {
         group: '其他',
-        icon: `https://${normalizedInput.proxyDomain}/favicon.ico`,
+        icon: `https://${normalizedInput.proxyDomain || `${serviceId}.${primaryDomain}`}/favicon.ico`,
         lanUrl: buildDefaultLanUrl(normalizedInput),
         ...normalizedInput.sunpanel
-      }
+      },
+      advanced: normalizedAdvanced
     };
 
     this.services.push(newService);
     await this.saveRegistry();
-
-    // 更新状态
     await this.updateState();
 
+    this.changelog?.append('add_service', serviceId, `手动添加服务: ${newService.name}`, { service: newService });
     console.log(`[ServiceRegistry] ✅ 服务已添加: ${newService.name} (${newService.id})`);
     return newService;
   }
 
   /**
    * 更新服务
-   * @param {string} id - 服务ID
-   * @param {object} updates - 更新内容
-   * @returns {object>} 更新后的服务
    */
   async updateService(id, updates) {
     const index = this.services.findIndex(s => s.id === id);
@@ -215,29 +340,39 @@ export class ServiceRegistry {
     }
 
     const existingService = this.services[index];
+    const advanced = updates.advanced || existingService.advanced || {};
+    const normalizedAdvanced = {
+      waf: Boolean(advanced.waf || false),
+      ignoreTlsVerify: advanced.ignoreTlsVerify !== undefined ? Boolean(advanced.ignoreTlsVerify) : true,
+      autoRedirect: advanced.autoRedirect !== undefined ? Boolean(advanced.autoRedirect) : true,
+      useTargetHost: advanced.useTargetHost !== undefined ? Boolean(advanced.useTargetHost) : true,
+      accessLog: advanced.accessLog !== undefined ? Boolean(advanced.accessLog) : true,
+      securityPresets: advanced.securityPresets !== undefined ? Boolean(advanced.securityPresets) : true,
+      authentication: {
+        enabled: Boolean(advanced.authentication?.enabled || false),
+        type: advanced.authentication?.type || 'web'
+      }
+    };
+
+    const before = { ...existingService };
     this.services[index] = normalizeServiceDomains({
       ...existingService,
       ...updates,
-      lucky: {
-        ...existingService.lucky,
-        ...updates.lucky
-      },
-      sunpanel: {
-        ...existingService.sunpanel,
-        ...updates.sunpanel
-      }
+      lucky: { ...existingService.lucky, ...updates.lucky },
+      sunpanel: { ...existingService.sunpanel, ...updates.sunpanel },
+      advanced: normalizedAdvanced
     });
 
     await this.saveRegistry();
     await this.updateState();
 
+    this.changelog?.append('update_service', id, `更新服务: ${this.services[index].name}`, { before, after: this.services[index] });
     console.log(`[ServiceRegistry] ✅ 服务已更新: ${this.services[index].name} (${id})`);
     return this.services[index];
   }
 
   /**
    * 删除服务
-   * @param {string} id - 服务ID
    */
   async deleteService(id) {
     const index = this.services.findIndex(s => s.id === id);
@@ -249,26 +384,37 @@ export class ServiceRegistry {
     await this.saveRegistry();
     await this.updateState();
 
+    this.changelog?.append('delete_service', id, `删除服务: ${removed.name}`, { service: removed });
     console.log(`[ServiceRegistry] ✅ 服务已删除: ${removed.name} (${id})`);
   }
 
   /**
-   * 更新状态管理器
+   * 清空所有服务
    */
+  async clearAll() {
+    console.warn('[ServiceRegistry] ⚠️ 执行危险操作：清空所有服务！');
+    const count = this.services.length;
+    this.services = [];
+    this.stateManager.state.services.totalServices = 0;
+    this.stateManager.state.services.proxiedServices = 0;
+    this.stateManager.state.services.lastUpdate = new Date().toISOString();
+    await this.saveRegistry();
+
+    this.changelog?.append('clear_all_services', 'services-registry', `清空所有服务 (共 ${count} 个)`);
+    return true;
+  }
+
+  // ==================== 状态 ====================
+
   async updateState() {
     this.stateManager.state.services = {
       lastUpdate: new Date().toISOString(),
       totalServices: this.services.length,
       proxiedServices: this.services.filter(s => s.enableProxy).length
     };
-
     await this.stateManager.save();
   }
 
-  /**
-   * 获取服务状态摘要
-   * @returns {object>} 状态摘要
-   */
   getStatus() {
     return {
       lastUpdate: this.stateManager.state.services?.lastUpdate || null,
@@ -290,8 +436,11 @@ export class ServiceRegistry {
       return stateIds;
     }
 
-    return [];
+    // Fallback to devices.json
+    return this.devices.map(d => d.id);
   }
+
+  // ==================== 校验 ====================
 
   validateService(service) {
     const errors = [];
@@ -302,7 +451,13 @@ export class ServiceRegistry {
     if (!normalizedService.name) errors.push('缺少服务名称');
     if (!normalizedService.device) errors.push('缺少设备ID');
     if (!normalizedService.internalPort) errors.push('缺少内部端口');
-    if (!normalizedService.proxyDomain) errors.push('缺少代理域名');
+
+    // Auto-generate proxyDomain if missing
+    if (!normalizedService.proxyDomain && normalizedService.id) {
+      // not an error, will be auto-generated
+    } else if (normalizedService.proxyDomain && !isManagedDomain(normalizedService.proxyDomain)) {
+      errors.push(`域名必须属于 ${MANAGED_DOMAIN}: ${normalizedService.proxyDomain}`);
+    }
 
     if (normalizedService.device && allowedDeviceIds.length > 0 && !allowedDeviceIds.includes(String(normalizedService.device))) {
       errors.push(`无效的设备ID: ${normalizedService.device}，当前可用设备: ${allowedDeviceIds.join(', ')}`);
@@ -315,10 +470,6 @@ export class ServiceRegistry {
       }
     }
 
-    if (normalizedService.proxyDomain && !isManagedDomain(normalizedService.proxyDomain)) {
-      errors.push(`域名必须属于 ${MANAGED_DOMAIN}: ${normalizedService.proxyDomain}`);
-    }
-
     return {
       valid: errors.length === 0,
       errors,
@@ -326,19 +477,14 @@ export class ServiceRegistry {
     };
   }
 
-  /**
-   * 准备服务的Lucky代理配置
-   * @param {string} id - 服务ID
-   * @param {string} deviceIPv6 - 设备的IPv6地址（可选）
-   * @returns {object>} Lucky代理配置
-   */
+  // ==================== 代理配置生成 ====================
+
   prepareLuckyProxyConfig(id, deviceIPv6 = null) {
     const service = this.getServiceById(id);
     if (!service) {
       throw new Error(`服务ID ${id} 不存在`);
     }
 
-    // 构建目标地址：优先使用IPv6，否则使用IPv4
     const targetHost = deviceIPv6 || `192.168.3.${service.device}`;
     const formattedTargetHost = formatTargetHost(targetHost);
     const target = service.enableTLS
@@ -357,11 +503,6 @@ export class ServiceRegistry {
     };
   }
 
-  /**
-   * 准备服务的SunPanel卡片配置
-   * @param {string} id - 服务ID
-   * @returns {object>} SunPanel卡片配置
-   */
   prepareSunPanelCardConfig(id, options = {}) {
     const service = this.getServiceById(id);
     if (!service) {
@@ -387,6 +528,20 @@ export class ServiceRegistry {
       itemGroupOnlyName: groupOnlyName || service.sunpanel.group,
       isSaveIcon: false
     };
+  }
+
+  /**
+   * 为服务生成 IPv6 直连 URL
+   * @param {string} serviceId
+   * @param {string} ipv6Address
+   * @returns {string} IPv6 direct URL
+   */
+  buildIpv6DirectUrl(serviceId, ipv6Address) {
+    const service = this.getServiceById(serviceId);
+    if (!service || !ipv6Address) return null;
+
+    const protocol = service.internalProtocol || inferInternalProtocol(service.internalPort);
+    return `${protocol}://[${ipv6Address}]:${service.internalPort}`;
   }
 }
 

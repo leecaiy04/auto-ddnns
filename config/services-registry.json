@@ -1,72 +1,91 @@
 {
   "services": [
     {
-      "id": "nas200-web",
-      "name": "飞牛OS Web界面",
+      "id": "fn-os",
+      "name": "飞牛os控制台",
       "device": "200",
-      "internalPort": 443,
+      "internalPort": 5666,
+      "internalProtocol": "http",
       "enableProxy": true,
-      "domainPrefix": "nas200",
-      "proxyDomain": "nas200.leecaiy.shop",
-      "cfDomain": "",
-      "proxyType": "reverseproxy",
-      "enableTLS": true,
-      "description": "飞牛OS的Web管理界面",
-      "lucky": {
-        "port": 50000,
-        "remark": "飞牛OS Web",
-        "advancedConfig": ""
-      },
-      "sunpanel": {
-        "group": "NAS",
-        "icon": "https://nas200.leecaiy.shop/favicon.ico",
-        "lanUrl": "https://192.168.3.200:443"
-      }
-    },
-    {
-      "id": "nas201-dsm",
-      "name": "黑群晖DSM",
-      "device": "201",
-      "internalPort": 5001,
-      "enableProxy": true,
-      "domainPrefix": "nas201",
-      "proxyDomain": "nas201.leecaiy.shop",
-      "cfDomain": "",
-      "proxyType": "reverseproxy",
-      "enableTLS": true,
-      "description": "黑群晖的DSM管理界面",
-      "lucky": {
-        "port": 50000,
-        "remark": "黑群晖DSM",
-        "advancedConfig": ""
-      },
-      "sunpanel": {
-        "group": "NAS",
-        "icon": "https://nas201.leecaiy.shop/favicon.ico",
-        "lanUrl": "https://192.168.3.201:5001"
-      }
-    },
-    {
-      "id": "debian10-web",
-      "name": "Debian Web服务",
-      "device": "10",
-      "internalPort": 8080,
-      "enableProxy": true,
-      "domainPrefix": "web10",
-      "proxyDomain": "web10.leecaiy.shop",
-      "cfDomain": "",
       "proxyType": "reverseproxy",
       "enableTLS": false,
-      "description": "Debian服务器上的Web服务",
+      "proxyDomain": "fn-os.leecaiy.shop",
+      "description": "飞牛os控制台 on 飞牛OS",
       "lucky": {
         "port": 50000,
-        "remark": "Debian Web",
+        "remark": "飞牛os控制台",
         "advancedConfig": ""
       },
       "sunpanel": {
-        "group": "服务器",
-        "icon": "https://web10.leecaiy.shop/favicon.ico",
-        "lanUrl": "http://192.168.3.10:8080"
+        "group": "其他",
+        "icon": "https://fn-os.leecaiy.shop/favicon.ico",
+        "lanUrl": "http://192.168.3.200:5666"
+      }
+    },
+    {
+      "id": "fn-sunpanel",
+      "name": "sunpanel主页_在飞牛OS",
+      "device": "200",
+      "internalPort": 20001,
+      "internalProtocol": "http",
+      "enableProxy": true,
+      "proxyType": "reverseproxy",
+      "enableTLS": false,
+      "proxyDomain": "fn-sunpanel.leecaiy.shop",
+      "description": "sunpanel主页_在飞牛OS on 飞牛OS",
+      "lucky": {
+        "port": 50000,
+        "remark": "sunpanel主页_在飞牛OS",
+        "advancedConfig": ""
+      },
+      "sunpanel": {
+        "group": "其他",
+        "icon": "https://fn-sunpanel.leecaiy.shop/favicon.ico",
+        "lanUrl": "http://192.168.3.200:20001"
+      }
+    },
+    {
+      "id": "nextcloud",
+      "name": "飞牛Nextcloud后台",
+      "device": "200",
+      "internalPort": 58841,
+      "internalProtocol": "http",
+      "enableProxy": true,
+      "proxyType": "reverseproxy",
+      "enableTLS": false,
+      "proxyDomain": "nextcloud.leecaiy.shop",
+      "description": "飞牛Nextcloud后台 on 飞牛OS",
+      "lucky": {
+        "port": 50000,
+        "remark": "飞牛Nextcloud后台",
+        "advancedConfig": ""
+      },
+      "sunpanel": {
+        "group": "其他",
+        "icon": "https://nextcloud.leecaiy.shop/favicon.ico",
+        "lanUrl": "http://192.168.3.200:58841"
+      }
+    },
+    {
+      "id": "gitea",
+      "name": "飞牛Gitee",
+      "device": "200",
+      "internalPort": 33100,
+      "internalProtocol": "http",
+      "enableProxy": true,
+      "proxyType": "reverseproxy",
+      "enableTLS": false,
+      "proxyDomain": "gitea.leecaiy.shop",
+      "description": "飞牛Gitee on 飞牛OS",
+      "lucky": {
+        "port": 50000,
+        "remark": "飞牛Gitee",
+        "advancedConfig": ""
+      },
+      "sunpanel": {
+        "group": "其他",
+        "icon": "https://gitea.leecaiy.shop/favicon.ico",
+        "lanUrl": "http://192.168.3.200:33100"
       }
     }
   ]

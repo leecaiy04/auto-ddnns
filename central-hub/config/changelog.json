@@ -1,0 +1,18 @@
+{
+  "entries": [
+    {
+      "timestamp": "2026-04-04T08:34:14.138Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 33 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T08:34:14.139Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/NPM/SunPanel)",
+      "user": "admin"
+    }
+  ]
+}

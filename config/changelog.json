@@ -1,0 +1,177 @@
+{
+  "entries": [
+    {
+      "timestamp": "2026-04-04T16:05:00+08:00",
+      "action": "system_reset",
+      "target": "services-registry",
+      "detail": "清空所有历史服务数据，准备白名单制重建",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T08:45:15.583Z",
+      "action": "scan_device",
+      "target": "10",
+      "detail": "扫描设备 10 (192.168.3.10), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T08:55:54.906Z",
+      "action": "scan_device",
+      "target": "10",
+      "detail": "扫描设备 10 (192.168.3.10), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T08:55:58.756Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T08:56:18.409Z",
+      "action": "add_service",
+      "target": "fn-os",
+      "detail": "从端口扫描快速添加: 飞牛os控制台 (飞牛OS:5666)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "fn-os",
+          "name": "飞牛os控制台",
+          "device": "200",
+          "internalPort": 5666,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "fn-os.leecaiy.shop",
+          "description": "飞牛os控制台 on 飞牛OS",
+          "lucky": {
+            "port": 50000,
+            "remark": "飞牛os控制台",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://fn-os.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:5666"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T08:56:44.060Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T08:57:14.467Z",
+      "action": "add_service",
+      "target": "fn-sunpanel",
+      "detail": "从端口扫描快速添加: sunpanel主页_在飞牛OS (飞牛OS:20001)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "fn-sunpanel",
+          "name": "sunpanel主页_在飞牛OS",
+          "device": "200",
+          "internalPort": 20001,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "fn-sunpanel.leecaiy.shop",
+          "description": "sunpanel主页_在飞牛OS on 飞牛OS",
+          "lucky": {
+            "port": 50000,
+            "remark": "sunpanel主页_在飞牛OS",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://fn-sunpanel.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:20001"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T08:57:16.928Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T08:57:44.531Z",
+      "action": "add_service",
+      "target": "nextcloud",
+      "detail": "从端口扫描快速添加: 飞牛Nextcloud后台 (飞牛OS:58841)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "nextcloud",
+          "name": "飞牛Nextcloud后台",
+          "device": "200",
+          "internalPort": 58841,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "nextcloud.leecaiy.shop",
+          "description": "飞牛Nextcloud后台 on 飞牛OS",
+          "lucky": {
+            "port": 50000,
+            "remark": "飞牛Nextcloud后台",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://nextcloud.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:58841"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T08:57:56.611Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T08:58:12.052Z",
+      "action": "add_service",
+      "target": "gitea",
+      "detail": "从端口扫描快速添加: 飞牛Gitee (飞牛OS:33100)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "gitea",
+          "name": "飞牛Gitee",
+          "device": "200",
+          "internalPort": 33100,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "gitea.leecaiy.shop",
+          "description": "飞牛Gitee on 飞牛OS",
+          "lucky": {
+            "port": 50000,
+            "remark": "飞牛Gitee",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://gitea.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:33100"
+          }
+        }
+      }
+    }
+  ]
+}

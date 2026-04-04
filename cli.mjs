@@ -68,6 +68,80 @@ async function runAction(action) {
         await modules.serviceRegistry.loadRegistry();
         await modules.luckyManager.syncToSunPanel(modules.serviceRegistry.getAllServices());
         break;
+      case 'import-lucky':
+        console.log('📥 尝试从 Lucky 反向代理中导入外置服务...');
+        await modules.serviceRegistry.loadRegistry();
+        const existingServices = modules.serviceRegistry.getAllServices();
+        const existingIds = new Set(existingServices.map(s => s.id));
+        const luckies = await modules.luckyManager.getLuckyProxies();
+        
+        let count = 0;
+        for (const proxy of luckies) {
+           const safeRemark = proxy.remark ? proxy.remark.replace(/[^a-zA-Z0-9-]/g,'-').toLowerCase() : `import-${Date.now()}`;
+           let id = safeRemark;
+           // 确保ID绝对唯一
+           let suffix = 1;
+           while(existingIds.has(id)) {
+               id = `${safeRemark}-${suffix}`;
+               suffix++;
+           }
+           
+           let internalPort = 80;
+           let device = '200';
+           if (proxy.target) {
+               const match = proxy.target.match(/192\.168\.3\.(\d+):(\d+)/);
+               if (match) {
+                  device = match[1];
+                  internalPort = parseInt(match[2], 10);
+               } else {
+                  const portMatch = proxy.target.match(/:(\d+)\/?$/);
+                  if (portMatch) internalPort = parseInt(portMatch[1], 10);
+               }
+           }
+
+           const checkDomain = proxy.domains && proxy.domains.length > 0 ? proxy.domains[0] : "";
+           
+           // Deduplicate strictly by structural equality (Domain + Device Target + Proxy Type)
+           const isStructurallySimilar = existingServices.some(s => s.proxyDomain === checkDomain && String(s.device) === String(device) && s.internalPort === internalPort);
+           if (isStructurallySimilar || existingIds.has(proxy.remark) || existingIds.has(id.replace(/-\d+$/, ''))) {
+               console.log(`[Import] 跳过已存在或内部地址相同的服务: ${proxy.remark} -> ${checkDomain} : ${device}:${internalPort}`);
+               continue;
+           }
+           
+           const rawAdv = proxy.rawAdvanced || {};
+           const advanced = {
+              waf: rawAdv.CorazaWAFInstance && rawAdv.CorazaWAFInstance !== '',
+              ignoreTlsVerify: rawAdv.LocationInsecureSkipVerify !== false,
+              autoRedirect: true, // Typically Lucky dictates this elsewhere, presume true
+              useTargetHost: rawAdv.OtherParams?.UseTargetHost !== false,
+              accessLog: rawAdv.EnableAccessLog !== false,
+              securityPresets: rawAdv.EasyLucky !== false,
+              authentication: {
+                  enabled: Boolean(rawAdv.OtherParams?.WebAuth || rawAdv.OtherParams?.BasicAuth),
+                  type: rawAdv.OtherParams?.BasicAuth ? 'basic' : 'web'
+              }
+           };
+
+           const newService = {
+              id,
+              name: proxy.remark || id,
+              device,
+              internalPort,
+              enableProxy: proxy.enabled,
+              proxyDomain: proxy.domains && proxy.domains.length > 0 ? proxy.domains[0] : "",
+              proxyType: 'reverseproxy',
+              enableTLS: proxy.enableTLS,
+              lucky: { remark: proxy.remark, port: proxy.port },
+              advanced
+           };
+           
+           await modules.serviceRegistry.addService(newService);
+           existingIds.add(id);
+           existingServices.push(newService);
+           count++;
+        }
+        console.log(`[Import] ✅ 成功从 Lucky 导入了 ${count} 条新的代理规则到 registry!`);
+        break;
       case 'monitor':
         console.log('📡 执行设备发现监控...');
         await modules.deviceMonitor.runDiscovery();

@@ -1,0 +1,994 @@
+{
+  "version": "1.0.0",
+  "lastUpdate": "2026-04-04T03:52:27.117Z",
+  "uptime": 480008,
+  "startTime": "2026-03-29T14:32:18.436Z",
+  "router": {
+    "history": []
+  },
+  "ddns": {
+    "domains": [],
+    "history": [
+      {
+        "event": "update",
+        "success": true,
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "output": "\n--- leecaiy.shop ---\n>>> [步骤2] 更新 Ali DDNS 解析记录\n\n[处理项目] IP: 192.168.3.2 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe9f:ba81\n           目标域名: 2.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.10 -> 提取 IPv6: 240e:391:cd1:b2c0:c880:13e9:d294:145c\n           目标域名: 10.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.105 -> 提取 IPv6: 240e:391:cd1:b2c0::3\n           目标域名: 105.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.148 -> 提取 IPv6: 240e:391:cd1:b2c0:6a76:27ff:fe53:699\n           目标域名: 148.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.149 -> 提取 IPv6: 240e:391:cd1:b2c0:72c9:32ff:fe1e:8347\n           目标域名: 149.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.151 -> 提取 IPv6: 240e:391:cd1:b2c0:d21:eddc:ec3c:a323\n           目标域名: 151.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.152 -> 提取 IPv6: 240e:391:cd1:b2c0:bad6:f6ff:fed6:5bb7\n           目标域名: 152.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.154 -> 提取 IPv6: 240e:391:cd1:b2c0:47a:c49b:fdd1:19f7\n           目标域名: 154.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.173 -> 提取 IPv6: 240e:391:cd1:b2c0:f490:1200:7b66:fed5\n           目标域名: 173.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.194 -> 提取 IPv6: 240e:391:cd1:b2c0:e2bb:9eff:fee4:fa0b\n           目标域名: 194.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.200 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe29:92a4\n           目标域名: 200.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.254 -> 提取 IPv6: 240e:391:cd1:b2c0:264b:feff:fe8a:7dd7\n           目标域名: 254.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
+        "timestamp": "2026-04-04T00:30:21.995Z"
+      },
+      {
+        "event": "update",
+        "success": true,
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "output": "\n--- leecaiy.shop ---\n>>> [步骤2] 更新 Ali DDNS 解析记录\n\n[处理项目] IP: 192.168.3.2 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe9f:ba81\n           目标域名: 2.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.10 -> 提取 IPv6: 240e:391:cd1:b2c0:c880:13e9:d294:145c\n           目标域名: 10.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.105 -> 提取 IPv6: 240e:391:cd1:b2c0::3\n           目标域名: 105.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.148 -> 提取 IPv6: 240e:391:cd1:b2c0:6a76:27ff:fe53:699\n           目标域名: 148.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.149 -> 提取 IPv6: 240e:391:cd1:b2c0:72c9:32ff:fe1e:8347\n           目标域名: 149.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.151 -> 提取 IPv6: 240e:391:cd1:b2c0:d21:eddc:ec3c:a323\n           目标域名: 151.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.152 -> 提取 IPv6: 240e:391:cd1:b2c0:bad6:f6ff:fed6:5bb7\n           目标域名: 152.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.154 -> 提取 IPv6: 240e:391:cd1:b2c0:47a:c49b:fdd1:19f7\n           目标域名: 154.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.173 -> 提取 IPv6: 240e:391:cd1:b2c0:f490:1200:7b66:fed5\n           目标域名: 173.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.194 -> 提取 IPv6: 240e:391:cd1:b2c0:e2bb:9eff:fee4:fa0b\n           目标域名: 194.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.200 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe29:92a4\n           目标域名: 200.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.254 -> 提取 IPv6: 240e:391:cd1:b2c0:264b:feff:fe8a:7dd7\n           目标域名: 254.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
+        "timestamp": "2026-04-04T00:40:22.907Z"
+      },
+      {
+        "event": "update",
+        "success": true,
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "output": "\n--- leecaiy.shop ---\n>>> [步骤2] 更新 Ali DDNS 解析记录\n\n[处理项目] IP: 192.168.3.2 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe9f:ba81\n           目标域名: 2.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.10 -> 提取 IPv6: 240e:391:cd1:b2c0:c880:13e9:d294:145c\n           目标域名: 10.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.105 -> 提取 IPv6: 240e:391:cd1:b2c0::3\n           目标域名: 105.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.148 -> 提取 IPv6: 240e:391:cd1:b2c0:6a76:27ff:fe53:699\n           目标域名: 148.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.149 -> 提取 IPv6: 240e:391:cd1:b2c0:72c9:32ff:fe1e:8347\n           目标域名: 149.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.151 -> 提取 IPv6: 240e:391:cd1:b2c0:d21:eddc:ec3c:a323\n           目标域名: 151.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.152 -> 提取 IPv6: 240e:391:cd1:b2c0:bad6:f6ff:fed6:5bb7\n           目标域名: 152.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.154 -> 提取 IPv6: 240e:391:cd1:b2c0:47a:c49b:fdd1:19f7\n           目标域名: 154.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.173 -> 提取 IPv6: 240e:391:cd1:b2c0:f490:1200:7b66:fed5\n           目标域名: 173.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.194 -> 提取 IPv6: 240e:391:cd1:b2c0:e2bb:9eff:fee4:fa0b\n           目标域名: 194.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.200 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe29:92a4\n           目标域名: 200.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.254 -> 提取 IPv6: 240e:391:cd1:b2c0:264b:feff:fe8a:7dd7\n           目标域名: 254.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
+        "timestamp": "2026-04-04T00:50:22.853Z"
+      },
+      {
+        "event": "update",
+        "success": true,
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "output": "\n--- leecaiy.shop ---\n>>> [步骤2] 更新 Ali DDNS 解析记录\n\n[处理项目] IP: 192.168.3.2 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe9f:ba81\n           目标域名: 2.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.10 -> 提取 IPv6: 240e:391:cd1:b2c0:c880:13e9:d294:145c\n           目标域名: 10.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.105 -> 提取 IPv6: 240e:391:cd1:b2c0:1c3d:6aa6:14a4:c5d7\n           目标域名: 105.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.148 -> 提取 IPv6: 240e:391:cd1:b2c0:6a76:27ff:fe53:699\n           目标域名: 148.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.149 -> 提取 IPv6: 240e:391:cd1:b2c0:72c9:32ff:fe1e:8347\n           目标域名: 149.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.151 -> 提取 IPv6: 240e:391:cd1:b2c0:d21:eddc:ec3c:a323\n           目标域名: 151.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.152 -> 提取 IPv6: 240e:391:cd1:b2c0:bad6:f6ff:fed6:5bb7\n           目标域名: 152.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.154 -> 提取 IPv6: 240e:391:cd1:b2c0:47a:c49b:fdd1:19f7\n           目标域名: 154.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.173 -> 提取 IPv6: 240e:391:cd1:b2c0:f490:1200:7b66:fed5\n           目标域名: 173.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.194 -> 提取 IPv6: 240e:391:cd1:b2c0:e2bb:9eff:fee4:fa0b\n           目标域名: 194.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.200 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe29:92a4\n           目标域名: 200.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.254 -> 提取 IPv6: 240e:391:cd1:b2c0:264b:feff:fe8a:7dd7\n           目标域名: 254.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
+        "timestamp": "2026-04-04T01:00:24.414Z"
+      },
+      {
+        "event": "update",
+        "success": true,
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "output": "\n--- leecaiy.shop ---\n>>> [步骤2] 更新 Ali DDNS 解析记录\n\n[处理项目] IP: 192.168.3.2 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe9f:ba81\n           目标域名: 2.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.10 -> 提取 IPv6: 240e:391:cd1:b2c0:c880:13e9:d294:145c\n           目标域名: 10.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.105 -> 提取 IPv6: 240e:391:cd1:b2c0:1c3d:6aa6:14a4:c5d7\n           目标域名: 105.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.148 -> 提取 IPv6: 240e:391:cd1:b2c0:6a76:27ff:fe53:699\n           目标域名: 148.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.149 -> 提取 IPv6: 240e:391:cd1:b2c0:72c9:32ff:fe1e:8347\n           目标域名: 149.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.151 -> 提取 IPv6: 240e:391:cd1:b2c0:d21:eddc:ec3c:a323\n           目标域名: 151.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.152 -> 提取 IPv6: 240e:391:cd1:b2c0:bad6:f6ff:fed6:5bb7\n           目标域名: 152.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.154 -> 提取 IPv6: 240e:391:cd1:b2c0:47a:c49b:fdd1:19f7\n           目标域名: 154.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.155 -> 提取 IPv6: 240e:391:cd1:b2c0:7487:16d:8320:9d9f\n           目标域名: 155.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.173 -> 提取 IPv6: 240e:391:cd1:b2c0:f490:1200:7b66:fed5\n           目标域名: 173.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.194 -> 提取 IPv6: 240e:391:cd1:b2c0:e2bb:9eff:fee4:fa0b\n           目标域名: 194.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.200 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe29:92a4\n           目标域名: 200.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.254 -> 提取 IPv6: 240e:391:cd1:b2c0:264b:feff:fe8a:7dd7\n           目标域名: 254.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
+        "timestamp": "2026-04-04T01:10:25.563Z"
+      },
+      {
+        "event": "update",
+        "success": true,
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "output": "\n--- leecaiy.shop ---\n>>> [步骤2] 更新 Ali DDNS 解析记录\n\n[处理项目] IP: 192.168.3.2 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe9f:ba81\n           目标域名: 2.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.10 -> 提取 IPv6: 240e:391:cd1:b2c0:c880:13e9:d294:145c\n           目标域名: 10.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.105 -> 提取 IPv6: 240e:391:cd1:b2c0:1c3d:6aa6:14a4:c5d7\n           目标域名: 105.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.148 -> 提取 IPv6: 240e:391:cd1:b2c0:6a76:27ff:fe53:699\n           目标域名: 148.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.149 -> 提取 IPv6: 240e:391:cd1:b2c0:72c9:32ff:fe1e:8347\n           目标域名: 149.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.151 -> 提取 IPv6: 240e:391:cd1:b2c0:d21:eddc:ec3c:a323\n           目标域名: 151.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.152 -> 提取 IPv6: 240e:391:cd1:b2c0:bad6:f6ff:fed6:5bb7\n           目标域名: 152.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.154 -> 提取 IPv6: 240e:391:cd1:b2c0:47a:c49b:fdd1:19f7\n           目标域名: 154.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.173 -> 提取 IPv6: 240e:391:cd1:b2c0:f490:1200:7b66:fed5\n           目标域名: 173.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.194 -> 提取 IPv6: 240e:391:cd1:b2c0:e2bb:9eff:fee4:fa0b\n           目标域名: 194.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.200 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe29:92a4\n           目标域名: 200.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.254 -> 提取 IPv6: 240e:391:cd1:b2c0:264b:feff:fe8a:7dd7\n           目标域名: 254.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
+        "timestamp": "2026-04-04T01:20:23.190Z"
+      },
+      {
+        "event": "update",
+        "success": true,
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "output": "\n--- leecaiy.shop ---\n>>> [步骤2] 更新 Ali DDNS 解析记录\n\n[处理项目] IP: 192.168.3.2 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe9f:ba81\n           目标域名: 2.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.10 -> 提取 IPv6: 240e:391:cd1:b2c0:c880:13e9:d294:145c\n           目标域名: 10.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.105 -> 提取 IPv6: 240e:391:cd1:b2c0:1c3d:6aa6:14a4:c5d7\n           目标域名: 105.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.148 -> 提取 IPv6: 240e:391:cd1:b2c0:6a76:27ff:fe53:699\n           目标域名: 148.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.149 -> 提取 IPv6: 240e:391:cd1:b2c0:72c9:32ff:fe1e:8347\n           目标域名: 149.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.151 -> 提取 IPv6: 240e:391:cd1:b2c0:d21:eddc:ec3c:a323\n           目标域名: 151.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.152 -> 提取 IPv6: 240e:391:cd1:b2c0:bad6:f6ff:fed6:5bb7\n           目标域名: 152.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.154 -> 提取 IPv6: 240e:391:cd1:b2c0:47a:c49b:fdd1:19f7\n           目标域名: 154.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.173 -> 提取 IPv6: 240e:391:cd1:b2c0:f490:1200:7b66:fed5\n           目标域名: 173.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.194 -> 提取 IPv6: 240e:391:cd1:b2c0:e2bb:9eff:fee4:fa0b\n           目标域名: 194.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.200 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe29:92a4\n           目标域名: 200.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.254 -> 提取 IPv6: 240e:391:cd1:b2c0:264b:feff:fe8a:7dd7\n           目标域名: 254.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
+        "timestamp": "2026-04-04T01:30:22.176Z"
+      },
+      {
+        "event": "update",
+        "success": true,
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "output": "\n--- leecaiy.shop ---\n>>> [步骤2] 更新 Ali DDNS 解析记录\n\n[处理项目] IP: 192.168.3.2 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe9f:ba81\n           目标域名: 2.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.10 -> 提取 IPv6: 240e:391:cd1:b2c0:c880:13e9:d294:145c\n           目标域名: 10.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.105 -> 提取 IPv6: 240e:391:cd1:b2c0:21c7:c2b1:3d7:42dd\n           目标域名: 105.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.148 -> 提取 IPv6: 240e:391:cd1:b2c0:6a76:27ff:fe53:699\n           目标域名: 148.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.149 -> 提取 IPv6: 240e:391:cd1:b2c0:72c9:32ff:fe1e:8347\n           目标域名: 149.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.151 -> 提取 IPv6: 240e:391:cd1:b2c0:d21:eddc:ec3c:a323\n           目标域名: 151.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.152 -> 提取 IPv6: 240e:391:cd1:b2c0:bad6:f6ff:fed6:5bb7\n           目标域名: 152.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.154 -> 提取 IPv6: 240e:391:cd1:b2c0:47a:c49b:fdd1:19f7\n           目标域名: 154.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.173 -> 提取 IPv6: 240e:391:cd1:b2c0:f490:1200:7b66:fed5\n           目标域名: 173.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.194 -> 提取 IPv6: 240e:391:cd1:b2c0:e2bb:9eff:fee4:fa0b\n           目标域名: 194.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.200 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe29:92a4\n           目标域名: 200.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.254 -> 提取 IPv6: 240e:391:cd1:b2c0:264b:feff:fe8a:7dd7\n           目标域名: 254.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
+        "timestamp": "2026-04-04T01:40:23.065Z"
+      },
+      {
+        "event": "update",
+        "success": true,
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "output": "\n--- leecaiy.shop ---\n>>> [步骤2] 更新 Ali DDNS 解析记录\n\n[处理项目] IP: 192.168.3.2 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe9f:ba81\n           目标域名: 2.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.10 -> 提取 IPv6: 240e:391:cd1:b2c0:c880:13e9:d294:145c\n           目标域名: 10.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.105 -> 提取 IPv6: 240e:391:cd1:b2c0:21c7:c2b1:3d7:42dd\n           目标域名: 105.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.148 -> 提取 IPv6: 240e:391:cd1:b2c0:6a76:27ff:fe53:699\n           目标域名: 148.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.149 -> 提取 IPv6: 240e:391:cd1:b2c0:72c9:32ff:fe1e:8347\n           目标域名: 149.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.151 -> 提取 IPv6: 240e:391:cd1:b2c0:d21:eddc:ec3c:a323\n           目标域名: 151.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.152 -> 提取 IPv6: 240e:391:cd1:b2c0:bad6:f6ff:fed6:5bb7\n           目标域名: 152.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.154 -> 提取 IPv6: 240e:391:cd1:b2c0:47a:c49b:fdd1:19f7\n           目标域名: 154.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.173 -> 提取 IPv6: 240e:391:cd1:b2c0:f490:1200:7b66:fed5\n           目标域名: 173.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.194 -> 提取 IPv6: 240e:391:cd1:b2c0:e2bb:9eff:fee4:fa0b\n           目标域名: 194.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.200 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe29:92a4\n           目标域名: 200.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.254 -> 提取 IPv6: 240e:391:cd1:b2c0:264b:feff:fe8a:7dd7\n           目标域名: 254.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
+        "timestamp": "2026-04-04T01:50:22.589Z"
+      },
+      {
+        "event": "update",
+        "success": true,
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "output": "\n--- leecaiy.shop ---\n>>> [步骤2] 更新 Ali DDNS 解析记录\n\n[处理项目] IP: 192.168.3.2 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe9f:ba81\n           目标域名: 2.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.10 -> 提取 IPv6: 240e:391:cd1:b2c0:c880:13e9:d294:145c\n           目标域名: 10.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.105 -> 提取 IPv6: 240e:391:cd1:b2c0:5ccb:de5d:7156:bb47\n           目标域名: 105.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.149 -> 提取 IPv6: 240e:391:cd1:b2c0:72c9:32ff:fe1e:8347\n           目标域名: 149.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.151 -> 提取 IPv6: 240e:391:cd1:b2c0:d21:eddc:ec3c:a323\n           目标域名: 151.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.152 -> 提取 IPv6: 240e:391:cd1:b2c0:bad6:f6ff:fed6:5bb7\n           目标域名: 152.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.154 -> 提取 IPv6: 240e:391:cd1:b2c0:47a:c49b:fdd1:19f7\n           目标域名: 154.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.173 -> 提取 IPv6: 240e:391:cd1:b2c0:f490:1200:7b66:fed5\n           目标域名: 173.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.194 -> 提取 IPv6: 240e:391:cd1:b2c0:e2bb:9eff:fee4:fa0b\n           目标域名: 194.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.200 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe29:92a4\n           目标域名: 200.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.254 -> 提取 IPv6: 240e:391:cd1:b2c0:264b:feff:fe8a:7dd7\n           目标域名: 254.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
+        "timestamp": "2026-04-04T02:00:21.909Z"
+      }
+    ],
+    "lastUpdate": "2026-04-04T02:00:21.909Z",
+    "lastResult": {
+      "success": true,
+      "output": "\n--- leecaiy.shop ---\n>>> [步骤2] 更新 Ali DDNS 解析记录\n\n[处理项目] IP: 192.168.3.2 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe9f:ba81\n           目标域名: 2.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.10 -> 提取 IPv6: 240e:391:cd1:b2c0:c880:13e9:d294:145c\n           目标域名: 10.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.105 -> 提取 IPv6: 240e:391:cd1:b2c0:5ccb:de5d:7156:bb47\n           目标域名: 105.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.149 -> 提取 IPv6: 240e:391:cd1:b2c0:72c9:32ff:fe1e:8347\n           目标域名: 149.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.151 -> 提取 IPv6: 240e:391:cd1:b2c0:d21:eddc:ec3c:a323\n           目标域名: 151.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.152 -> 提取 IPv6: 240e:391:cd1:b2c0:bad6:f6ff:fed6:5bb7\n           目标域名: 152.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.154 -> 提取 IPv6: 240e:391:cd1:b2c0:47a:c49b:fdd1:19f7\n           目标域名: 154.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.173 -> 提取 IPv6: 240e:391:cd1:b2c0:f490:1200:7b66:fed5\n           目标域名: 173.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.194 -> 提取 IPv6: 240e:391:cd1:b2c0:e2bb:9eff:fee4:fa0b\n           目标域名: 194.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.200 -> 提取 IPv6: 240e:391:cd1:b2c0:be24:11ff:fe29:92a4\n           目标域名: 200.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n[处理项目] IP: 192.168.3.254 -> 提取 IPv6: 240e:391:cd1:b2c0:264b:feff:fe8a:7dd7\n           目标域名: 254.v6.leecaiy.shop\n  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ...\n  |- 结果: 添加完成！\n\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
+      "error": "",
+      "domains": [
+        "leecaiy.shop"
+      ],
+      "timestamp": "2026-04-04T02:00:21.909Z"
+    }
+  },
+  "lucky": {
+    "proxies": [],
+    "history": [],
+    "lastSync": "2026-04-04T02:00:08.391Z",
+    "syncStatus": {}
+  },
+  "sunpanel": {
+    "cards": [],
+    "history": [],
+    "lastSync": "2026-04-04T03:52:27.117Z",
+    "syncStatus": {
+      "leecaiy-shop": {
+        "hash": "6cdf05c7d90a9c76125f9c45aa5e528e",
+        "domain": "leecaiy.shop",
+        "remark": "Sunpanel 管理界面",
+        "target": "http://127.0.0.1:20001",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:00.871Z"
+      },
+      "fn-leecaiy-shop": {
+        "hash": "0f09c107971d770d31b65b7ffdc67d62",
+        "domain": "fn.leecaiy.shop",
+        "remark": "fnos",
+        "target": "http://192.168.3.200:5666",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:00.988Z"
+      },
+      "code-leecaiy-shop": {
+        "hash": "aa2c4f5c5f52f36217973486a345b5ed",
+        "domain": "code.leecaiy.shop",
+        "remark": "vscode",
+        "target": "http://127.0.0.1:40031",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:01.104Z"
+      },
+      "similar-leecaiy-shop": {
+        "hash": "c2b9db68b4656ed83b77be23654845a5",
+        "domain": "similar.leecaiy.shop",
+        "remark": "相似度",
+        "target": "http://127.0.0.1:40003",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:01.287Z"
+      },
+      "pve-leecaiy-shop": {
+        "hash": "34510d1dde5802e3c9d2ea24bdc352de",
+        "domain": "pve.leecaiy.shop",
+        "remark": "pve",
+        "target": "http://192.168.3.254:8006",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:01.479Z"
+      },
+      "pdf-leecaiy-shop": {
+        "hash": "1202f4a03e92d6fb1c3a22de691d2343",
+        "domain": "pdf.leecaiy.shop",
+        "remark": "pdf",
+        "target": "http://127.0.0.1:31568",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:01.637Z"
+      },
+      "webdav-leecaiy-shop": {
+        "hash": "3193eee6963ee7a0d7b5e813534520e3",
+        "domain": "webdav.leecaiy.shop",
+        "remark": "webdav",
+        "target": "http://127.0.0.1:16501",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:01.746Z"
+      },
+      "n8n-leecaiy-shop": {
+        "hash": "b410b1a3b38ef58cf47a93d1d4ec4a41",
+        "domain": "n8n.leecaiy.shop",
+        "remark": "n8n",
+        "target": "http://127.0.0.1:45678",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:01.871Z"
+      },
+      "lucky-leecaiy-shop": {
+        "hash": "31ec0fc63002ae817384259d577cd097",
+        "domain": "lucky.leecaiy.shop",
+        "remark": "lucky",
+        "target": "http://192.168.3.200:16601",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:01.962Z"
+      },
+      "nas-leecaiy-shop": {
+        "hash": "e799d5207156caa5bce311dceadabe85",
+        "domain": "nas.leecaiy.shop",
+        "remark": "synology群晖",
+        "target": "http://192.168.3.201:5000",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:02.054Z"
+      },
+      "1panel-leecaiy-shop": {
+        "hash": "5fe90800c1ff8860927925fee90e7a69",
+        "domain": "1panel.leecaiy.shop",
+        "remark": "1panel",
+        "target": "http://192.168.3.200:20000",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:02.171Z"
+      },
+      "nextcloud-leecaiy-shop": {
+        "hash": "623d09360c516af18859a459216839a8",
+        "domain": "nextcloud.leecaiy.shop",
+        "remark": "nextcloud",
+        "target": "http://127.0.0.1:58841",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:02.279Z"
+      },
+      "terminal-leecaiy-shop": {
+        "hash": "8ab7117def404cb6535d59dd1123c3f6",
+        "domain": "terminal.leecaiy.shop",
+        "remark": "terminal",
+        "target": "http://192.168.3.200:5122",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:02.379Z"
+      },
+      "onlyoffice-leecaiy-shop": {
+        "hash": "ff1976f3fe4607f9d67d5b68d758f467",
+        "domain": "onlyoffice.leecaiy.shop",
+        "remark": "onlyoffice",
+        "target": "http://127.0.0.1:58842",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:02.571Z"
+      },
+      "gitea-leecaiy-shop": {
+        "hash": "b9af60c2ef846b54a4b88f5bbd6a9bbd",
+        "domain": "gitea.leecaiy.shop",
+        "remark": "gitea",
+        "target": "http://127.0.0.1:33100",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:02.887Z"
+      },
+      "reference-leecaiy-shop": {
+        "hash": "631c6ed68520e5dce95e38a9243ae15b",
+        "domain": "reference.leecaiy.shop",
+        "remark": "reference",
+        "target": "http://127.0.0.1:13005",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:02.996Z"
+      },
+      "f-leecaiy-shop": {
+        "hash": "ce179ea24d792fb7f0262156258dbd8e",
+        "domain": "f.leecaiy.shop",
+        "remark": "filebox",
+        "target": "http://127.0.0.1:21001",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:03.079Z"
+      },
+      "nextgpt-leecaiy-shop": {
+        "hash": "bc6e0fb6997f1ddbf1f4831935188137",
+        "domain": "nextgpt.leecaiy.shop",
+        "remark": "nextGPT",
+        "target": "http://127.0.0.1:40042",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:03.171Z"
+      },
+      "jenkins-leecaiy-shop": {
+        "hash": "89092dacf24dd6fe8041dca7e9c0fed2",
+        "domain": "Jenkins.leecaiy.shop",
+        "remark": "Jenkins",
+        "target": "http://127.0.0.1:38280",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:03.312Z"
+      },
+      "oneapi-leecaiy-shop": {
+        "hash": "8894783bc26be06d3323c91b91ca5406",
+        "domain": "oneapi.leecaiy.shop",
+        "remark": "oneapi",
+        "target": "http://127.0.0.1:24377",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:03.495Z"
+      },
+      "json2csv-leecaiy-shop": {
+        "hash": "b0031a11bc10672853cf1f2472e91896",
+        "domain": "json2csv.leecaiy.shop",
+        "remark": "json2csv",
+        "target": "http://192.168.3.200:40002",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:03.662Z"
+      },
+      "lunix-leecaiy-shop": {
+        "hash": "1015f081043feb5f9ab9ed9d398aded9",
+        "domain": "lunix.leecaiy.shop",
+        "remark": "lunix-commond",
+        "target": "http://127.0.0.1:49665",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:03.779Z"
+      },
+      "gemini-leecaiy-shop": {
+        "hash": "4b070517c2da7bc2e2404ee05f28118e",
+        "domain": "gemini.leecaiy.shop",
+        "remark": "gemin反向代理",
+        "target": "http://127.0.0.1:45683",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:06.937Z"
+      },
+      "apitable-leecaiy-shop": {
+        "hash": "610ea0fe38a418ca77635052cc19affd",
+        "domain": "apitable.leecaiy.shop",
+        "remark": "apitable",
+        "target": "http://127.0.0.1:53080",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:07.062Z"
+      },
+      "reader-leecaiy-shop": {
+        "hash": "966bbbaa6210f73743658c703d247736",
+        "domain": "reader.leecaiy.shop",
+        "remark": "阅读",
+        "target": "http://127.0.0.1:54396",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:07.178Z"
+      },
+      "leantime-leecaiy-shop": {
+        "hash": "2dad4e367559a0e95228e6569e274165",
+        "domain": "leantime.leecaiy.shop",
+        "remark": "leantime",
+        "target": "http://192.168.3.200:48014",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:07.295Z"
+      },
+      "claw-leecaiy-shop": {
+        "hash": "7832f2220287686c349417d298cfc67b",
+        "domain": "claw.leecaiy.shop",
+        "remark": "openclaw",
+        "target": "http://192.168.3.10:18789",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:07.412Z"
+      },
+      "vscode2-leecaiy-shop": {
+        "hash": "d4cc66e3207a21758bf4912869125526",
+        "domain": "vscode2.leecaiy.shop",
+        "remark": "vscode in 飞牛os",
+        "target": "http://192.168.3.200:38357",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:07.787Z"
+      },
+      "aio-leecaiy-shop": {
+        "hash": "7e20473255bab1997254e8495dfe5ed7",
+        "domain": "aio.leecaiy.shop",
+        "remark": "sanbox aio",
+        "target": "http://192.168.3.200:52000",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-02T17:15:07.921Z"
+      },
+      "svc-nas200-web": {
+        "hash": "2c5bb9a1c006dc49abf69cfd6af9aa72",
+        "domain": "nas200.leecaiy.shop",
+        "remark": "飞牛OS Web",
+        "target": "https://192.168.3.200:443",
+        "serviceId": "nas200-web",
+        "groupId": 37,
+        "groupOnlyName": "nas",
+        "lastSync": "2026-04-02T17:15:08.003Z"
+      },
+      "svc-nas201-dsm": {
+        "hash": "5de70d591ab216f59844a625369fac24",
+        "domain": "nas201.leecaiy.shop",
+        "remark": "黑群晖DSM",
+        "target": "https://192.168.3.201:5001",
+        "serviceId": "nas201-dsm",
+        "groupId": 37,
+        "groupOnlyName": "nas",
+        "lastSync": "2026-04-02T17:15:08.119Z"
+      },
+      "svc-debian10-web": {
+        "hash": "15e1bf39a648eb58ef8812cf5f939af7",
+        "domain": "web10.leecaiy.shop",
+        "remark": "Debian Web",
+        "target": "http://192.168.3.10:8080",
+        "serviceId": "debian10-web",
+        "groupId": 38,
+        "groupOnlyName": "服务器",
+        "lastSync": "2026-04-02T17:15:08.203Z"
+      },
+      "leecaiy-shop_0": {
+        "hash": "6cdf05c7d90a9c76125f9c45aa5e528e",
+        "domain": "leecaiy.shop",
+        "remark": "Sunpanel 管理界面",
+        "target": "http://127.0.0.1:20001",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:09.583Z"
+      },
+      "fn-leecaiy-shop_0": {
+        "hash": "0f09c107971d770d31b65b7ffdc67d62",
+        "domain": "fn.leecaiy.shop",
+        "remark": "fnos",
+        "target": "http://192.168.3.200:5666",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:09.675Z"
+      },
+      "code-leecaiy-shop_0": {
+        "hash": "aa2c4f5c5f52f36217973486a345b5ed",
+        "domain": "code.leecaiy.shop",
+        "remark": "vscode",
+        "target": "http://127.0.0.1:40031",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:09.766Z"
+      },
+      "similar-leecaiy-shop_0": {
+        "hash": "c2b9db68b4656ed83b77be23654845a5",
+        "domain": "similar.leecaiy.shop",
+        "remark": "相似度",
+        "target": "http://127.0.0.1:40003",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:09.858Z"
+      },
+      "pve-leecaiy-shop_0": {
+        "hash": "34510d1dde5802e3c9d2ea24bdc352de",
+        "domain": "pve.leecaiy.shop",
+        "remark": "pve",
+        "target": "http://192.168.3.254:8006",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:09.932Z"
+      },
+      "pdf-leecaiy-shop_0": {
+        "hash": "1202f4a03e92d6fb1c3a22de691d2343",
+        "domain": "pdf.leecaiy.shop",
+        "remark": "pdf",
+        "target": "http://127.0.0.1:31568",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:10.057Z"
+      },
+      "webdav-leecaiy-shop_0": {
+        "hash": "1f429991d03b1e427190f0d3418221d3",
+        "domain": "webdav.leecaiy.shop",
+        "remark": "webdav",
+        "target": "http://192.168.3.200:5105",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:10.216Z"
+      },
+      "n8n-leecaiy-shop_0": {
+        "hash": "b410b1a3b38ef58cf47a93d1d4ec4a41",
+        "domain": "n8n.leecaiy.shop",
+        "remark": "n8n",
+        "target": "http://127.0.0.1:45678",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:10.308Z"
+      },
+      "lucky-leecaiy-shop_0": {
+        "hash": "31ec0fc63002ae817384259d577cd097",
+        "domain": "lucky.leecaiy.shop",
+        "remark": "lucky",
+        "target": "http://192.168.3.200:16601",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:10.391Z"
+      },
+      "nas-leecaiy-shop_0": {
+        "hash": "e799d5207156caa5bce311dceadabe85",
+        "domain": "nas.leecaiy.shop",
+        "remark": "synology群晖",
+        "target": "http://192.168.3.201:5000",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:10.474Z"
+      },
+      "1panel-leecaiy-shop_0": {
+        "hash": "5fe90800c1ff8860927925fee90e7a69",
+        "domain": "1panel.leecaiy.shop",
+        "remark": "1panel",
+        "target": "http://192.168.3.200:20000",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:10.557Z"
+      },
+      "nextcloud-leecaiy-shop_0": {
+        "hash": "623d09360c516af18859a459216839a8",
+        "domain": "nextcloud.leecaiy.shop",
+        "remark": "nextcloud",
+        "target": "http://127.0.0.1:58841",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:10.691Z"
+      },
+      "terminal-leecaiy-shop_0": {
+        "hash": "8ab7117def404cb6535d59dd1123c3f6",
+        "domain": "terminal.leecaiy.shop",
+        "remark": "terminal",
+        "target": "http://192.168.3.200:5122",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:10.808Z"
+      },
+      "onlyoffice-leecaiy-shop_0": {
+        "hash": "ff1976f3fe4607f9d67d5b68d758f467",
+        "domain": "onlyoffice.leecaiy.shop",
+        "remark": "onlyoffice",
+        "target": "http://127.0.0.1:58842",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:10.882Z"
+      },
+      "gitea-leecaiy-shop_0": {
+        "hash": "b9af60c2ef846b54a4b88f5bbd6a9bbd",
+        "domain": "gitea.leecaiy.shop",
+        "remark": "gitea",
+        "target": "http://127.0.0.1:33100",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:10.966Z"
+      },
+      "reference-leecaiy-shop_0": {
+        "hash": "631c6ed68520e5dce95e38a9243ae15b",
+        "domain": "reference.leecaiy.shop",
+        "remark": "reference",
+        "target": "http://127.0.0.1:13005",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:11.049Z"
+      },
+      "f-leecaiy-shop_0": {
+        "hash": "ce179ea24d792fb7f0262156258dbd8e",
+        "domain": "f.leecaiy.shop",
+        "remark": "filebox",
+        "target": "http://127.0.0.1:21001",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:11.191Z"
+      },
+      "nextgpt-leecaiy-shop_0": {
+        "hash": "bc6e0fb6997f1ddbf1f4831935188137",
+        "domain": "nextgpt.leecaiy.shop",
+        "remark": "nextGPT",
+        "target": "http://127.0.0.1:40042",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:11.291Z"
+      },
+      "jenkins-leecaiy-shop_0": {
+        "hash": "89092dacf24dd6fe8041dca7e9c0fed2",
+        "domain": "Jenkins.leecaiy.shop",
+        "remark": "Jenkins",
+        "target": "http://127.0.0.1:38280",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:11.408Z"
+      },
+      "oneapi-leecaiy-shop_0": {
+        "hash": "8894783bc26be06d3323c91b91ca5406",
+        "domain": "oneapi.leecaiy.shop",
+        "remark": "oneapi",
+        "target": "http://127.0.0.1:24377",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:11.499Z"
+      },
+      "json2csv-leecaiy-shop_0": {
+        "hash": "b0031a11bc10672853cf1f2472e91896",
+        "domain": "json2csv.leecaiy.shop",
+        "remark": "json2csv",
+        "target": "http://192.168.3.200:40002",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:11.591Z"
+      },
+      "lunix-leecaiy-shop_0": {
+        "hash": "1015f081043feb5f9ab9ed9d398aded9",
+        "domain": "lunix.leecaiy.shop",
+        "remark": "lunix-commond",
+        "target": "http://127.0.0.1:49665",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:11.707Z"
+      },
+      "gemini-leecaiy-shop_0": {
+        "hash": "4b070517c2da7bc2e2404ee05f28118e",
+        "domain": "gemini.leecaiy.shop",
+        "remark": "gemin反向代理",
+        "target": "http://127.0.0.1:45683",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:12.782Z"
+      },
+      "apitable-leecaiy-shop_0": {
+        "hash": "610ea0fe38a418ca77635052cc19affd",
+        "domain": "apitable.leecaiy.shop",
+        "remark": "apitable",
+        "target": "http://127.0.0.1:53080",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:12.882Z"
+      },
+      "reader-leecaiy-shop_0": {
+        "hash": "966bbbaa6210f73743658c703d247736",
+        "domain": "reader.leecaiy.shop",
+        "remark": "阅读",
+        "target": "http://127.0.0.1:54396",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:12.957Z"
+      },
+      "leantime-leecaiy-shop_0": {
+        "hash": "2dad4e367559a0e95228e6569e274165",
+        "domain": "leantime.leecaiy.shop",
+        "remark": "leantime",
+        "target": "http://192.168.3.200:48014",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:13.065Z"
+      },
+      "claw-leecaiy-shop_0": {
+        "hash": "7832f2220287686c349417d298cfc67b",
+        "domain": "claw.leecaiy.shop",
+        "remark": "openclaw",
+        "target": "http://192.168.3.10:18789",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:13.149Z"
+      },
+      "vscode2-leecaiy-shop_0": {
+        "hash": "d4cc66e3207a21758bf4912869125526",
+        "domain": "vscode2.leecaiy.shop",
+        "remark": "vscode in 飞牛os",
+        "target": "http://192.168.3.200:38357",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:13.257Z"
+      },
+      "aio-leecaiy-shop_0": {
+        "hash": "7e20473255bab1997254e8495dfe5ed7",
+        "domain": "aio.leecaiy.shop",
+        "remark": "sanbox aio",
+        "target": "http://192.168.3.200:52000",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:13.382Z"
+      },
+      "nas200-leecaiy-shop_0": {
+        "hash": "8da017ef7f84bae666c64e93bd92addb",
+        "domain": "nas200.leecaiy.shop",
+        "remark": "飞牛OS Web",
+        "target": "http://[240e:391:cd1:b2c0:be24:11ff:fe29:92a4]:5666",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:13.482Z"
+      },
+      "nas201-leecaiy-shop_0": {
+        "hash": "0c935e1156f45236e8143a2047037c6e",
+        "domain": "nas201.leecaiy.shop",
+        "remark": "黑群晖DSM",
+        "target": "https://192.168.3.201:5001",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:13.599Z"
+      },
+      "web10-leecaiy-shop_0": {
+        "hash": "f3e7fa67024db00d74bbb1a8ba57df12",
+        "domain": "web10.leecaiy.shop",
+        "remark": "Debian Web",
+        "target": "http://[240e:391:cd1:b2c0:c880:13e9:d294:145c]:8080",
+        "serviceId": null,
+        "groupId": 39,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-03T21:44:13.715Z"
+      },
+      "svc-nas200-web_0": {
+        "hash": "2c5bb9a1c006dc49abf69cfd6af9aa72",
+        "domain": "nas200.leecaiy.shop",
+        "remark": "飞牛OS Web",
+        "target": "http://[240e:391:cd1:b2c0:be24:11ff:fe29:92a4]:5666",
+        "serviceId": "nas200-web",
+        "groupId": 37,
+        "groupOnlyName": "nas",
+        "lastSync": "2026-04-03T21:45:06.127Z"
+      },
+      "svc-nas201-dsm_0": {
+        "hash": "5de70d591ab216f59844a625369fac24",
+        "domain": "nas201.leecaiy.shop",
+        "remark": "黑群晖DSM",
+        "target": "https://192.168.3.201:5001",
+        "serviceId": "nas201-dsm",
+        "groupId": 37,
+        "groupOnlyName": "nas",
+        "lastSync": "2026-04-03T21:45:06.202Z"
+      },
+      "svc-debian10-web_0": {
+        "hash": "15e1bf39a648eb58ef8812cf5f939af7",
+        "domain": "web10.leecaiy.shop",
+        "remark": "Debian Web",
+        "target": "http://[240e:391:cd1:b2c0:c880:13e9:d294:145c]:8080",
+        "serviceId": "debian10-web",
+        "groupId": 38,
+        "groupOnlyName": "服务器",
+        "lastSync": "2026-04-03T21:45:06.286Z"
+      }
+    }
+  },
+  "devices": {
+    "lastUpdate": "2026-04-04T02:00:14.092Z",
+    "devices": {
+      "2": {
+        "ipv4": "192.168.3.2",
+        "ipv6": "240e:391:cd1:b2c0:be24:11ff:fe9f:ba81",
+        "mac": "bc:24:11:9f:ba:81",
+        "ipv6State": "",
+        "ipv6Interface": "br0",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "10": {
+        "ipv4": "192.168.3.10",
+        "ipv6": "240e:391:cd1:b2c0:c880:13e9:d294:145c",
+        "mac": "bc:24:11:dc:58:78",
+        "ipv6State": "",
+        "ipv6Interface": "br0",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "100": {
+        "ipv4": "192.168.3.100",
+        "ipv6": null,
+        "mac": "24:5a:5f:d8:2c:23",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "103": {
+        "ipv4": "192.168.3.103",
+        "ipv6": null,
+        "mac": "1c:af:4a:8a:20:2c",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "105": {
+        "ipv4": "192.168.3.105",
+        "ipv6": "240e:391:cd1:b2c0:5ccb:de5d:7156:bb47",
+        "mac": "1e:83:0e:be:9c:b3",
+        "ipv6State": "",
+        "ipv6Interface": "br0",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "148": {
+        "ipv4": "192.168.3.148",
+        "ipv6": "240e:391:cd1:b2c0:6a76:27ff:fe53:699",
+        "mac": "68:76:27:53:06:99",
+        "ipv6State": "",
+        "ipv6Interface": "br0",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "149": {
+        "ipv4": "192.168.3.149",
+        "ipv6": "240e:391:cd1:b2c0:72c9:32ff:fe1e:8347",
+        "mac": "70:c9:32:1e:83:47",
+        "ipv6State": "",
+        "ipv6Interface": "br0",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "151": {
+        "ipv4": "192.168.3.151",
+        "ipv6": "240e:391:cd1:b2c0:d21:eddc:ec3c:a323",
+        "mac": "74:56:3c:fc:03:82",
+        "ipv6State": "REACHABLE",
+        "ipv6Interface": "br0",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "152": {
+        "ipv4": "192.168.3.152",
+        "ipv6": "240e:391:cd1:b2c0:bad6:f6ff:fed6:5bb7",
+        "mac": "b8:d6:f6:d6:5b:b7",
+        "ipv6State": "",
+        "ipv6Interface": "br0",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "154": {
+        "ipv4": "192.168.3.154",
+        "ipv6": "240e:391:cd1:b2c0:47a:c49b:fdd1:19f7",
+        "mac": "c2:1c:c8:89:0c:ed",
+        "ipv6State": "",
+        "ipv6Interface": "br0",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "155": {
+        "ipv4": "192.168.3.155",
+        "ipv6": null,
+        "mac": "5a:fb:0d:b5:4c:1a",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "173": {
+        "ipv4": "192.168.3.173",
+        "ipv6": "240e:391:cd1:b2c0:f490:1200:7b66:fed5",
+        "mac": "a0:d0:5b:51:f0:e2",
+        "ipv6State": "",
+        "ipv6Interface": "br0",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "191": {
+        "ipv4": "192.168.3.191",
+        "ipv6": null,
+        "mac": "04:67:61:4d:c3:2c",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "194": {
+        "ipv4": "192.168.3.194",
+        "ipv6": "240e:391:cd1:b2c0:e2bb:9eff:fee4:fa0b",
+        "mac": "e0:bb:9e:e4:fa:0b",
+        "ipv6State": "",
+        "ipv6Interface": "br0",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "197": {
+        "ipv4": "192.168.3.197",
+        "ipv6": null,
+        "mac": "08:9e:4b:19:a3:79",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "199": {
+        "ipv4": "192.168.3.199",
+        "ipv6": null,
+        "mac": "46:52:ca:4b:f0:86",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "200": {
+        "ipv4": "192.168.3.200",
+        "ipv6": "240e:391:cd1:b2c0:be24:11ff:fe29:92a4",
+        "mac": "bc:24:11:29:92:a4",
+        "ipv6State": "",
+        "ipv6Interface": "br0",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "201": {
+        "ipv4": "192.168.3.201",
+        "ipv6": null,
+        "mac": "bc:24:11:af:93:a1",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      },
+      "254": {
+        "ipv4": "192.168.3.254",
+        "ipv6": "240e:391:cd1:b2c0:264b:feff:fe8a:7dd7",
+        "mac": "24:4b:fe:8a:7d:d7",
+        "ipv6State": "",
+        "ipv6Interface": "br0",
+        "lastSeen": "2026-04-04T02:00:14.092Z"
+      }
+    },
+    "ipv6Map": {
+      "2": "240e:391:cd1:b2c0:be24:11ff:fe9f:ba81",
+      "10": "240e:391:cd1:b2c0:c880:13e9:d294:145c",
+      "105": "240e:391:cd1:b2c0:5ccb:de5d:7156:bb47",
+      "148": "240e:391:cd1:b2c0:6a76:27ff:fe53:699",
+      "149": "240e:391:cd1:b2c0:72c9:32ff:fe1e:8347",
+      "151": "240e:391:cd1:b2c0:d21:eddc:ec3c:a323",
+      "152": "240e:391:cd1:b2c0:bad6:f6ff:fed6:5bb7",
+      "154": "240e:391:cd1:b2c0:47a:c49b:fdd1:19f7",
+      "173": "240e:391:cd1:b2c0:f490:1200:7b66:fed5",
+      "194": "240e:391:cd1:b2c0:e2bb:9eff:fee4:fa0b",
+      "200": "240e:391:cd1:b2c0:be24:11ff:fe29:92a4",
+      "254": "240e:391:cd1:b2c0:264b:feff:fe8a:7dd7"
+    },
+    "totalDevices": 19,
+    "ipv6Ready": 12
+  },
+  "services": {
+    "lastUpdate": "2026-04-04T02:21:40.564Z",
+    "totalServices": 64,
+    "proxiedServices": 64
+  },
+  "npm": {
+    "lastSync": "2026-04-02T19:45:02.042Z",
+    "proxies": {},
+    "syncStatus": {
+      "nas200.leecaiy.shop": {
+        "serviceId": "nas200-web",
+        "serviceName": "飞牛OS Web界面",
+        "domain": "nas200.leecaiy.shop",
+        "targetHost": "240e:391:cd1:b2c0:be24:11ff:fe29:92a4",
+        "targetPort": 443,
+        "ssl": true,
+        "lastSync": "2026-04-02T19:45:01.300Z"
+      },
+      "nas201.leecaiy.shop": {
+        "serviceId": "nas201-dsm",
+        "serviceName": "黑群晖DSM",
+        "domain": "nas201.leecaiy.shop",
+        "targetHost": "192.168.3.201",
+        "targetPort": 5001,
+        "ssl": true,
+        "lastSync": "2026-04-02T19:45:01.701Z"
+      },
+      "web10.leecaiy.shop": {
+        "serviceId": "debian10-web",
+        "serviceName": "Debian Web服务",
+        "domain": "web10.leecaiy.shop",
+        "targetHost": "240e:391:cd1:b2c0:c880:13e9:d294:145c",
+        "targetPort": 8080,
+        "ssl": false,
+        "lastSync": "2026-04-02T19:45:02.042Z"
+      }
+    }
+  }
+}
