@@ -57,11 +57,49 @@ export function serviceRoutes(modules) {
         return res.status(400).json({ error: '配置验证失败', details: validation.errors });
       }
       const newService = await modules.serviceRegistry.addService(service);
-      res.json({ success: true, service: newService });
+      const sync = modules.coordinator
+        ? await modules.coordinator.runServiceChangeSync('service_add')
+        : null;
+      res.json({ success: true, service: newService, sync });
     } catch (error) {
       console.error('[Services] 添加服务失败:', error);
       const status = error.message.includes('已存在') ? 400 : 500;
       res.status(status).json({ error: error.message });
+    }
+  });
+
+  // ==================== 全局反代配置 ====================
+  // 注意：这些特定路由必须在 /:id 之前定义，否则会被匹配为服务ID
+
+  /**
+   * 获取全局反代默认配置
+   * GET /api/services/proxy-defaults
+   */
+  router.get('/proxy-defaults', (_req, res) => {
+    try {
+      if (!modules.serviceRegistry) {
+        return res.status(503).json({ error: '服务清单模块未初始化' });
+      }
+      const defaults = modules.serviceRegistry.getProxyDefaults();
+      res.json(defaults);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  /**
+   * 更新全局反代默认配置
+   * PUT /api/services/proxy-defaults
+   */
+  router.put('/proxy-defaults', async (req, res) => {
+    try {
+      if (!modules.serviceRegistry) {
+        return res.status(503).json({ error: '服务清单模块未初始化' });
+      }
+      const updated = await modules.serviceRegistry.updateProxyDefaults(req.body);
+      res.json({ success: true, defaults: updated });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   });
 
@@ -80,7 +118,10 @@ export function serviceRoutes(modules) {
         return res.status(404).json({ error: `服务ID ${id} 不存在` });
       }
       const updatedService = await modules.serviceRegistry.updateService(id, updates);
-      res.json({ success: true, service: updatedService });
+      const sync = modules.coordinator
+        ? await modules.coordinator.runServiceChangeSync('service_update')
+        : null;
+      res.json({ success: true, service: updatedService, sync });
     } catch (error) {
       console.error('[Services] 更新服务失败:', error);
       const status = error.message.includes('不存在') ? 404 : 500;
@@ -111,7 +152,10 @@ export function serviceRoutes(modules) {
         return res.status(503).json({ error: '服务清单模块未初始化' });
       }
       await modules.serviceRegistry.deleteService(id);
-      res.json({ message: '服务删除成功' });
+      const sync = modules.coordinator
+        ? await modules.coordinator.runServiceChangeSync('service_delete')
+        : null;
+      res.json({ message: '服务删除成功', success: true, sync });
     } catch (error) {
       console.error('[Services] 删除服务失败:', error);
       res.status(500).json({ error: error.message });
@@ -153,7 +197,10 @@ export function serviceRoutes(modules) {
       const service = await modules.serviceRegistry.quickAddFromScan({
         deviceId, port: parseInt(port, 10), name, id, group, description
       });
-      res.json({ success: true, service });
+      const sync = modules.coordinator
+        ? await modules.coordinator.runServiceChangeSync('service_quick_add')
+        : null;
+      res.json({ success: true, service, sync });
     } catch (error) {
       console.error('[Services] 快速添加失败:', error);
       const status = error.message.includes('已存在') ? 400 : 500;
@@ -171,15 +218,39 @@ export function serviceRoutes(modules) {
     try {
       const results = { lucky: null, npm: null, sunpanel: null };
 
+      // 清空 Lucky 反向代理规则
+      if (modules.luckyManager) {
+        try {
+          const luckyResult = await modules.luckyManager.purgeLucky();
+          results.lucky = luckyResult;
+          console.log('[Services] ✅ Lucky 反向代理规则已清空:', luckyResult);
+        } catch (error) {
+          console.error('[Services] ❌ 清空 Lucky 失败:', error.message);
+          results.lucky = { error: error.message };
+        }
+      }
+
+      // 清空 SunPanel 卡片（通过 LuckyManager 的 purgeSunPanel 方法）
+      if (modules.luckyManager) {
+        try {
+          const sunpanelResult = await modules.luckyManager.purgeSunPanel();
+          results.sunpanel = sunpanelResult;
+          console.log('[Services] ✅ SunPanel 本地同步状态已清空:', sunpanelResult);
+        } catch (error) {
+          console.error('[Services] ❌ 清空 SunPanel 失败:', error.message);
+          results.sunpanel = { error: error.message };
+        }
+      }
+
       // 清空本地服务注册表
       if (modules.serviceRegistry) {
         await modules.serviceRegistry.clearAll();
       }
 
       // 记录日志
-      modules.changelogManager?.append('purge_remote', 'all', '批量清空远端数据 (Lucky/NPM/SunPanel)');
+      modules.changelogManager?.append('purge_remote', 'all', '批量清空远端数据 (Lucky/SunPanel)', results);
 
-      res.json({ success: true, message: '本地服务数据已清空，远端数据请通过各管理界面手动清理', results });
+      res.json({ success: true, message: '远端数据已清空', results });
     } catch (error) {
       console.error('[Services] 清空远端数据失败:', error);
       res.status(500).json({ error: error.message });
@@ -263,40 +334,6 @@ export function serviceRoutes(modules) {
       res.json({ success: true, services: results, checkedAt: new Date().toISOString() });
     } catch (error) {
       console.error('[Services] 连通性检测失败:', error);
-      res.status(500).json({ error: error.message });
-    }
-  });
-
-  // ==================== 全局反代配置 ====================
-
-  /**
-   * 获取全局反代默认配置
-   * GET /api/services/proxy-defaults
-   */
-  router.get('/proxy-defaults', (_req, res) => {
-    try {
-      if (!modules.serviceRegistry) {
-        return res.status(503).json({ error: '服务清单模块未初始化' });
-      }
-      const defaults = modules.serviceRegistry.getProxyDefaults();
-      res.json(defaults);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  });
-
-  /**
-   * 更新全局反代默认配置
-   * PUT /api/services/proxy-defaults
-   */
-  router.put('/proxy-defaults', async (req, res) => {
-    try {
-      if (!modules.serviceRegistry) {
-        return res.status(503).json({ error: '服务清单模块未初始化' });
-      }
-      const updated = await modules.serviceRegistry.updateProxyDefaults(req.body);
-      res.json({ success: true, defaults: updated });
-    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   });

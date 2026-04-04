@@ -10,6 +10,9 @@ import {
   listAllPorts
 } from '../../lib/api-clients/lucky-port-manager.mjs';
 import {
+  deletePort
+} from '../../lib/api-clients/lucky-reverseproxy.mjs';
+import {
   getGroupList,
   createGroup,
   createItem,
@@ -478,6 +481,130 @@ export class LuckyManager {
         cardsCount: Object.keys(this.stateManager.state.sunpanel?.syncStatus || {}).length
       }
     };
+  }
+
+  /**
+   * 清空 Lucky 反向代理规则
+   * @returns {object} 清理结果
+   */
+  async purgeLucky() {
+    try {
+      const instances = this.luckyConfig.instances || [this.luckyConfig];
+      const results = [];
+      let totalDeleted = 0;
+
+      for (let i = 0; i < instances.length; i++) {
+        const instanceConfig = { ...this.luckyConfig, ...instances[i] };
+        const instanceResult = {
+          instance: i + 1,
+          apiBase: instanceConfig.apiBase,
+          deleted: 0,
+          failed: 0,
+          errors: []
+        };
+
+        try {
+          // 获取当前所有端口规则
+          const ports = await listAllPorts(instanceConfig);
+
+          // 只删除 HTTPS 代理端口 (默认 50000)
+          const proxyPort = instanceConfig.httpsPort || 50000;
+          const proxyPorts = ports.filter(p => p.port === proxyPort);
+
+          for (const port of proxyPorts) {
+            try {
+              const result = await deletePort(port.port, instanceConfig);
+              if (result.ret === 0) {
+                instanceResult.deleted++;
+                totalDeleted++;
+                console.log(`[LuckyManager] ✅ [实例 ${i+1}] 已删除端口 ${port.port} (${port.name})`);
+              } else {
+                instanceResult.failed++;
+                instanceResult.errors.push(`端口 ${port.port}: ${result.msg}`);
+                console.error(`[LuckyManager] ❌ [实例 ${i+1}] 删除端口 ${port.port} 失败: ${result.msg}`);
+              }
+            } catch (error) {
+              instanceResult.failed++;
+              instanceResult.errors.push(`端口 ${port.port}: ${error.message}`);
+              console.error(`[LuckyManager] ❌ [实例 ${i+1}] 删除端口 ${port.port} 异常: ${error.message}`);
+            }
+          }
+
+          if (proxyPorts.length === 0) {
+            console.log(`[LuckyManager] ℹ️  [实例 ${i+1}] 没有找到端口 ${proxyPort} 的规则`);
+          }
+        } catch (error) {
+          instanceResult.errors.push(`获取端口列表失败: ${error.message}`);
+          console.error(`[LuckyManager] ❌ [实例 ${i+1}] 获取端口列表失败: ${error.message}`);
+        }
+
+        results.push(instanceResult);
+      }
+
+      // 清空本地同步状态
+      this.stateManager.state.lucky.syncStatus = {};
+      this.stateManager.state.lucky.lastSync = null;
+      await this.stateManager.save();
+
+      return {
+        success: totalDeleted > 0,
+        totalDeleted,
+        instances: results,
+        message: totalDeleted > 0
+          ? `已删除 ${totalDeleted} 个 Lucky 反向代理规则`
+          : '没有找到可删除的 Lucky 反向代理规则'
+      };
+    } catch (error) {
+      console.error('[LuckyManager] ❌ 清空 Lucky 数据失败:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * 清空 SunPanel 远端数据
+   * 注意：SunPanel API 没有删除接口，此方法仅清空本地同步状态
+   * @returns {object} 清理结果
+   */
+  async purgeSunPanel() {
+    try {
+      // 获取当前所有已同步的卡片
+      const syncedCards = this.stateManager.state.sunpanel?.syncStatus || {};
+      const cardList = Object.values(syncedCards);
+
+      const result = {
+        total: cardList.length,
+        cleared: 0,
+        message: '',
+        cards: cardList.map(card => ({
+          onlyName: card.onlyName || card.serviceId || 'unknown',
+          title: card.remark || 'unknown',
+          domain: card.domain || 'unknown',
+          serviceId: card.serviceId || null
+        }))
+      };
+
+      if (cardList.length === 0) {
+        result.message = '没有已同步的 SunPanel 卡片需要清理';
+        console.log('[LuckyManager] ℹ️  没有已同步的 SunPanel 卡片');
+        return result;
+      }
+
+      // SunPanel API 没有删除接口，只能清空本地状态
+      this.stateManager.state.sunpanel.syncStatus = {};
+      this.stateManager.state.sunpanel.lastSync = null;
+      await this.stateManager.save();
+
+      result.cleared = cardList.length;
+      result.message = `已清空本地同步状态（${cardList.length} 个卡片）。注意：SunPanel API 没有删除接口，远端卡片需要手动删除`;
+
+      console.log(`[LuckyManager] ✅ 已清空 ${cardList.length} 个 SunPanel 卡片的本地同步状态`);
+      console.log('[LuckyManager] ⚠️  SunPanel API 不支持删除，远端卡片仍需手动清理');
+
+      return result;
+    } catch (error) {
+      console.error('[LuckyManager] ❌ 清空 SunPanel 数据失败:', error.message);
+      throw error;
+    }
   }
 }
 
