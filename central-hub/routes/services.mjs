@@ -6,6 +6,28 @@
 
 import express from 'express';
 
+async function triggerServiceSync(modules, reason) {
+  if (!modules.coordinator) {
+    return null;
+  }
+
+  const results = {};
+
+  results.lucky = await modules.coordinator.runLuckySync();
+  results.sunpanel = await modules.coordinator.runSunpanelSync();
+
+  if (modules.cloudflareManager) {
+    results.cloudflare = await modules.coordinator.runCloudflareSync();
+  }
+
+  return {
+    success: true,
+    reason,
+    results,
+    completedAt: new Date().toISOString()
+  };
+}
+
 export function serviceRoutes(modules) {
   const router = express.Router();
 
@@ -57,9 +79,7 @@ export function serviceRoutes(modules) {
         return res.status(400).json({ error: '配置验证失败', details: validation.errors });
       }
       const newService = await modules.serviceRegistry.addService(service);
-      const sync = modules.coordinator
-        ? await modules.coordinator.runServiceChangeSync('service_add')
-        : null;
+      const sync = await triggerServiceSync(modules, 'service_add');
       res.json({ success: true, service: newService, sync });
     } catch (error) {
       console.error('[Services] 添加服务失败:', error);
@@ -118,9 +138,7 @@ export function serviceRoutes(modules) {
         return res.status(404).json({ error: `服务ID ${id} 不存在` });
       }
       const updatedService = await modules.serviceRegistry.updateService(id, updates);
-      const sync = modules.coordinator
-        ? await modules.coordinator.runServiceChangeSync('service_update')
-        : null;
+      const sync = await triggerServiceSync(modules, 'service_update');
       res.json({ success: true, service: updatedService, sync });
     } catch (error) {
       console.error('[Services] 更新服务失败:', error);
@@ -152,9 +170,7 @@ export function serviceRoutes(modules) {
         return res.status(503).json({ error: '服务清单模块未初始化' });
       }
       await modules.serviceRegistry.deleteService(id);
-      const sync = modules.coordinator
-        ? await modules.coordinator.runServiceChangeSync('service_delete')
-        : null;
+      const sync = await triggerServiceSync(modules, 'service_delete');
       res.json({ message: '服务删除成功', success: true, sync });
     } catch (error) {
       console.error('[Services] 删除服务失败:', error);
@@ -197,9 +213,7 @@ export function serviceRoutes(modules) {
       const service = await modules.serviceRegistry.quickAddFromScan({
         deviceId, port: parseInt(port, 10), name, id, group, description
       });
-      const sync = modules.coordinator
-        ? await modules.coordinator.runServiceChangeSync('service_quick_add')
-        : null;
+      const sync = await triggerServiceSync(modules, 'service_quick_add');
       res.json({ success: true, service, sync });
     } catch (error) {
       console.error('[Services] 快速添加失败:', error);
@@ -211,12 +225,12 @@ export function serviceRoutes(modules) {
   // ==================== 远端清空 ====================
 
   /**
-   * 批量清空 Lucky/SunPanel/NPM 远端数据
+   * 批量清空 Lucky/SunPanel 远端数据
    * POST /api/services/purge-remote
    */
   router.post('/purge-remote', async (_req, res) => {
     try {
-      const results = { lucky: null, npm: null, sunpanel: null };
+      const results = { lucky: null, sunpanel: null };
 
       // 清空 Lucky 反向代理规则
       if (modules.luckyManager) {

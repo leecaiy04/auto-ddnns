@@ -39,8 +39,6 @@ test('loadConfigWithEnv lets env values override json config and returns server 
         'LUCKY_API_BASE=http://env-lucky',
         'LUCKY_OPEN_TOKEN=env-open-token',
         'LUCKY_HTTPS_PORT=5443',
-        'NPM_API_EMAIL=env-npm@example.com',
-        'NPM_API_PASSWORD=env-npm-secret',
         'SUNPANEL_API_TOKEN=env-token',
         'LOG_LEVEL=debug'
       ].join('\n'),
@@ -58,8 +56,6 @@ test('loadConfigWithEnv lets env values override json config and returns server 
     assert.equal(config.modules.lucky.openToken, 'env-open-token');
     assert.equal(config.modules.lucky.httpsPort, 5443);
     assert.equal(config.sunpanel.apiToken, 'env-token');
-    assert.equal(config.modules.npm.apiEmail, 'env-npm@example.com');
-    assert.equal(config.modules.npm.apiPassword, 'env-npm-secret');
     assert.equal(config.logging.level, 'debug');
     assert.equal(config.sunpanel.apiBase, 'http://json-sunpanel');
     assert.equal(config.modules.serviceRegistry.enabled, true);

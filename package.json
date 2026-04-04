@@ -7,14 +7,12 @@
     "start": "cd central-hub && node server.mjs",
     "dev": "cd central-hub && node --watch server.mjs",
     "test": "node --test test/*.test.mjs",
-    "test:api": "node lib/api-clients/npm-api.mjs test",
     "init": "node scripts/init-setup.mjs"
   },
   "keywords": [
     "ddns",
     "lucky",
     "sunpanel",
-    "nginx-proxy-manager",
     "automation"
   ],
   "author": "leecaiy",

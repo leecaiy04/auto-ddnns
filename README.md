@@ -1,145 +1,104 @@
-# 🚀 局域网对外部署自动化系统
+# Auto-DNNS
 
-> 统一的网络基础设施管理平台 - 自动化DDNS、反向代理、IPv6监控和服务管理
+一个围绕 **Central Hub** 的局域网对外发布自动化工具集，当前保留并聚焦以下能力：
 
-## 📖 系统概述
+- 设备发现与 IPv6 监控
+- 阿里云 DDNS 更新
+- 服务清单管理
+- Lucky 反向代理同步
+- SunPanel 卡片同步
+- Cloudflare DNS 同步
+- Web 面板与 CLI 操作
 
-本系统通过 **Central Hub 中枢服务** 统一管理局域网对外部署的所有功能，实现端到端的自动化流程。
+当前仓库已按精简方向移除 **Nginx Proxy Manager（NPM）** 相关功能与文档入口。
 
-### 核心功能
+## 当前架构
 
-- **📡 设备监控** - 自动SSH连接路由器获取设备IPv6地址
-- **🌍 DDNS自动化** - 公网IPv4和局域网IPv6自动更新DNS记录
-- **📋 服务清单管理** - 配置化的服务管理，支持快速添加/删除/修改
-- **🎲 Lucky反向代理** - 统一50000端口HTTPS入口，自动创建反向代理
-- **📋 Nginx Proxy Manager** - 50001端口同步备份
-- **🌞 SunPanel集成** - 自动生成展示卡片和分组
-
-### 自动化流程
-
-```
-服务配置清单 → Lucky代理(50000) → NPM备份(50001) → SunPanel卡片
-                  ↓
-            设备IPv6监控 → DDNS更新
-```
-
-## 🏗️ 系统架构
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Central Hub (51000)                       │
-│                  中枢服务 - 统一调度                          │
-├─────────────────────────────────────────────────────────────┤
-│  设备监控  │  服务清单  │  Lucky管理  │  NPM管理  │  DDNS  │
-└─────────────────────────────────────────────────────────────┘
-         │            │            │          │       │
-         ▼            ▼            ▼          ▼       ▼
-┌──────────────┐ ┌─────────┐ ┌──────────┐ ┌──────┐ ┌──────────┐
-│ 路由器       │ │配置文件 │ │ Lucky    │ │ NPM  │ │阿里云DNS │
-│ 192.168.3.1  │ │JSON     │ │ 50000    │ │50001 │ │ API      │
-└──────────────┘ └─────────┘ └──────────┘ └──────┘ └──────────┘
+```text
+设备监控 / 路由器 SSH
+          ↓
+     DDNSController
+          ↓
+    ServiceRegistry
+      ↙    ↓    ↘
+ Lucky   SunPanel  Cloudflare
+          ↓
+     Central Hub API + Dashboard
 ```
 
-## 📁 目录结构
+## 目录概览
 
-```
+```text
 auto-dnns/
-├── central-hub/              # 中枢服务
-│   ├── server.mjs            # 主服务器入口
-│   ├── modules/              # 核心模块
-│   │   ├── coordinator.mjs   # 总协调器
-│   │   ├── device-monitor.mjs    # 设备监控
-│   │   ├── service-registry.mjs  # 服务清单管理
-│   │   ├── lucky-manager.mjs     # Lucky管理
-│   │   ├── npm-manager.mjs        # NPM管理
-│   │   └── ...
-│   ├── routes/               # API路由
-│   └── public/               # 监控界面
-│
-├── lib/                     # 共享库
-│   ├── api-clients/         # API客户端
-│   │   ├── lucky-api.mjs
-│   │   ├── sunpanel-api.mjs
-│   │   └── npm-api.mjs
-│   ├── ssh-client.mjs       # SSH客户端
-│   └── utils/               # 工具函数
-│
-├── config/                  # 配置文件
-│   ├── hub.json             # 中枢服务配置
-│   ├── devices.json         # 设备清单
-│   └── services-registry.json # 服务清单
-│
-├── scripts/                 # 脚本
-│   ├── aliddns_sync.sh      # DDNS脚本
-│   └── init-setup.mjs       # 初始化脚本
-│
-└── .env                     # 环境变量配置
+├── central-hub/                 # Web 服务、API、状态与调度
+│   ├── server.mjs               # Central Hub 入口
+│   ├── modules/                 # 设备、DDNS、Lucky、Cloudflare 等模块
+│   ├── routes/                  # REST API
+│   └── public/                  # 前端面板
+├── config/                      # CLI 默认读取的配置
+├── central-hub/config/          # Web 服务默认读取的配置
+├── scripts/                     # DDNS 等脚本
+├── test/                        # Node.js 测试
+├── cli.mjs                      # 本地 CLI 入口
+└── .env.template                # 环境变量模板
 ```
 
-## 🔌 端口分配
+## 配置来源
 
-| 端口 | 服务 | 说明 |
-|------|------|------|
-| **51000** | Central Hub | 监控界面和API服务 ⭐ |
-| **50000** | Lucky | HTTPS反向代理主入口 |
-| **50001** | Nginx Proxy Manager | HTTPS反向代理备份 |
-| **20001** | SunPanel | 服务展示面板 |
-| **16601** | Lucky | 管理界面 |
+运行时配置优先级为：
 
-## 🚀 快速开始
+```text
+.env > JSON 配置 > 默认值
+```
 
-### 1. 环境要求
+当前仓库存在两份 Hub JSON 配置：
+
+- `central-hub/config/hub.json`：`npm start` / `npm run dev` 启动 Web 服务时默认读取
+- `config/hub.json`：`node cli.mjs ...` 执行 CLI 任务时默认读取
+
+如果你使用了 Cloudflare 或其他新增模块，建议保持这两份配置一致。
+
+## 快速开始
+
+### 1. 准备环境
+
+要求：
 
 - Node.js 18+
-- Linux/Unix 系统（支持 SSH）
-- 路由器SSH访问权限
-- Lucky 已部署并运行
-- Nginx Proxy Manager（可选）
-- SunPanel（可选）
+- 可访问路由器的 SSH 凭据
+- Lucky 已部署
+- SunPanel 已部署（如需卡片同步）
+- Cloudflare Token（如需 Cloudflare 同步）
 
-### 2. 安装配置
+### 2. 创建 `.env`
 
 ```bash
-# 克隆项目（如果还没有）
-cd /home/leecaiy/workspace/auto-dnns
-
-# 复制环境变量模板
 cp .env.template .env
-
-# 编辑环境变量
-vim .env
 ```
 
-**必需的环境变量：**
+至少检查并填写这些变量：
 
-```bash
-# 路由器SSH配置
+```env
 ROUTER_HOST=192.168.3.1
 ROUTER_USERNAME=root
 ROUTER_PASSWORD=your-router-password
 
-# 阿里云 DDNS 配置
 ALIYUN_AK=your-aliyun-access-key-id
 ALIYUN_SK=your-aliyun-access-key-secret
 ALIYUN_DOMAIN=example.com
 
-# Lucky配置
-LUCKY_OPEN_TOKEN=your-lucky-open-token
 LUCKY_API_BASE=http://192.168.3.200:16601
+LUCKY_OPEN_TOKEN=your-lucky-open-token
+LUCKY_HTTPS_PORT=50000
 
-# NPM配置（可选）
-NPM_API_BASE=http://192.168.3.200:50001
-NPM_API_EMAIL=admin@example.com
-NPM_API_PASSWORD=changeme
-# 如果你已经有静态 Token，也可以改用下面这个配置
-# NPM_API_TOKEN=your-npm-api-token
-
-# SunPanel配置
-SUNPANEL_API_TOKEN=your-sunpanel-api-token
 SUNPANEL_API_BASE=http://192.168.3.200:20001/openapi/v1
+SUNPANEL_API_TOKEN=your-sunpanel-api-token
 
-# 中枢服务配置
-HUB_PORT=51000
+CF_API_TOKEN=your-cloudflare-api-token
+CF_ZONE_ID=your-zone-id
+CF_DOMAIN=example.com
+
+HUB_PORT=51100
 HUB_HOST=0.0.0.0
 ```
 
@@ -149,346 +108,189 @@ HUB_HOST=0.0.0.0
 npm install
 ```
 
-### 4. 配置服务清单
-
-编辑 `config/services-registry.json` 添加需要对外发布的服务：
-
-```json
-{
-  "services": [
-    {
-      "id": "nas200-web",
-      "name": "飞牛OS Web界面",
-      "device": "200",
-      "internalPort": 443,
-      "enableProxy": true,
-      "proxyDomain": "nas200.leecaiy.xyz",
-      "proxyType": "reverseproxy",
-      "enableTLS": true,
-      "description": "飞牛OS的Web管理界面"
-    }
-  ]
-}
-```
-
-### 5. 启动服务
+### 4. 启动 Central Hub
 
 ```bash
-# 开发模式（带自动重载）
-npm run dev
-
-# 生产模式
 npm start
+```
 
-# 运行本地单元测试
+开发模式：
+
+```bash
+npm run dev
+```
+
+测试：
+
+```bash
 npm test
 ```
 
-### 6. 访问监控界面
+## 常用 CLI
 
-打开浏览器访问：
-- **监控界面**: http://localhost:51000/
-- **API健康检查**: http://localhost:51000/api/health
+`cli.mjs` 当前支持这些任务：
 
-## 🎮 使用指南
-
-### Web监控界面
-
-访问 `http://localhost:51000/` 可以：
-
-- 📊 查看所有模块状态概览
-- 📡 查看设备IPv6地址
-- 🌐 查看反向代理数量
-- 🔄 一键刷新状态
-- ⚡ 完整同步（设备监控 → Lucky → NPM → SunPanel）
-- 📱 单独执行各个同步任务
-
-### API接口
-
-#### 监控概览
 ```bash
-curl http://localhost:51000/api/dashboard/overview
+node cli.mjs sync-all
+node cli.mjs sync-ddns
+node cli.mjs sync-lucky
+node cli.mjs sync-cloudflare
+node cli.mjs sync-sunpanel
+node cli.mjs import-lucky
+node cli.mjs monitor
 ```
 
-#### 设备管理
+对应实现见 `cli.mjs:42`、`cli.mjs:165`。
+
+## 默认端口
+
+> 以下是当前代码中的默认值；若 `.env` 或配置文件覆盖，请以实际部署值为准。
+
+| 服务 | 默认端口 / 地址 | 说明 |
+|---|---|---|
+| Central Hub | `51100` | Web 面板与 API，见 `central-hub/config/hub.json:3` |
+| Lucky HTTPS | `50000` | 外部代理入口，见 `config/hub.json:52` |
+| Lucky API | `16601` | 常用于 API 管理地址 |
+| SunPanel | `20001` | OpenAPI 常见入口端口 |
+| Cloudflare | 无本地端口 | 通过远程 API 同步 |
+
+## 运行后的常用入口
+
+如果 `HUB_PORT` 未覆盖，默认访问：
+
+- Web 面板：`http://localhost:51100/`
+- 健康检查：`http://localhost:51100/api/health`
+- 状态摘要：`http://localhost:51100/api/status`
+
+对应代码见 `central-hub/server.mjs:275`、`central-hub/server.mjs:347`。
+
+## 核心 API
+
+### 同步控制
+
 ```bash
-# 获取所有设备
-curl http://localhost:51000/api/devices/list
+# 完整同步
+curl -X POST http://localhost:51100/api/sync/full
 
-# 刷新设备IPv6
-curl -X POST http://localhost:51000/api/devices/refresh
+# Lucky 同步
+curl -X POST http://localhost:51100/api/proxies/sync
 
-# 获取端口映射表
-curl http://localhost:51000/api/devices/port-mapping-table
+# SunPanel 同步
+curl -X POST http://localhost:51100/api/sunpanel/sync
+
+# Cloudflare 同步
+curl -X POST http://localhost:51100/api/cloudflare/sync
+
+# DDNS 刷新
+curl -X POST http://localhost:51100/api/ddns/refresh
 ```
 
-#### 服务管理
+对应代码见 `central-hub/server.mjs:297`、`central-hub/server.mjs:317`、`central-hub/server.mjs:327`、`central-hub/server.mjs:337` 与 `central-hub/routes/ddns.mjs:20`。
+
+### 设备相关
+
 ```bash
-# 获取所有服务
-curl http://localhost:51000/api/services/list
+# 设备列表
+curl http://localhost:51100/api/devices/list
+
+# 刷新设备状态
+curl -X POST http://localhost:51100/api/devices/refresh
+
+# 关键机器
+curl http://localhost:51100/api/devices/key-machines
+
+# 扫描候选端口
+curl http://localhost:51100/api/devices/scan-ports
+
+# 扫描指定设备开放端口
+curl -X POST http://localhost:51100/api/devices/200/scan
+```
+
+对应代码见 `central-hub/routes/devices.mjs:14`、`central-hub/routes/devices.mjs:45`、`central-hub/routes/devices.mjs:122`、`central-hub/routes/devices.mjs:197`、`central-hub/routes/devices.mjs:244`。
+
+### 服务清单
+
+```bash
+# 所有服务
+curl http://localhost:51100/api/services/list
+
+# 服务状态
+curl http://localhost:51100/api/services/status
+
+# 校验服务配置
+curl -X POST http://localhost:51100/api/services/validate \
+  -H "Content-Type: application/json" \
+  -d '{"id":"demo","name":"Demo","device":"200","internalPort":8080}'
 
 # 添加服务
-curl -X POST http://localhost:51000/api/services/add \
+curl -X POST http://localhost:51100/api/services/add \
   -H "Content-Type: application/json" \
   -d '{
-    "id": "my-service",
-    "name": "我的服务",
-    "device": "10",
-    "internalPort": 8080,
-    "enableProxy": true,
-    "proxyDomain": "my.leecaiy.xyz"
+    "id":"demo",
+    "name":"Demo",
+    "device":"200",
+    "internalPort":8080,
+    "enableProxy":true,
+    "proxyDomain":"demo.example.com"
   }'
 
 # 更新服务
-curl -X PUT http://localhost:51000/api/services/my-service \
+curl -X PUT http://localhost:51100/api/services/demo \
   -H "Content-Type: application/json" \
-  -d '{"enableProxy": false}'
+  -d '{"enableProxy":false}'
 
 # 删除服务
-curl -X DELETE http://localhost:51000/api/services/my-service
+curl -X DELETE http://localhost:51100/api/services/demo
 ```
 
-#### 同步控制
-```bash
-# 完整同步
-curl -X POST http://localhost:51000/api/sync/full
+对应代码见 `central-hub/routes/services.mjs:39`、`central-hub/routes/services.mjs:55`、`central-hub/routes/services.mjs:71`、`central-hub/routes/services.mjs:129`、`central-hub/routes/services.mjs:150`、`central-hub/routes/services.mjs:166`。
 
-# Lucky同步
-curl -X POST http://localhost:51000/api/proxies/sync
-
-# NPM同步
-curl -X POST http://localhost:51000/api/npm/sync
-
-# SunPanel同步
-curl -X POST http://localhost:51000/api/sunpanel/sync
-```
-
-### 配置文件说明
-
-#### `config/hub.json` - 中枢服务配置
-
-```json
-{
-  "server": {
-    "port": 51000,
-    "host": "0.0.0.0"
-  },
-  "modules": {
-    "deviceMonitor": {
-      "enabled": true,
-      "devices": ["2", "10", "200", "201", "254"]
-    },
-    "ddns": {
-      "enabled": true,
-      "scriptPath": "./scripts/aliddns_sync.sh"
-    },
-    "lucky": {
-      "enabled": true,
-      "httpsPort": 50000,
-      "autoSync": true
-    },
-    "npm": {
-      "enabled": true,
-      "httpsPort": 50001,
-      "syncFromLucky": true
-    },
-    "sunpanel": {
-      "enabled": true,
-      "autoSync": true
-    }
-  }
-}
-```
-
-#### `config/devices.json` - 设备清单
-
-定义局域网内的设备信息：
-
-```json
-{
-  "devices": [
-    {
-      "id": "200",
-      "name": "飞牛OS",
-      "ipv4": "192.168.3.200",
-      "type": "nas",
-      "enableDDNS": true
-    }
-  ]
-}
-```
-
-#### `config/services-registry.json` - 服务清单
-
-定义需要反向代理的服务：
-
-```json
-{
-  "services": [
-    {
-      "id": "unique-id",
-      "name": "服务名称",
-      "device": "200",
-      "internalPort": 443,
-      "enableProxy": true,
-      "proxyDomain": "service.leecaiy.xyz",
-      "proxyType": "reverseproxy",
-      "enableTLS": true,
-      "description": "服务描述"
-    }
-  ]
-}
-```
-
-## ⚙️ 定时任务
-
-系统会自动执行以下定时任务：
-
-- **每10分钟** - 设备监控（检查IPv6地址）
-- **每10分钟** - DDNS更新
-- **每15分钟** - Lucky反向代理同步
-- **每15分钟** - NPM同步备份
-- **每15分钟** - SunPanel卡片同步
-
-可以在 `config/hub.json` 中修改定时任务的执行间隔。
-
-## 🔧 高级功能
-
-### 手动执行DDNS
+### 其他常用服务 API
 
 ```bash
-cd scripts
-bash aliddns_sync.sh all    # 完整流程
-bash aliddns_sync.sh scan   # 仅扫描
-bash aliddns_sync.sh ddns   # 仅DDNS更新
+# Lucky 当前代理状态
+curl http://localhost:51100/api/proxies
+
+# 直接通过资源路由触发 Lucky 同步（GET）
+curl http://localhost:51100/api/proxies/sync
+
+# Cloudflare 状态
+curl http://localhost:51100/api/cloudflare/status
+
+# Cloudflare Token 校验
+curl http://localhost:51100/api/cloudflare/verify-token
+
+# DDNS 历史
+curl http://localhost:51100/api/ddns/history
 ```
 
-### SSH测试
+对应代码见 `central-hub/routes/proxy.mjs:10`、`central-hub/routes/proxy.mjs:23`、`central-hub/routes/cloudflare.mjs:11`、`central-hub/routes/cloudflare.mjs:39`、`central-hub/routes/cloudflare.mjs:53`、`central-hub/routes/ddns.mjs:30`。
 
-```bash
-node lib/ssh-client.mjs test              # 测试连接
-node lib/ssh-client.mjs ipv6              # 查看IPv6邻居表
-node lib/ssh-client.mjs map               # 查看设备映射表
-node lib/ssh-client.mjs exec "ip -6 neigh"  # 执行命令
-```
+## 服务清单变更后的自动同步
 
-### Lucky管理
+当前 `services` 路由在以下操作后会自动触发同步：
 
-```bash
-node lib/api-clients/lucky-port-manager.mjs  # 查看所有端口
-```
+- 添加服务
+- 更新服务
+- 删除服务
+- 快速添加服务
 
-### NPM管理
+自动触发 Lucky、SunPanel，以及在启用 Cloudflare 时触发 Cloudflare 同步。实现见 `central-hub/routes/services.mjs:9`、`central-hub/routes/services.mjs:82`、`central-hub/routes/services.mjs:141`、`central-hub/routes/services.mjs:173`、`central-hub/routes/services.mjs:216`。
 
-```bash
-node lib/api-clients/npm-api.mjs test       # 测试连接
-node lib/api-clients/npm-api.mjs list       # 查看所有代理
-```
+## 迁移与运维文档
 
-### SunPanel管理
+- `docs/MIGRATION_GUIDE.md`
+- `docs/migration/ip-address-change.md`
+- `docs/migration/port-change.md`
+- `docs/migration/docker-compose.md`
 
-```bash
-node lib/api-clients/sunpanel-api.mjs test   # 测试连接
-node lib/api-clients/sunpanel-api.mjs groups # 查看所有分组
-```
+## 当前已不再包含的内容
 
-## 📊 设备域名映射
+以下内容已不属于当前精简架构：
 
-根据IPv4地址最后一位自动生成域名：
+- Nginx Proxy Manager 同步
+- `/api/npm/*` 相关接口
+- `sync-npm` CLI 命令
+- NPM 专用配置项与文档章节
 
-| 设备 | IPv4 | IPv6域名 | 说明 |
-|------|------|----------|------|
-| 路由器 | 192.168.3.2 | 2.v6.leecaiy.xyz | DDNS |
-| Debian | 192.168.3.10 | 10.v6.leecaiy.xyz | DDNS |
-| 飞牛OS | 192.168.3.200 | 200.v6.leecaiy.xyz | DDNS |
-| 黑群晖 | 192.168.3.201 | 201.v6.leecaiy.xyz | DDNS |
-| 内部设备 | 192.168.3.254 | 254.v6.leecaiy.xyz | DDNS |
-
-## 🐛 故障排查
-
-### 服务无法启动
-
-```bash
-# 检查端口占用
-sudo lsof -i :51000
-
-# 查看日志
-tail -f logs/hub.log
-```
-
-### 设备监控失败
-
-- 检查 `ROUTER_PASSWORD` 是否正确
-- 确认路由器SSH可访问：`ssh root@192.168.3.1`
-- 查看SSH客户端日志
-
-### Lucky同步失败
-
-- 检查 `LUCKY_OPEN_TOKEN` 是否正确
-- 确认Lucky服务运行正常：`curl http://192.168.3.200:16601`
-- 检查50000端口是否被占用
-
-### NPM同步失败
-
-- 检查 `NPM_API_EMAIL` / `NPM_API_PASSWORD` 或 `NPM_API_TOKEN` 是否正确
-- 确认NPM服务运行正常：`curl http://192.168.3.200:50001`
-- 检查50001端口是否被占用
-
-### DDNS更新失败
-
-- 检查阿里云API密钥配置
-- 手动执行测试：`cd scripts && bash aliddns_sync.sh all`
-
-## 📝 维护建议
-
-### 日常维护
-
-1. **定期检查日志** - `tail -f logs/hub.log`
-2. **监控服务状态** - 访问 http://localhost:51000/
-3. **备份配置文件** - 定期备份 `config/` 和 `.env`
-
-### 更新服务
-
-添加新服务只需编辑 `config/services-registry.json`，系统会自动同步。
-
-### 备份与恢复
-
-```bash
-# 备份状态文件
-cp data/hub-state.json data/backups/hub-state-$(date +%Y%m%d).json
-
-# 查看历史备份
-ls -lh data/backups/
-```
-
-## 🔐 安全建议
-
-1. **保护敏感信息** - `.env` 文件包含密码和Token，不要提交到Git
-2. **设置文件权限** - `chmod 600 .env`
-3. **限制访问** - 监控界面建议仅在局域网访问
-4. **定期更新Token** - 定期更换API Token
-5. **监控日志** - 关注异常访问和错误
-
-## 📚 相关文档
-
-- [CLAUDE.md](./CLAUDE.md) - AI助手开发文档
-- [docs/](./docs/) - 详细文档和截图
-
-## 🆕 版本信息
-
-- **当前版本**: 2.0
-- **最后更新**: 2026-03-29
-- **架构**: 统一中枢服务架构
-
-## 📞 获取帮助
-
-遇到问题？
-
-1. 查看日志：`tail -f logs/hub.log`
-2. 检查配置：确保 `.env` 文件配置正确
-3. 访问监控界面：http://localhost:51000/
-4. 查看相关文档
-
----
-
-**Happy Automation! 🚀**
+如果你正在从旧版本迁移，请直接参考 `docs/MIGRATION_GUIDE.md` 中的简化版说明。

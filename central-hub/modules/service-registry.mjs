@@ -115,7 +115,7 @@ export class ServiceRegistry {
     this.proxyDefaults = loadJSON(PROXY_DEFAULTS_PATH) || {
       protocol: 'https',
       domains: [MANAGED_DOMAIN],
-      externalPorts: { lucky: 50000, npm: 50001 },
+      externalPorts: { lucky: 50000 },
       dns: { wildcardDomains: [`*.${MANAGED_DOMAIN}`], sslCertDomains: [MANAGED_DOMAIN, `*.${MANAGED_DOMAIN}`] },
       defaultProxyTemplate: 'https://{serviceId}.{domain}:{port}',
       defaultIpv6Template: '{lanProtocol}://[{ipv6}]:{lanPort}'

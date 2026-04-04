@@ -15,8 +15,8 @@
         "ddns": "*/10 * * * *",
         "services": "0 */2 * * *",
         "luckySync": "*/15 * * * *",
-        "npmSync": "*/15 * * * *",
-        "sunpanelSync": "*/15 * * * *"
+        "sunpanelSync": "*/15 * * * *",
+        "cloudflareSync": "*/15 * * * *"
       }
     },
     "deviceMonitor": {
@@ -46,18 +46,18 @@
       "autoSync": true,
       "autoCreateProxy": true
     },
-    "npm": {
-      "enabled": true,
-      "apiBase": "http://192.168.3.200:50001",
-      "httpsPort": 50001,
-      "syncFromLucky": true,
-      "autoSync": true
-    },
     "sunpanel": {
       "enabled": true,
       "apiBase": "http://192.168.3.200:20001/openapi/v1",
       "autoSync": true,
       "autoCreateGroups": true
+    },
+    "cloudflare": {
+      "enabled": true,
+      "zoneId": "${CF_ZONE_ID}",
+      "domain": "${CF_DOMAIN}",
+      "proxied": true,
+      "autoSync": true
     }
   },
   "state": {

@@ -62,15 +62,6 @@ export class Coordinator {
       console.log(`[Coordinator] ✅ Lucky同步任务已调度: ${cronExpression}`);
     }
 
-    // NPM同步任务
-    if (this.modules.npmManager && this.modules.npmManager.config.enabled) {
-      const cronExpression = schedule.npmSync || '*/15 * * * *';
-      this.scheduleTask('npmSync', cronExpression, async () => {
-        await this.runNPMSync();
-      });
-      console.log(`[Coordinator] ✅ NPM同步任务已调度: ${cronExpression}`);
-    }
-
     // SunPanel同步任务
     if (this.modules.sunpanelManager && this.modules.sunpanelManager.config.enabled) {
       const cronExpression = schedule.sunpanelSync || '*/15 * * * *';
@@ -188,24 +179,6 @@ export class Coordinator {
   }
 
   /**
-   * 运行NPM同步
-   */
-  async runNPMSync() {
-    if (!this.modules.npmManager || !this.modules.serviceRegistry) return;
-
-    // 获取IPv6映射
-    const ipv6Map = this.modules.deviceMonitor?.getIPv6Map() || {};
-
-    // 获取需要同步的服务
-    const services = this.modules.serviceRegistry.getProxiedServices();
-
-    // 同步到NPM
-    const result = await this.modules.npmManager.syncServicesToNPM(services, ipv6Map);
-
-    return result;
-  }
-
-  /**
    * 运行SunPanel同步
    */
   async runSunpanelSync() {
@@ -283,10 +256,6 @@ export class Coordinator {
       await runStep('luckySync', '🎲', () => this.runLuckySync());
     }
 
-    if (this.modules.npmManager) {
-      await runStep('npmSync', '📋', () => this.runNPMSync());
-    }
-
     if (this.modules.luckyManager) {
       await runStep('sunpanelSync', '🌞', () => this.runSunpanelSync());
     }
@@ -332,10 +301,6 @@ export class Coordinator {
       status.lucky = this.modules.luckyManager.getStatus();
     }
 
-    if (this.modules.npmManager) {
-      status.npm = this.modules.npmManager.getStatus();
-    }
-
     if (this.modules.sunpanelManager) {
       status.sunpanel = this.modules.luckyManager.getStatus().sunpanel;
     }
@@ -372,8 +337,7 @@ export class Coordinator {
         enabled: status.ddns?.enabled || false
       },
       proxies: {
-        lucky: status.lucky?.lucky?.proxyCount || 0,
-        npm: status.npm?.syncCount || 0
+        lucky: status.lucky?.lucky?.proxyCount || 0
       },
       sunpanel: {
         lastSync: status.sunpanel?.lastSync || null,

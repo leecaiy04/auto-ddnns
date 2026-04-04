@@ -93,8 +93,8 @@ export async function loadConfigWithEnv(configPath, envPath = null) {
   const serviceRegistryConfig = getModuleConfig(jsonConfig, 'serviceRegistry');
   const ddnsConfig = getModuleConfig(jsonConfig, 'ddns');
   const luckyConfig = getModuleConfig(jsonConfig, 'lucky');
-  const npmConfig = getModuleConfig(jsonConfig, 'npm');
   const sunpanelConfig = getModuleConfig(jsonConfig, 'sunpanel');
+  const cloudflareConfig = getModuleConfig(jsonConfig, 'cloudflare');
   const legacyRouterConfig = jsonConfig.router ?? {};
   const routerConfig = deviceMonitorConfig.router ?? {};
 
@@ -172,22 +172,6 @@ export async function loadConfigWithEnv(configPath, envPath = null) {
         true
       )
     },
-    npm: {
-      ...npmConfig,
-      enabled: toBool(getConfig(env, 'NPM_ENABLED', npmConfig.enabled, false), false),
-      apiBase: getConfig(env, 'NPM_API_BASE', npmConfig.apiBase),
-      apiToken: getConfig(env, 'NPM_API_TOKEN', npmConfig.apiToken, ''),
-      apiEmail: getConfig(env, ['NPM_API_EMAIL', 'NPM_API_IDENTITY'], npmConfig.apiEmail ?? npmConfig.apiIdentity, ''),
-      apiPassword: getConfig(
-        env,
-        ['NPM_API_PASSWORD', 'NPM_API_SECRET'],
-        npmConfig.apiPassword ?? npmConfig.apiSecret,
-        ''
-      ),
-      httpsPort: toInt(getConfig(env, 'NPM_HTTPS_PORT', npmConfig.httpsPort, 50001), 50001),
-      syncFromLucky: toBool(getConfig(env, 'NPM_SYNC_FROM_LUCKY', npmConfig.syncFromLucky, true), true),
-      autoSync: toBool(getConfig(env, 'NPM_AUTO_SYNC', npmConfig.autoSync, true), true)
-    },
     sunpanel: {
       ...sunpanelConfig,
       enabled: toBool(getConfig(env, 'SUNPANEL_ENABLED', sunpanelConfig.enabled, true), true),
@@ -198,6 +182,15 @@ export async function loadConfigWithEnv(configPath, envPath = null) {
         getConfig(env, 'SUNPANEL_AUTO_CREATE_GROUPS', sunpanelConfig.autoCreateGroups, true),
         true
       )
+    },
+    cloudflare: {
+      ...cloudflareConfig,
+      enabled: toBool(getConfig(env, 'CLOUDFLARE_ENABLED', cloudflareConfig.enabled, true), true),
+      apiToken: getConfig(env, 'CF_API_TOKEN', cloudflareConfig.apiToken, ''),
+      zoneId: getConfig(env, 'CF_ZONE_ID', cloudflareConfig.zoneId, ''),
+      domain: getConfig(env, 'CF_DOMAIN', cloudflareConfig.domain, ''),
+      proxied: toBool(getConfig(env, 'CF_PROXIED', cloudflareConfig.proxied, true), true),
+      autoSync: toBool(getConfig(env, 'CLOUDFLARE_AUTO_SYNC', cloudflareConfig.autoSync, true), true)
     }
   };
 
@@ -232,8 +225,8 @@ export async function loadConfigWithEnv(configPath, envPath = null) {
     },
     ddns: modules.ddns,
     lucky: modules.lucky,
-    npm: modules.npm,
-    sunpanel: modules.sunpanel
+    sunpanel: modules.sunpanel,
+    cloudflare: modules.cloudflare
   };
 }
 

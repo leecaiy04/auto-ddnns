@@ -7,10 +7,8 @@ import express from 'express';
 
 async function buildOverview(modules) {
   const overview = modules.coordinator.getOverview();
-  const npmStatus = modules.npmManager?.getStatus?.() || {};
 
   let luckyActual = overview.proxies?.lucky ?? 0;
-  let npmActual = overview.proxies?.npm ?? 0;
 
   if (modules.luckyManager?.config?.enabled) {
     try {
@@ -20,25 +18,12 @@ async function buildOverview(modules) {
     }
   }
 
-  if (modules.npmManager?.config?.enabled) {
-    try {
-      npmActual = (await modules.npmManager.getProxyHosts()).length;
-    } catch (error) {
-      console.error('[Dashboard] 获取 NPM 实际代理数失败:', error.message);
-    }
-  }
-
   return {
     ...overview,
     proxies: {
       ...overview.proxies,
       lucky: luckyActual,
-      luckyActual,
-      npm: npmActual,
-      npmActual,
-      npmSynced: npmStatus.syncCount || 0,
-      npmEnabled: npmStatus.enabled || false,
-      npmAuthMode: npmStatus.authMode || 'none'
+      luckyActual
     }
   };
 }

@@ -172,6 +172,1223 @@
           }
         }
       }
+    },
+    {
+      "timestamp": "2026-04-04T10:00:03.648Z",
+      "action": "update_proxy_defaults",
+      "target": "proxy-defaults",
+      "detail": "更新全局反代配置",
+      "user": "admin",
+      "data": {
+        "protocol": "https",
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "externalPorts": {
+          "lucky": 16601,
+          "npm": 50001
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T10:01:33.565Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 4 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T10:01:33.566Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/NPM/SunPanel)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T10:01:54.884Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T10:01:54.884Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/NPM/SunPanel)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T10:01:57.514Z",
+      "action": "update_proxy_defaults",
+      "target": "proxy-defaults",
+      "detail": "更新全局反代配置",
+      "user": "admin",
+      "data": {
+        "protocol": "https",
+        "domains": [
+          "leecaiy.shop",
+          "222869.xyz"
+        ],
+        "externalPorts": {
+          "lucky": 16601,
+          "npm": 50001
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T10:01:58.569Z",
+      "action": "update_proxy_defaults",
+      "target": "proxy-defaults",
+      "detail": "更新全局反代配置",
+      "user": "admin",
+      "data": {
+        "protocol": "https",
+        "domains": [
+          "leecaiy.shop",
+          "222869.xyz"
+        ],
+        "externalPorts": {
+          "lucky": 16601,
+          "npm": 50001
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T10:02:12.502Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T10:02:22.768Z",
+      "action": "add_service",
+      "target": "nas-fn",
+      "detail": "从端口扫描快速添加: nas-fn (飞牛OS:5666)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "nas-fn",
+          "name": "nas-fn",
+          "device": "200",
+          "internalPort": 5666,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "nas-fn.leecaiy.shop",
+          "description": "nas-fn on 飞牛OS",
+          "lucky": {
+            "port": 16601,
+            "remark": "nas-fn",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://nas-fn.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:5666"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T10:04:45.105Z",
+      "action": "update_proxy_defaults",
+      "target": "proxy-defaults",
+      "detail": "更新全局反代配置",
+      "user": "admin",
+      "data": {
+        "protocol": "https",
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "externalPorts": {
+          "lucky": 50000,
+          "npm": 50001
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T11:14:53.651Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 1 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T11:14:53.651Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": null,
+        "npm": null,
+        "sunpanel": null
+      }
+    },
+    {
+      "timestamp": "2026-04-04T11:15:32.957Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T11:15:32.957Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": null,
+        "npm": null,
+        "sunpanel": {
+          "total": 64,
+          "cleared": 64,
+          "message": "已清空本地同步状态（64 个卡片）。注意：SunPanel API 没有删除接口，远端卡片需要手动删除",
+          "cards": [
+            {
+              "onlyName": "unknown",
+              "title": "Sunpanel 管理界面",
+              "domain": "leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "fnos",
+              "domain": "fn.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "vscode",
+              "domain": "code.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "相似度",
+              "domain": "similar.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "pve",
+              "domain": "pve.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "pdf",
+              "domain": "pdf.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "webdav",
+              "domain": "webdav.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "n8n",
+              "domain": "n8n.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "lucky",
+              "domain": "lucky.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "synology群晖",
+              "domain": "nas.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "1panel",
+              "domain": "1panel.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "nextcloud",
+              "domain": "nextcloud.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "terminal",
+              "domain": "terminal.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "onlyoffice",
+              "domain": "onlyoffice.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "gitea",
+              "domain": "gitea.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "reference",
+              "domain": "reference.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "filebox",
+              "domain": "f.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "nextGPT",
+              "domain": "nextgpt.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "Jenkins",
+              "domain": "Jenkins.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "oneapi",
+              "domain": "oneapi.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "json2csv",
+              "domain": "json2csv.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "lunix-commond",
+              "domain": "lunix.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "gemin反向代理",
+              "domain": "gemini.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "apitable",
+              "domain": "apitable.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "阅读",
+              "domain": "reader.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "leantime",
+              "domain": "leantime.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "openclaw",
+              "domain": "claw.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "vscode in 飞牛os",
+              "domain": "vscode2.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "sanbox aio",
+              "domain": "aio.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "飞牛OS Web",
+              "domain": "nas200.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "黑群晖DSM",
+              "domain": "nas201.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "Debian Web",
+              "domain": "web10.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "sunpanel-----",
+              "title": "Sunpanel 管理界面",
+              "domain": "leecaiy.shop",
+              "serviceId": "sunpanel-----"
+            },
+            {
+              "onlyName": "fnos",
+              "title": "fnos",
+              "domain": "fn.leecaiy.shop",
+              "serviceId": "fnos"
+            },
+            {
+              "onlyName": "vscode",
+              "title": "vscode",
+              "domain": "code.leecaiy.shop",
+              "serviceId": "vscode"
+            },
+            {
+              "onlyName": "---",
+              "title": "相似度",
+              "domain": "similar.leecaiy.shop",
+              "serviceId": "---"
+            },
+            {
+              "onlyName": "pve",
+              "title": "pve",
+              "domain": "pve.leecaiy.shop",
+              "serviceId": "pve"
+            },
+            {
+              "onlyName": "pdf",
+              "title": "pdf",
+              "domain": "pdf.leecaiy.shop",
+              "serviceId": "pdf"
+            },
+            {
+              "onlyName": "webdav",
+              "title": "webdav",
+              "domain": "webdav.leecaiy.shop",
+              "serviceId": "webdav"
+            },
+            {
+              "onlyName": "n8n",
+              "title": "n8n",
+              "domain": "n8n.leecaiy.shop",
+              "serviceId": "n8n"
+            },
+            {
+              "onlyName": "lucky",
+              "title": "lucky",
+              "domain": "lucky.leecaiy.shop",
+              "serviceId": "lucky"
+            },
+            {
+              "onlyName": "synology--",
+              "title": "synology群晖",
+              "domain": "nas.leecaiy.shop",
+              "serviceId": "synology--"
+            },
+            {
+              "onlyName": "1panel",
+              "title": "1panel",
+              "domain": "1panel.leecaiy.shop",
+              "serviceId": "1panel"
+            },
+            {
+              "onlyName": "nextcloud",
+              "title": "nextcloud",
+              "domain": "nextcloud.leecaiy.shop",
+              "serviceId": "nextcloud"
+            },
+            {
+              "onlyName": "terminal",
+              "title": "terminal",
+              "domain": "terminal.leecaiy.shop",
+              "serviceId": "terminal"
+            },
+            {
+              "onlyName": "onlyoffice",
+              "title": "onlyoffice",
+              "domain": "onlyoffice.leecaiy.shop",
+              "serviceId": "onlyoffice"
+            },
+            {
+              "onlyName": "gitea",
+              "title": "gitea",
+              "domain": "gitea.leecaiy.shop",
+              "serviceId": "gitea"
+            },
+            {
+              "onlyName": "reference",
+              "title": "reference",
+              "domain": "reference.leecaiy.shop",
+              "serviceId": "reference"
+            },
+            {
+              "onlyName": "filebox",
+              "title": "filebox",
+              "domain": "f.leecaiy.shop",
+              "serviceId": "filebox"
+            },
+            {
+              "onlyName": "nextgpt",
+              "title": "nextGPT",
+              "domain": "nextgpt.leecaiy.shop",
+              "serviceId": "nextgpt"
+            },
+            {
+              "onlyName": "jenkins",
+              "title": "Jenkins",
+              "domain": "Jenkins.leecaiy.shop",
+              "serviceId": "jenkins"
+            },
+            {
+              "onlyName": "oneapi",
+              "title": "oneapi",
+              "domain": "oneapi.leecaiy.shop",
+              "serviceId": "oneapi"
+            },
+            {
+              "onlyName": "json2csv",
+              "title": "json2csv",
+              "domain": "json2csv.leecaiy.shop",
+              "serviceId": "json2csv"
+            },
+            {
+              "onlyName": "lunix-commond",
+              "title": "lunix-commond",
+              "domain": "lunix.leecaiy.shop",
+              "serviceId": "lunix-commond"
+            },
+            {
+              "onlyName": "gemin----",
+              "title": "gemin反向代理",
+              "domain": "gemini.leecaiy.shop",
+              "serviceId": "gemin----"
+            },
+            {
+              "onlyName": "apitable",
+              "title": "apitable",
+              "domain": "apitable.leecaiy.shop",
+              "serviceId": "apitable"
+            },
+            {
+              "onlyName": "--",
+              "title": "阅读",
+              "domain": "reader.leecaiy.shop",
+              "serviceId": "--"
+            },
+            {
+              "onlyName": "leantime",
+              "title": "leantime",
+              "domain": "leantime.leecaiy.shop",
+              "serviceId": "leantime"
+            },
+            {
+              "onlyName": "openclaw",
+              "title": "openclaw",
+              "domain": "claw.leecaiy.shop",
+              "serviceId": "openclaw"
+            },
+            {
+              "onlyName": "vscode-in---os",
+              "title": "vscode in 飞牛os",
+              "domain": "vscode2.leecaiy.shop",
+              "serviceId": "vscode-in---os"
+            },
+            {
+              "onlyName": "sanbox-aio",
+              "title": "sanbox aio",
+              "domain": "aio.leecaiy.shop",
+              "serviceId": "sanbox-aio"
+            },
+            {
+              "onlyName": "nas200-web",
+              "title": "飞牛OS Web",
+              "domain": "nas200.leecaiy.shop",
+              "serviceId": "nas200-web"
+            },
+            {
+              "onlyName": "nas201-dsm",
+              "title": "黑群晖DSM",
+              "domain": "nas201.leecaiy.shop",
+              "serviceId": "nas201-dsm"
+            },
+            {
+              "onlyName": "debian10-web",
+              "title": "Debian Web",
+              "domain": "web10.leecaiy.shop",
+              "serviceId": "debian10-web"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T11:31:53.749Z",
+      "action": "update_proxy_defaults",
+      "target": "proxy-defaults",
+      "detail": "更新全局反代配置",
+      "user": "admin",
+      "data": {
+        "protocol": "https",
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "externalPorts": {
+          "lucky": 50000,
+          "npm": 50001
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T11:31:59.140Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T11:32:13.730Z",
+      "action": "add_service",
+      "target": "fn-os-test",
+      "detail": "从端口扫描快速添加: 飞牛OS测试 (飞牛OS:5666)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "fn-os-test",
+          "name": "飞牛OS测试",
+          "device": "200",
+          "internalPort": 5666,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "fn-os-test.leecaiy.shop",
+          "description": "飞牛OS测试 on 飞牛OS",
+          "lucky": {
+            "port": 50000,
+            "remark": "飞牛OS测试",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://fn-os-test.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:5666"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T11:33:53.973Z",
+      "action": "delete_service",
+      "target": "fn-os-test",
+      "detail": "删除服务: 飞牛OS测试",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "fn-os-test",
+          "name": "飞牛OS测试",
+          "device": "200",
+          "internalPort": 5666,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "fn-os-test.leecaiy.shop",
+          "description": "飞牛OS测试 on 飞牛OS",
+          "lucky": {
+            "port": 50000,
+            "remark": "飞牛OS测试",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://fn-os-test.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:5666"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T11:34:02.556Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T11:34:24.321Z",
+      "action": "add_service",
+      "target": "fn-os-test-v2",
+      "detail": "从端口扫描快速添加: 飞牛OS测试V2 (飞牛OS:5666)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "fn-os-test-v2",
+          "name": "飞牛OS测试V2",
+          "device": "200",
+          "internalPort": 5666,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "fn-os-test-v2.leecaiy.shop",
+          "description": "飞牛OS测试V2 on 飞牛OS",
+          "lucky": {
+            "port": 50000,
+            "remark": "飞牛OS测试V2",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://fn-os-test-v2.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:5666"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T11:35:56.502Z",
+      "action": "delete_service",
+      "target": "fn-os-test-v2",
+      "detail": "删除服务: 飞牛OS测试V2",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "fn-os-test-v2",
+          "name": "飞牛OS测试V2",
+          "device": "200",
+          "internalPort": 5666,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "fn-os-test-v2.leecaiy.shop",
+          "description": "飞牛OS测试V2 on 飞牛OS",
+          "lucky": {
+            "port": 50000,
+            "remark": "飞牛OS测试V2",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://fn-os-test-v2.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:5666"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T11:36:05.115Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T11:36:29.874Z",
+      "action": "add_service",
+      "target": "fn-os-final-test",
+      "detail": "从端口扫描快速添加: 飞牛OS最终测试 (飞牛OS:5666)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "fn-os-final-test",
+          "name": "飞牛OS最终测试",
+          "device": "200",
+          "internalPort": 5666,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "fn-os-final-test.leecaiy.shop",
+          "description": "飞牛OS最终测试 on 飞牛OS",
+          "lucky": {
+            "port": 50000,
+            "remark": "飞牛OS最终测试",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://fn-os-final-test.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:5666"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T12:49:34.597Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 1 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T12:49:34.598Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": null,
+        "npm": null,
+        "sunpanel": {
+          "total": 1,
+          "cleared": 1,
+          "message": "已清空本地同步状态（1 个卡片）。注意：SunPanel API 没有删除接口，远端卡片需要手动删除",
+          "cards": [
+            {
+              "onlyName": "fn-os-final-test",
+              "title": "飞牛OS最终测试",
+              "domain": "fn-os-final-test.leecaiy.shop",
+              "serviceId": "fn-os-final-test"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T12:49:39.180Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T12:49:39.180Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": null,
+        "npm": null,
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T12:54:30.206Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T12:54:48.460Z",
+      "action": "add_service",
+      "target": "test-purge-service",
+      "detail": "从端口扫描快速添加: 测试清空服务 (飞牛OS:5666)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-purge-service",
+          "name": "测试清空服务",
+          "device": "200",
+          "internalPort": 5666,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-purge-service.leecaiy.shop",
+          "description": "测试清空服务 on 飞牛OS",
+          "lucky": {
+            "port": 50000,
+            "remark": "测试清空服务",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://test-purge-service.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:5666"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T13:00:09.670Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 1 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T13:00:09.670Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": true,
+          "totalDeleted": 1,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.3.200:16601/666",
+              "deleted": 1,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "已删除 1 个 Lucky 反向代理规则"
+        },
+        "npm": null,
+        "sunpanel": {
+          "total": 2,
+          "cleared": 2,
+          "message": "已清空本地同步状态（2 个卡片）。注意：SunPanel API 没有删除接口，远端卡片需要手动删除",
+          "cards": [
+            {
+              "onlyName": "unknown",
+              "title": "飞牛OS最终测试",
+              "domain": "fn-os-final-test.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "test-purge-service",
+              "title": "测试清空服务",
+              "domain": "test-purge-service.leecaiy.shop",
+              "serviceId": "test-purge-service"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T15:45:16.165Z",
+      "action": "failover",
+      "target": "lucky",
+      "detail": "lucky primary→backup 故障转移",
+      "user": "admin",
+      "data": {
+        "timestamp": "2026-04-04T15:45:16.164Z",
+        "serviceName": "lucky",
+        "fromNode": "primary",
+        "toNode": "backup",
+        "reason": "primary 节点连续失败",
+        "status": "completed",
+        "message": "成功切换到 backup 节点",
+        "manual": true
+      }
+    },
+    {
+      "timestamp": "2026-04-04T15:45:21.435Z",
+      "action": "failover",
+      "target": "lucky",
+      "detail": "lucky backup→primary 故障转移",
+      "user": "admin",
+      "data": {
+        "timestamp": "2026-04-04T15:45:21.435Z",
+        "serviceName": "lucky",
+        "fromNode": "backup",
+        "toNode": "primary",
+        "reason": "backup 节点连续失败",
+        "status": "completed",
+        "message": "成功切换到 primary 节点",
+        "manual": true
+      }
+    },
+    {
+      "timestamp": "2026-04-04T15:46:12.983Z",
+      "action": "failover",
+      "target": "lucky",
+      "detail": "lucky primary→backup 故障转移",
+      "user": "admin",
+      "data": {
+        "timestamp": "2026-04-04T15:46:12.983Z",
+        "serviceName": "lucky",
+        "fromNode": "primary",
+        "toNode": "backup",
+        "reason": "primary 节点连续失败",
+        "status": "completed",
+        "message": "成功切换到 backup 节点",
+        "manual": true
+      }
+    },
+    {
+      "timestamp": "2026-04-04T15:46:18.277Z",
+      "action": "failover",
+      "target": "sunpanel",
+      "detail": "sunpanel primary→backup 故障转移",
+      "user": "admin",
+      "data": {
+        "timestamp": "2026-04-04T15:46:18.277Z",
+        "serviceName": "sunpanel",
+        "fromNode": "primary",
+        "toNode": "backup",
+        "reason": "primary 节点连续失败",
+        "status": "completed",
+        "message": "成功切换到 backup 节点"
+      }
+    },
+    {
+      "timestamp": "2026-04-04T15:48:35.348Z",
+      "action": "failover",
+      "target": "lucky",
+      "detail": "lucky primary→backup 故障转移",
+      "user": "admin",
+      "data": {
+        "timestamp": "2026-04-04T15:48:35.347Z",
+        "serviceName": "lucky",
+        "fromNode": "primary",
+        "toNode": "backup",
+        "fromIPv4": "192.168.3.200",
+        "toIPv4": "192.168.3.2",
+        "reason": "primary 节点连续失败",
+        "status": "completed",
+        "message": "成功切换到 backup(192.168.3.2) 节点",
+        "manual": true
+      }
+    },
+    {
+      "timestamp": "2026-04-04T15:48:47.097Z",
+      "action": "failover",
+      "target": "lucky",
+      "detail": "lucky backup→primary 故障转移",
+      "user": "admin",
+      "data": {
+        "timestamp": "2026-04-04T15:48:47.097Z",
+        "serviceName": "lucky",
+        "fromNode": "backup",
+        "toNode": "primary",
+        "fromIPv4": "192.168.3.2",
+        "toIPv4": "192.168.3.200",
+        "reason": "backup 节点连续失败",
+        "status": "completed",
+        "message": "成功切换到 primary(192.168.3.200) 节点",
+        "manual": true
+      }
+    },
+    {
+      "timestamp": "2026-04-04T15:52:46.471Z",
+      "action": "failover",
+      "target": "lucky",
+      "detail": "lucky primary→backup 故障转移",
+      "user": "admin",
+      "data": {
+        "timestamp": "2026-04-04T15:52:46.471Z",
+        "serviceName": "lucky",
+        "fromNode": "primary",
+        "toNode": "backup",
+        "fromIPv4": "192.168.3.200",
+        "toIPv4": "192.168.3.2",
+        "reason": "primary 节点连续失败",
+        "status": "completed",
+        "message": "成功切换到 backup(192.168.3.2) 节点",
+        "manual": true
+      }
+    },
+    {
+      "timestamp": "2026-04-04T15:52:50.441Z",
+      "action": "failover",
+      "target": "lucky",
+      "detail": "lucky backup→primary 故障转移",
+      "user": "admin",
+      "data": {
+        "timestamp": "2026-04-04T15:52:50.441Z",
+        "serviceName": "lucky",
+        "fromNode": "backup",
+        "toNode": "primary",
+        "fromIPv4": "192.168.3.2",
+        "toIPv4": "192.168.3.200",
+        "reason": "backup 节点连续失败",
+        "status": "completed",
+        "message": "成功切换到 primary(192.168.3.200) 节点",
+        "manual": true
+      }
+    },
+    {
+      "timestamp": "2026-04-04T15:54:43.616Z",
+      "action": "failover",
+      "target": "sunpanel",
+      "detail": "sunpanel primary→backup 故障转移",
+      "user": "admin",
+      "data": {
+        "timestamp": "2026-04-04T15:54:43.615Z",
+        "serviceName": "sunpanel",
+        "fromNode": "primary",
+        "toNode": "backup",
+        "fromIPv4": "192.168.3.200",
+        "toIPv4": "192.168.3.2",
+        "reason": "primary 节点连续失败",
+        "status": "completed",
+        "message": "成功切换到 backup(192.168.3.2) 节点",
+        "manual": true
+      }
+    },
+    {
+      "timestamp": "2026-04-04T15:55:32.234Z",
+      "action": "failover",
+      "target": "lucky",
+      "detail": "lucky primary→backup 故障转移",
+      "user": "admin",
+      "data": {
+        "timestamp": "2026-04-04T15:55:32.233Z",
+        "serviceName": "lucky",
+        "fromNode": "primary",
+        "toNode": "backup",
+        "fromIPv4": "192.168.3.200",
+        "toIPv4": "192.168.3.2",
+        "reason": "primary 节点连续失败",
+        "status": "completed",
+        "message": "成功切换到 backup(192.168.3.2) 节点",
+        "manual": true
+      }
+    },
+    {
+      "timestamp": "2026-04-04T15:55:34.218Z",
+      "action": "failover",
+      "target": "sunpanel",
+      "detail": "sunpanel backup→primary 故障转移",
+      "user": "admin",
+      "data": {
+        "timestamp": "2026-04-04T15:55:34.218Z",
+        "serviceName": "sunpanel",
+        "fromNode": "backup",
+        "toNode": "primary",
+        "fromIPv4": "192.168.3.2",
+        "toIPv4": "192.168.3.200",
+        "reason": "backup 节点连续失败",
+        "status": "completed",
+        "message": "成功切换到 primary(192.168.3.200) 节点"
+      }
+    },
+    {
+      "timestamp": "2026-04-04T16:20:05.777Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 10 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T16:20:16.151Z",
+      "action": "scan_device",
+      "target": "201",
+      "detail": "扫描设备 201 (192.168.3.201), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T16:20:21.530Z",
+      "action": "scan_device",
+      "target": "10",
+      "detail": "扫描设备 10 (192.168.3.10), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T16:46:17.197Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 10 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T16:46:28.500Z",
+      "action": "scan_device",
+      "target": "10",
+      "detail": "扫描设备 10 (192.168.3.10), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T16:46:29.013Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 10 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T16:46:29.524Z",
+      "action": "scan_device",
+      "target": "201",
+      "detail": "扫描设备 201 (192.168.3.201), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T16:46:30.039Z",
+      "action": "scan_device",
+      "target": "254",
+      "detail": "扫描设备 254 (192.168.3.254), 发现 1 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-04T16:46:53.930Z",
+      "action": "add_service",
+      "target": "sunpanel",
+      "detail": "从端口扫描快速添加: sunpanel (飞牛OS:20001)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "sunpanel",
+          "name": "sunpanel",
+          "device": "200",
+          "internalPort": 20001,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "sunpanel.leecaiy.shop",
+          "description": "sunpanel on 飞牛OS",
+          "lucky": {
+            "port": 50000,
+            "remark": "sunpanel",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://sunpanel.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:20001"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-04T16:50:44.436Z",
+      "action": "delete_service",
+      "target": "sunpanel",
+      "detail": "删除服务: sunpanel",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "sunpanel",
+          "name": "sunpanel",
+          "device": "200",
+          "internalPort": 20001,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "sunpanel.leecaiy.shop",
+          "description": "sunpanel on 飞牛OS",
+          "lucky": {
+            "port": 50000,
+            "remark": "sunpanel",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://sunpanel.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:20001"
+          }
+        }
+      }
     }
   ]
 }

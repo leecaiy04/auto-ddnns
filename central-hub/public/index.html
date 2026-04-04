@@ -309,10 +309,6 @@
                         <span class="badge success" id="status-lucky">检测中</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-muted">Nginx Proxy Manager</span>
-                        <span class="badge success" id="status-npm">检测中</span>
-                    </div>
-                    <div class="flex justify-between items-center">
                         <span class="text-muted">SunPanel 面板</span>
                         <span class="badge success" id="status-sunpanel">检测中</span>
                     </div>
@@ -337,10 +333,6 @@
                     <div>
                         <label class="form-label">Lucky 暴露端口</label>
                         <input class="form-control" id="pd-port-lucky" type="number" value="50000">
-                    </div>
-                    <div>
-                        <label class="form-label">NPM 暴露端口</label>
-                        <input class="form-control" id="pd-port-npm" type="number" value="50001">
                     </div>
                     <div style="grid-column: 1 / -1; display:flex; justify-content:flex-end;">
                         <button type="submit" class="btn btn-primary btn-sm">保存设置</button>
@@ -517,7 +509,6 @@
                 
                 updateStatus('status-ddns', data.ddns?.enabled, data.ddns?.enabled ? '激活' : '未激活');
                 updateStatus('status-lucky', true, `共 ${data.proxies?.lucky || 0} 条规则`);
-                updateStatus('status-npm', true, `已同步 ${data.proxies?.npmSynced || 0} 条`);
                 updateStatus('status-sunpanel', true, `卡片数: ${data.sunpanel?.cardsCount || 0}`);
             } catch(e){}
         }
@@ -528,7 +519,6 @@
                 document.getElementById('pd-protocol').value = data.protocol || 'https';
                 document.getElementById('pd-domains').value = (data.domains || []).join(', ');
                 document.getElementById('pd-port-lucky').value = data.externalPorts?.lucky || 50000;
-                document.getElementById('pd-port-npm').value = data.externalPorts?.npm || 50001;
             }
         }
 
@@ -539,8 +529,7 @@
                 protocol: document.getElementById('pd-protocol').value,
                 domains,
                 externalPorts: {
-                    lucky: parseInt(document.getElementById('pd-port-lucky').value) || 50000,
-                    npm: parseInt(document.getElementById('pd-port-npm').value) || 50001
+                    lucky: parseInt(document.getElementById('pd-port-lucky').value) || 50000
                 }
             };
             await apiCall('/api/services/proxy-defaults', 'PUT', '保存代理默认配置', payload);
@@ -693,7 +682,7 @@
         }
 
         async function purgeRemote() {
-            if(confirm('☢️ 警告: 真的要批量清空 Lucky、NPM、SunPanel 等反向代理远程环境数据，并重置白名单系统吗？\n当前本地列表将化为灰烬！')) {
+            if(confirm('☢️ 警告: 真的要批量清空 Lucky、SunPanel 等远端同步数据，并重置白名单系统吗？\n当前本地列表将化为灰烬！')) {
                 await apiCall('/api/services/purge-remote', 'POST', '广域数据库重置');
             }
         }

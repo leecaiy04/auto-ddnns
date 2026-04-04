@@ -7,8 +7,8 @@
  * - DDNS 自动更新
  * - 服务清单管理
  * - Lucky 反向代理自动化（50000端口）
- * - Nginx Proxy Manager 同步（50001端口）
  * - SunPanel 卡片自动化
+ * - Cloudflare DNS 管理
  * - Web 监控界面
  */
 
@@ -130,7 +130,6 @@ async function loadEnvFile() {
 import { DeviceMonitor } from './modules/device-monitor.mjs';
 import { ServiceRegistry } from './modules/service-registry.mjs';
 import { LuckyManager } from './modules/lucky-manager.mjs';
-import { NPMManager } from './modules/npm-manager.mjs';
 import { CloudflareManager } from './modules/cloudflare-manager.mjs';
 import { Coordinator } from './modules/coordinator.mjs';
 import { StateManager } from './modules/state-manager.mjs';
@@ -238,14 +237,6 @@ class CentralHub {
       this.modules.lucky = this.modules.luckyManager;
     }
 
-    // NPM 管理模块
-    if (this.config.modules.npm?.enabled) {
-      this.modules.npmManager = new NPMManager(
-        this.config.modules.npm,
-        this.stateManager
-      );
-    }
-
     // Cloudflare DNS 管理模块
     if (this.config.modules.cloudflare?.enabled) {
       this.modules.cloudflareManager = new CloudflareManager(
@@ -333,16 +324,6 @@ class CentralHub {
       }
     });
 
-    this.app.post('/api/npm/sync', async (req, res) => {
-      try {
-        const result = await this.coordinator.runNPMSync();
-        res.json(result);
-      } catch (error) {
-        console.error('[NPM] NPM同步失败:', error);
-        res.status(500).json({ error: error.message });
-      }
-    });
-
     this.app.post('/api/sunpanel/sync', async (req, res) => {
       try {
         const result = await this.coordinator.runSunpanelSync();
@@ -375,7 +356,6 @@ class CentralHub {
             deviceMonitor: this.modules.deviceMonitor?.getStatus()?.enabled ? 'ok' : 'disabled',
             ddns: this.modules.ddnsController?.getStatus()?.enabled ? 'ok' : 'disabled',
             lucky: this.modules.luckyManager?.getStatus()?.lucky?.enabled ? 'ok' : 'disabled',
-            npm: this.modules.npmManager?.getStatus()?.enabled ? 'ok' : 'disabled',
             sunpanel: this.modules.sunpanelManager?.config?.enabled ? 'ok' : 'disabled',
             cloudflare: this.modules.cloudflareManager?.getStatus()?.enabled ? 'ok' : 'disabled'
           }
