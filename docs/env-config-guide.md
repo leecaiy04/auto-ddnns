@@ -284,7 +284,6 @@ env | grep SUNPANEL
 
 - [SunPanel 管理](../sunpanel-management/README.md)
 - [Lucky 管理](../lucky-management/README.md)
-- [同步脚本](../docs/lucky-to-sunpanel.md)
 - [Central Hub](../central-hub/README.md)
 
 ## 📞 获取帮助

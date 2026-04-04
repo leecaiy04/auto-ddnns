@@ -150,7 +150,6 @@ auto-dnns/
   - `sunpanel-management/README.md`
   - `lucky-management/README.md`
   - `central-hub/README.md`
-  - `docs/lucky-to-sunpanel.md`
 
 ## 🎯 下一步
 
