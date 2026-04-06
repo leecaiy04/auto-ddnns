@@ -8,11 +8,11 @@
       "internalProtocol": "http",
       "enableProxy": true,
       "proxyType": "reverseproxy",
-      "enableTLS": false,
+      "enableTLS": true,
       "proxyDomain": "openclaw.222869.xyz",
       "description": "debian小龙虾 on Device 10",
       "lucky": {
-        "port": 50000,
+        "port": 55000,
         "remark": "debian小龙虾",
         "advancedConfig": ""
       },
@@ -20,6 +20,18 @@
         "group": "其他",
         "icon": "https://openclaw.222869.xyz/favicon.ico",
         "lanUrl": "http://192.168.3.10:18789"
+      },
+      "advanced": {
+        "waf": false,
+        "ignoreTlsVerify": true,
+        "autoRedirect": true,
+        "useTargetHost": true,
+        "accessLog": true,
+        "securityPresets": true,
+        "authentication": {
+          "enabled": false,
+          "type": "web"
+        }
       }
     }
   ]

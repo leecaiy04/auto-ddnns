@@ -344,7 +344,7 @@ export function serviceRoutes(modules) {
   // ==================== 连通性检测 ====================
 
   /**
-   * 检测所有服务的 IPv4 反代可用性和 IPv6 直连可用性
+   * 检测所有服务的公网反代可用性和内网直连可用性
    * GET /api/services/connectivity
    */
   router.get('/connectivity', async (_req, res) => {
@@ -354,7 +354,6 @@ export function serviceRoutes(modules) {
       }
 
       const services = modules.serviceRegistry.getAllServices();
-      const ipv6Map = modules.deviceMonitor?.getIPv6Map() || {};
       const proxyDefaults = modules.serviceRegistry.getProxyDefaults();
       const results = [];
 
@@ -363,11 +362,11 @@ export function serviceRoutes(modules) {
           id: service.id,
           name: service.name,
           ipv4Proxy: { url: null, ok: false, status: null, latency: null },
-          ipv6Direct: { url: null, ok: false, status: null, latency: null }
+          lanDirect: { url: null, ok: false, status: null, latency: null }
         };
 
         // IPv4 反向代理 URL
-        const luckyPort = proxyDefaults?.externalPorts?.lucky || 50000;
+        const luckyPort = service.lucky?.port || proxyDefaults?.externalPorts?.lucky || 50000;
         result.ipv4Proxy.url = `https://${service.proxyDomain}:${luckyPort}`;
 
         try {
@@ -388,29 +387,26 @@ export function serviceRoutes(modules) {
           }
         } catch { /* ignore */ }
 
-        // IPv6 直连 URL
-        const ipv6 = ipv6Map[service.device];
-        if (ipv6) {
-          result.ipv6Direct.url = modules.serviceRegistry.buildIpv6DirectUrl(service.id, ipv6);
+        // 内网 IPv4 直连 URL
+        result.lanDirect.url = `${service.internalProtocol || 'http'}://192.168.3.${service.device}:${service.internalPort}`;
 
-          try {
-            const startTime = Date.now();
-            const controller = new AbortController();
-            const timeout = setTimeout(() => controller.abort(), 8000);
-            const response = await fetch(result.ipv6Direct.url, {
-              method: 'HEAD',
-              signal: controller.signal,
-              redirect: 'manual'
-            }).catch(() => null);
-            clearTimeout(timeout);
+        try {
+          const startTime = Date.now();
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 8000);
+          const response = await fetch(result.lanDirect.url, {
+            method: 'HEAD',
+            signal: controller.signal,
+            redirect: 'manual'
+          }).catch(() => null);
+          clearTimeout(timeout);
 
-            if (response) {
-              result.ipv6Direct.ok = response.status < 500;
-              result.ipv6Direct.status = response.status;
-              result.ipv6Direct.latency = Date.now() - startTime;
-            }
-          } catch { /* ignore */ }
-        }
+          if (response) {
+            result.lanDirect.ok = response.status < 500;
+            result.lanDirect.status = response.status;
+            result.lanDirect.latency = Date.now() - startTime;
+          }
+        } catch { /* ignore */ }
 
         results.push(result);
       }

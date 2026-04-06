@@ -676,10 +676,10 @@ export class ServiceRegistry {
       throw new Error(`服务ID ${id} 不存在`);
     }
 
-    const targetHost = deviceIPv6 || `192.168.3.${service.device}`;
+    const targetHost = `192.168.3.${service.device}`;
     const formattedTargetHost = formatTargetHost(targetHost);
-    const target = service.enableTLS
-      ? `https://${formattedTargetHost}:${service.internalPort}`
+    const target = service.internalProtocol
+      ? `${service.internalProtocol}://${formattedTargetHost}:${service.internalPort}`
       : `http://${formattedTargetHost}:${service.internalPort}`;
 
     return {
@@ -722,17 +722,17 @@ export class ServiceRegistry {
   }
 
   /**
-   * 为服务生成 IPv6 直连 URL
+   * 为服务生成内网 IPv4 直连 URL
    * @param {string} serviceId
-   * @param {string} ipv6Address
-   * @returns {string} IPv6 direct URL
+   * @param {string} host
+   * @returns {string} LAN direct URL
    */
-  buildIpv6DirectUrl(serviceId, ipv6Address) {
+  buildLanDirectUrl(serviceId, host) {
     const service = this.getServiceById(serviceId);
-    if (!service || !ipv6Address) return null;
+    if (!service || !host) return null;
 
     const protocol = service.internalProtocol || inferInternalProtocol(service.internalPort);
-    return `${protocol}://[${ipv6Address}]:${service.internalPort}`;
+    return `${protocol}://${host}:${service.internalPort}`;
   }
 }
 

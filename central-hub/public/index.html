@@ -635,7 +635,7 @@
                             <th>服务ID</th>
                             <th>设备:端口</th>
                             <th>IPv4 域名映射 (外网)</th>
-                            <th>IPv6 直连通道 (直连)</th>
+                            <th>内网直连通道</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -1318,8 +1318,8 @@
                         <div class="text-muted" style="font-size:11px;" id="latency-v4-${s.id}">-</div>
                     </td>
                     <td>
-                        <a href="#" target="_blank" style="color:#a78bfa; text-decoration:none; display:none; font-size:13px;" id="link-v6-${s.id}">IPv6 直连通道</a>
-                        <div class="text-muted" style="font-size:11px;" id="latency-v6-${s.id}">-</div>
+                        <a href="#" target="_blank" style="color:#a78bfa; text-decoration:none; display:none; font-size:13px;" id="link-lan-${s.id}">内网直连通道</a>
+                        <div class="text-muted" style="font-size:11px;" id="latency-lan-${s.id}">-</div>
                     </td>
                     <td><button class="btn btn-sm btn-danger" onclick="apiCall('/api/services/${s.id}', 'DELETE', '删除服务')">移除</button></td>
                 </tr>
@@ -1348,22 +1348,22 @@
                     if(sc.ipv4Proxy.url) v4Link.href = sc.ipv4Proxy.url;
                 }
                 
-                // Update IPv6
-                const v6Span = document.getElementById(`latency-v6-${sc.id}`);
-                const v6Link = document.getElementById(`link-v6-${sc.id}`);
-                if(v6Span && v6Link && sc.ipv6Direct.url) {
-                    v6Link.style.display = 'block';
-                    v6Link.href = sc.ipv6Direct.url;
-                    
-                    if(sc.ipv6Direct.ok) {
-                        v6Link.style.color = '#34d399';
-                        v6Span.innerHTML = `<span style="color:#10b981">${sc.ipv6Direct.latency}ms (HTTP ${sc.ipv6Direct.status})</span>`;
+                // Update LAN direct
+                const lanSpan = document.getElementById(`latency-lan-${sc.id}`);
+                const lanLink = document.getElementById(`link-lan-${sc.id}`);
+                if(lanSpan && lanLink && sc.lanDirect.url) {
+                    lanLink.style.display = 'block';
+                    lanLink.href = sc.lanDirect.url;
+
+                    if(sc.lanDirect.ok) {
+                        lanLink.style.color = '#34d399';
+                        lanSpan.innerHTML = `<span style="color:#10b981">${sc.lanDirect.latency}ms (HTTP ${sc.lanDirect.status})</span>`;
                     } else {
-                        v6Link.style.color = '#ef4444';
-                        v6Span.innerHTML = `<span style="color:#ef4444">未通</span>`;
+                        lanLink.style.color = '#ef4444';
+                        lanSpan.innerHTML = `<span style="color:#ef4444">未通</span>`;
                     }
-                } else if(v6Span) {
-                    v6Span.textContent = '无 IPv6 通道';
+                } else if(lanSpan) {
+                    lanSpan.textContent = '无内网通道';
                 }
             }
         }

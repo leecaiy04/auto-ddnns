@@ -1389,6 +1389,820 @@
           }
         }
       }
+    },
+    {
+      "timestamp": "2026-04-05T18:02:12.420Z",
+      "action": "scan_device",
+      "target": "2",
+      "detail": "扫描设备 2 (192.168.3.2), 发现 5 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-05T18:02:12.933Z",
+      "action": "scan_device",
+      "target": "10",
+      "detail": "扫描设备 10 (192.168.3.10), 发现 3 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-05T18:02:13.444Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 13 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-05T18:02:13.954Z",
+      "action": "scan_device",
+      "target": "201",
+      "detail": "扫描设备 201 (192.168.3.201), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-05T21:23:56.994Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 13 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-05T21:23:57.816Z",
+      "action": "scan_device",
+      "target": "201",
+      "detail": "扫描设备 201 (192.168.3.201), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-05T21:23:58.637Z",
+      "action": "scan_device",
+      "target": "10",
+      "detail": "扫描设备 10 (192.168.3.10), 发现 3 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-05T21:23:59.459Z",
+      "action": "scan_device",
+      "target": "2",
+      "detail": "扫描设备 2 (192.168.3.2), 发现 5 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-05T21:24:17.840Z",
+      "action": "add_service",
+      "target": "ddns-status",
+      "detail": "从端口扫描快速添加: DDNS Status (Device 200:20000)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "ddns-status",
+          "name": "DDNS Status",
+          "device": "200",
+          "internalPort": 20000,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "ddns-status.leecaiy.shop",
+          "description": "DDNS status page on device 200",
+          "lucky": {
+            "port": 50000,
+            "remark": "DDNS Status",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "Infra",
+            "icon": "https://ddns-status.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:20000"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-05T21:24:20.687Z",
+      "action": "add_service",
+      "target": "sunpanel",
+      "detail": "从端口扫描快速添加: SunPanel (Device 200:20001)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "sunpanel",
+          "name": "SunPanel",
+          "device": "200",
+          "internalPort": 20001,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "sunpanel.leecaiy.shop",
+          "description": "SunPanel on device 200",
+          "lucky": {
+            "port": 50000,
+            "remark": "SunPanel",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "Infra",
+            "icon": "https://sunpanel.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:20001"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-05T21:24:28.317Z",
+      "action": "add_service",
+      "target": "app-5000",
+      "detail": "从端口扫描快速添加: App 5000 (Device 201:5000)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "app-5000",
+          "name": "App 5000",
+          "device": "201",
+          "internalPort": 5000,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "app-5000.leecaiy.shop",
+          "description": "Representative app on device 201 port 5000",
+          "lucky": {
+            "port": 50000,
+            "remark": "App 5000",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "Apps",
+            "icon": "https://app-5000.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.201:5000"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-05T21:24:38.933Z",
+      "action": "add_service",
+      "target": "svc-18789",
+      "detail": "从端口扫描快速添加: Service 18789 (Device 10:18789)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "svc-18789",
+          "name": "Service 18789",
+          "device": "10",
+          "internalPort": 18789,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "svc-18789.leecaiy.shop",
+          "description": "Representative service on device 10 port 18789",
+          "lucky": {
+            "port": 50000,
+            "remark": "Service 18789",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "Apps",
+            "icon": "https://svc-18789.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.10:18789"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-06T04:13:47.428Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 4 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-06T04:13:47.429Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": true,
+          "totalDeleted": 1,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.3.2:16601/666",
+              "deleted": 1,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "已删除 1 个 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 68,
+          "cleared": 68,
+          "message": "已清空本地同步状态（68 个卡片）。注意：SunPanel API 没有删除接口，远端卡片需要手动删除",
+          "cards": [
+            {
+              "onlyName": "unknown",
+              "title": "Sunpanel 管理界面",
+              "domain": "leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "fnos",
+              "domain": "fn.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "vscode",
+              "domain": "code.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "相似度",
+              "domain": "similar.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "pve",
+              "domain": "pve.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "pdf",
+              "domain": "pdf.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "webdav",
+              "domain": "webdav.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "n8n",
+              "domain": "n8n.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "lucky",
+              "domain": "lucky.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "synology群晖",
+              "domain": "nas.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "1panel",
+              "domain": "1panel.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "nextcloud",
+              "domain": "nextcloud.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "terminal",
+              "domain": "terminal.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "onlyoffice",
+              "domain": "onlyoffice.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "gitea",
+              "domain": "gitea.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "reference",
+              "domain": "reference.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "filebox",
+              "domain": "f.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "nextGPT",
+              "domain": "nextgpt.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "Jenkins",
+              "domain": "Jenkins.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "oneapi",
+              "domain": "oneapi.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "json2csv",
+              "domain": "json2csv.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "lunix-commond",
+              "domain": "lunix.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "gemin反向代理",
+              "domain": "gemini.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "apitable",
+              "domain": "apitable.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "阅读",
+              "domain": "reader.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "leantime",
+              "domain": "leantime.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "openclaw",
+              "domain": "claw.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "vscode in 飞牛os",
+              "domain": "vscode2.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "sanbox aio",
+              "domain": "aio.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "飞牛OS Web",
+              "domain": "nas200.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "黑群晖DSM",
+              "domain": "nas201.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "Debian Web",
+              "domain": "web10.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "sunpanel-----",
+              "title": "Sunpanel 管理界面",
+              "domain": "leecaiy.shop",
+              "serviceId": "sunpanel-----"
+            },
+            {
+              "onlyName": "fnos",
+              "title": "fnos",
+              "domain": "fn.leecaiy.shop",
+              "serviceId": "fnos"
+            },
+            {
+              "onlyName": "vscode",
+              "title": "vscode",
+              "domain": "code.leecaiy.shop",
+              "serviceId": "vscode"
+            },
+            {
+              "onlyName": "---",
+              "title": "相似度",
+              "domain": "similar.leecaiy.shop",
+              "serviceId": "---"
+            },
+            {
+              "onlyName": "pve",
+              "title": "pve",
+              "domain": "pve.leecaiy.shop",
+              "serviceId": "pve"
+            },
+            {
+              "onlyName": "pdf",
+              "title": "pdf",
+              "domain": "pdf.leecaiy.shop",
+              "serviceId": "pdf"
+            },
+            {
+              "onlyName": "webdav",
+              "title": "webdav",
+              "domain": "webdav.leecaiy.shop",
+              "serviceId": "webdav"
+            },
+            {
+              "onlyName": "n8n",
+              "title": "n8n",
+              "domain": "n8n.leecaiy.shop",
+              "serviceId": "n8n"
+            },
+            {
+              "onlyName": "lucky",
+              "title": "lucky",
+              "domain": "lucky.leecaiy.shop",
+              "serviceId": "lucky"
+            },
+            {
+              "onlyName": "synology--",
+              "title": "synology群晖",
+              "domain": "nas.leecaiy.shop",
+              "serviceId": "synology--"
+            },
+            {
+              "onlyName": "1panel",
+              "title": "1panel",
+              "domain": "1panel.leecaiy.shop",
+              "serviceId": "1panel"
+            },
+            {
+              "onlyName": "nextcloud",
+              "title": "nextcloud",
+              "domain": "nextcloud.leecaiy.shop",
+              "serviceId": "nextcloud"
+            },
+            {
+              "onlyName": "terminal",
+              "title": "terminal",
+              "domain": "terminal.leecaiy.shop",
+              "serviceId": "terminal"
+            },
+            {
+              "onlyName": "onlyoffice",
+              "title": "onlyoffice",
+              "domain": "onlyoffice.leecaiy.shop",
+              "serviceId": "onlyoffice"
+            },
+            {
+              "onlyName": "gitea",
+              "title": "gitea",
+              "domain": "gitea.leecaiy.shop",
+              "serviceId": "gitea"
+            },
+            {
+              "onlyName": "reference",
+              "title": "reference",
+              "domain": "reference.leecaiy.shop",
+              "serviceId": "reference"
+            },
+            {
+              "onlyName": "filebox",
+              "title": "filebox",
+              "domain": "f.leecaiy.shop",
+              "serviceId": "filebox"
+            },
+            {
+              "onlyName": "nextgpt",
+              "title": "nextGPT",
+              "domain": "nextgpt.leecaiy.shop",
+              "serviceId": "nextgpt"
+            },
+            {
+              "onlyName": "jenkins",
+              "title": "Jenkins",
+              "domain": "Jenkins.leecaiy.shop",
+              "serviceId": "jenkins"
+            },
+            {
+              "onlyName": "oneapi",
+              "title": "oneapi",
+              "domain": "oneapi.leecaiy.shop",
+              "serviceId": "oneapi"
+            },
+            {
+              "onlyName": "json2csv",
+              "title": "json2csv",
+              "domain": "json2csv.leecaiy.shop",
+              "serviceId": "json2csv"
+            },
+            {
+              "onlyName": "lunix-commond",
+              "title": "lunix-commond",
+              "domain": "lunix.leecaiy.shop",
+              "serviceId": "lunix-commond"
+            },
+            {
+              "onlyName": "gemin----",
+              "title": "gemin反向代理",
+              "domain": "gemini.leecaiy.shop",
+              "serviceId": "gemin----"
+            },
+            {
+              "onlyName": "apitable",
+              "title": "apitable",
+              "domain": "apitable.leecaiy.shop",
+              "serviceId": "apitable"
+            },
+            {
+              "onlyName": "--",
+              "title": "阅读",
+              "domain": "reader.leecaiy.shop",
+              "serviceId": "--"
+            },
+            {
+              "onlyName": "leantime",
+              "title": "leantime",
+              "domain": "leantime.leecaiy.shop",
+              "serviceId": "leantime"
+            },
+            {
+              "onlyName": "openclaw",
+              "title": "openclaw",
+              "domain": "claw.leecaiy.shop",
+              "serviceId": "openclaw"
+            },
+            {
+              "onlyName": "vscode-in---os",
+              "title": "vscode in 飞牛os",
+              "domain": "vscode2.leecaiy.shop",
+              "serviceId": "vscode-in---os"
+            },
+            {
+              "onlyName": "sanbox-aio",
+              "title": "sanbox aio",
+              "domain": "aio.leecaiy.shop",
+              "serviceId": "sanbox-aio"
+            },
+            {
+              "onlyName": "nas200-web",
+              "title": "飞牛OS Web",
+              "domain": "nas200.leecaiy.shop",
+              "serviceId": "nas200-web"
+            },
+            {
+              "onlyName": "nas201-dsm",
+              "title": "黑群晖DSM",
+              "domain": "nas201.leecaiy.shop",
+              "serviceId": "nas201-dsm"
+            },
+            {
+              "onlyName": "debian10-web",
+              "title": "Debian Web",
+              "domain": "web10.leecaiy.shop",
+              "serviceId": "debian10-web"
+            },
+            {
+              "onlyName": "ddns-status",
+              "title": "DDNS Status",
+              "domain": "ddns-status.leecaiy.shop",
+              "serviceId": "ddns-status"
+            },
+            {
+              "onlyName": "sunpanel",
+              "title": "SunPanel",
+              "domain": "sunpanel.leecaiy.shop",
+              "serviceId": "sunpanel"
+            },
+            {
+              "onlyName": "app-5000",
+              "title": "App 5000",
+              "domain": "app-5000.leecaiy.shop",
+              "serviceId": "app-5000"
+            },
+            {
+              "onlyName": "svc-18789",
+              "title": "Service 18789",
+              "domain": "svc-18789.leecaiy.shop",
+              "serviceId": "svc-18789"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-06T04:14:05.040Z",
+      "action": "scan_device",
+      "target": "10",
+      "detail": "扫描设备 10 (192.168.3.10), 发现 3 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-06T04:14:21.479Z",
+      "action": "add_service",
+      "target": "openclaw",
+      "detail": "从端口扫描快速添加: debian小龙虾 (Device 10:18789)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "openclaw",
+          "name": "debian小龙虾",
+          "device": "10",
+          "internalPort": 18789,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "openclaw.leecaiy.shop",
+          "description": "debian小龙虾 on Device 10",
+          "lucky": {
+            "port": 50000,
+            "remark": "debian小龙虾",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://openclaw.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.10:18789"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-06T04:20:14.767Z",
+      "action": "add_service",
+      "target": "test-auto-sync",
+      "detail": "手动添加服务: Test Auto Sync",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "id": "test-auto-sync",
+          "name": "Test Auto Sync",
+          "device": "2",
+          "internalPort": 20001,
+          "internalProtocol": "http",
+          "proxyDomain": "test-auto-sync.leecaiy.shop",
+          "description": "Verify add triggers Lucky and SunPanel sync automatically",
+          "lucky": {
+            "port": 50000,
+            "remark": "Test Auto Sync",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "Infra",
+            "icon": "",
+            "lanUrl": "http://192.168.3.2:20001"
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-06T04:34:09.099Z",
+      "action": "delete_service",
+      "target": "test-auto-sync",
+      "detail": "删除服务: Test Auto Sync",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "id": "test-auto-sync",
+          "name": "Test Auto Sync",
+          "device": "2",
+          "internalPort": 20001,
+          "internalProtocol": "http",
+          "proxyDomain": "test-auto-sync.leecaiy.shop",
+          "description": "Verify add triggers Lucky and SunPanel sync automatically",
+          "lucky": {
+            "port": 50000,
+            "remark": "Test Auto Sync",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "Infra",
+            "icon": "",
+            "lanUrl": "http://192.168.3.2:20001"
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-06T08:51:46.375Z",
+      "action": "update_service",
+      "target": "openclaw",
+      "detail": "更新服务: debian小龙虾",
+      "user": "admin",
+      "data": {
+        "before": {
+          "id": "openclaw",
+          "name": "debian小龙虾",
+          "device": "10",
+          "internalPort": 18789,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "openclaw.222869.xyz",
+          "description": "debian小龙虾 on Device 10",
+          "lucky": {
+            "port": 50000,
+            "remark": "debian小龙虾",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://openclaw.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.10:18789"
+          }
+        },
+        "after": {
+          "id": "openclaw",
+          "name": "debian小龙虾",
+          "device": "10",
+          "internalPort": 18789,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "proxyDomain": "openclaw.222869.xyz",
+          "description": "debian小龙虾 on Device 10",
+          "lucky": {
+            "port": 50000,
+            "remark": "debian小龙虾",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://openclaw.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.10:18789"
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          }
+        }
+      }
     }
   ]
 }

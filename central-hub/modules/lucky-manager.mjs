@@ -29,6 +29,16 @@ function formatTargetHost(targetHost) {
   return targetHost?.includes(':') ? `[${targetHost}]` : targetHost;
 }
 
+function resolveLuckyTargetHost(service, ipv6Map = {}) {
+  return `192.168.3.${service.device}`;
+}
+
+function buildLuckyTarget(service, targetHost) {
+  const formattedTargetHost = formatTargetHost(targetHost);
+  const targetProtocol = service.internalProtocol || 'http';
+  return `${targetProtocol}://${formattedTargetHost}:${service.internalPort}`;
+}
+
 function stripIPv6Brackets(host) {
   return host?.replace(/^\[/, '').replace(/\]$/, '');
 }
@@ -340,12 +350,8 @@ export class LuckyManager {
   }
 
   buildExpectedLuckyEntry(service, ipv6Map = {}) {
-    const deviceIPv6 = ipv6Map[service.device] || null;
-    const targetHost = deviceIPv6 || `192.168.3.${service.device}`;
-    const formattedTargetHost = formatTargetHost(targetHost);
-    const target = service.enableTLS
-      ? `https://${formattedTargetHost}:${service.internalPort}`
-      : `http://${formattedTargetHost}:${service.internalPort}`;
+    const targetHost = resolveLuckyTargetHost(service, ipv6Map);
+    const target = buildLuckyTarget(service, targetHost);
 
     return {
       serviceId: service.id,
@@ -624,7 +630,7 @@ export class LuckyManager {
   /**
    * 同步服务清单到Lucky
    * @param {Array} services - 服务列表
-   * @param {object} ipv6Map - IPv6地址映射
+   * @param {object} ipv6Map - 设备地址映射（当前内网回源统一使用 IPv4）
    */
   async syncServicesToLucky(services, ipv6Map = {}) {
     console.log('[LuckyManager] 🔄 开始同步服务到Lucky实例...');
@@ -649,19 +655,17 @@ export class LuckyManager {
         }
 
         try {
-          const deviceIPv6 = ipv6Map[service.device] || null;
-          const targetHost = deviceIPv6 || `192.168.3.${service.device}`;
-          const formattedTargetHost = formatTargetHost(targetHost);
-          const target = service.enableTLS
-            ? `https://${formattedTargetHost}:${service.internalPort}`
-            : `http://${formattedTargetHost}:${service.internalPort}`;
+          const targetHost = resolveLuckyTargetHost(service, ipv6Map);
+          const target = buildLuckyTarget(service, targetHost);
 
-          if (i === 0 && service.lucky.port !== 50000) {
-            console.warn(`[LuckyManager] ⚠️  服务 ${service.id} 未使用统一的50000端口，当前端口: ${service.lucky.port}`);
+          const publicPort = service.lucky?.port || instanceConfig.httpsPort;
+
+          if (i === 0 && service.lucky?.port && service.lucky.port !== instanceConfig.httpsPort) {
+            console.warn(`[LuckyManager] ⚠️  服务 ${service.id} 使用独立公网端口: ${service.lucky.port} (实例默认端口 ${instanceConfig.httpsPort})`);
           }
 
           const result = await smartAddOrUpdateSubRule(
-            instanceConfig.httpsPort,
+            publicPort,
             service.lucky.remark || service.name,
             service.proxyType,
             [service.proxyDomain],

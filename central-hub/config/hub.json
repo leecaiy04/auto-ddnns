@@ -46,7 +46,7 @@
     "lucky": {
       "enabled": true,
       "apiBase": "http://192.168.3.200:16601",
-      "httpsPort": 50000,
+      "httpsPort": 55000,
       "autoSync": true,
       "autoCreateProxy": true
     },
