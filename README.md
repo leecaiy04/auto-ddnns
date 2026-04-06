@@ -142,6 +142,14 @@ node cli.mjs monitor
 
 对应实现见 `cli.mjs:42`、`cli.mjs:165`。
 
+## GitHub Actions 部署
+
+- 已提供手动部署工作流：`.github/workflows/deploy-fnos.yml`
+- 当前只支持部署 `main` 分支
+- 当前不会自动拉取或自动发布，需要你在 GitHub Actions 页面手动点击触发
+- 因为飞牛主机是局域网地址 `192.168.3.200`，需要在飞牛 OS 上安装 `self-hosted runner`
+- 详细说明见 `docs/github-actions-fnos.md`
+
 ## 默认端口
 
 > 以下是当前代码中的默认值；若 `.env` 或配置文件覆盖，请以实际部署值为准。

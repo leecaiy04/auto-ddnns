@@ -1,0 +1,80 @@
+name: Deploy to FNOS
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-fnos-main
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy main to FNOS
+    runs-on:
+      - self-hosted
+      - linux
+      - x64
+      - fnos
+    env:
+      DEPLOY_DIR: /vol1/1000/code/deplay/auto-dnns
+      DEPLOY_BRANCH: main
+      SERVICE_NAME: auto-dnns
+    steps:
+      - name: Ensure workflow runs for main only
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_REF}" != "refs/heads/main" ]; then
+            echo "::error::This workflow only deploys the main branch. Current ref: ${GITHUB_REF}"
+            exit 1
+          fi
+
+      - name: Check deployment directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -d "${DEPLOY_DIR}"
+          test -d "${DEPLOY_DIR}/.git"
+          git -C "${DEPLOY_DIR}" remote -v
+
+      - name: Update repository to latest main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C "${DEPLOY_DIR}" fetch --prune origin "${DEPLOY_BRANCH}"
+          git -C "${DEPLOY_DIR}" checkout "${DEPLOY_BRANCH}"
+          git -C "${DEPLOY_DIR}" pull --ff-only origin "${DEPLOY_BRANCH}"
+          echo "Deploying commit: $(git -C "${DEPLOY_DIR}" rev-parse --short HEAD)"
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "${DEPLOY_DIR}"
+          npm install
+
+      - name: Restart service
+        shell: bash
+        env:
+          FOS_SUDO_PASSWORD: ${{ secrets.FOS_SUDO_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -z "${FOS_SUDO_PASSWORD:-}" ]; then
+            echo "::error::Missing secret FOS_SUDO_PASSWORD"
+            exit 1
+          fi
+          printf '%s\n' "${FOS_SUDO_PASSWORD}" | sudo -S -p '' systemctl restart "${SERVICE_NAME}"
+
+      - name: Verify health endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          sleep 3
+          curl -fsS http://127.0.0.1:51100/api/health
+
+      - name: Show deployed revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C "${DEPLOY_DIR}" branch --show-current
+          git -C "${DEPLOY_DIR}" rev-parse HEAD
