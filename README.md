@@ -144,7 +144,9 @@ node cli.mjs monitor
 
 ## GitHub Actions 部署
 
+- 已提供主分支自动测试工作流：`.github/workflows/test-main.yml`
 - 已提供手动部署工作流：`.github/workflows/deploy-fnos.yml`
+- 当前模式是：`push main` 自动测试，部署仍然需要手动触发
 - 当前只支持部署 `main` 分支
 - 当前不会自动拉取或自动发布，需要你在 GitHub Actions 页面手动点击触发
 - 因为飞牛主机是局域网地址 `192.168.3.200`，需要在飞牛 OS 上安装 `self-hosted runner`
