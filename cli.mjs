@@ -21,6 +21,14 @@ function checkEnv() {
   }
 }
 
+function toSafeId(value) {
+  return String(value || '')
+    .replace(/[^a-zA-Z0-9-]/g, '-')
+    .toLowerCase()
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 async function runAction(action) {
   checkEnv();
   console.log(`🚀 开始初始化模块用于执行 task: ${action}...`);
@@ -72,15 +80,6 @@ async function runAction(action) {
         
         let count = 0;
         for (const proxy of luckies) {
-           const safeRemark = proxy.remark ? proxy.remark.replace(/[^a-zA-Z0-9-]/g,'-').toLowerCase() : `import-${Date.now()}`;
-           let id = safeRemark;
-           // 确保ID绝对唯一
-           let suffix = 1;
-           while(existingIds.has(id)) {
-               id = `${safeRemark}-${suffix}`;
-               suffix++;
-           }
-           
            let internalPort = 80;
            let device = '200';
            if (proxy.target) {
@@ -95,6 +94,16 @@ async function runAction(action) {
            }
 
            const checkDomain = proxy.domains && proxy.domains.length > 0 ? proxy.domains[0] : "";
+           const baseId =
+             toSafeId(proxy.remark) ||
+             toSafeId(checkDomain.split('.')[0]) ||
+             `import-${device}-${internalPort}`;
+           let id = baseId;
+           let suffix = 1;
+           while (existingIds.has(id)) {
+             id = `${baseId}-${suffix}`;
+             suffix++;
+           }
            
            // Deduplicate strictly by structural equality (Domain + Device Target + Proxy Type)
            const isStructurallySimilar = existingServices.some(s => s.proxyDomain === checkDomain && String(s.device) === String(device) && s.internalPort === internalPort);
@@ -132,7 +141,6 @@ async function runAction(action) {
            
            await modules.serviceRegistry.addService(newService);
            existingIds.add(id);
-           existingServices.push(newService);
            count++;
         }
         console.log(`[Import] ✅ 成功从 Lucky 导入了 ${count} 条新的代理规则到 registry!`);
