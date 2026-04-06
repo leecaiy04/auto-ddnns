@@ -281,8 +281,9 @@ export class LuckyManager {
         })
       }));
     } catch (error) {
-      console.error('[LuckyManager] ❌ 获取Lucky代理失败:', error.message);
-      return [];
+      const luckyError = new Error(`获取Lucky代理失败: ${error.message}`);
+      luckyError.cause = error;
+      throw luckyError;
     }
   }
 
