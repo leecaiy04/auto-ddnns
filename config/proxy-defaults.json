@@ -1,12 +1,12 @@
 {
   "protocol": "https",
-  "domains": ["leecaiy.shop", "222869.xyz"],
+  "domains": ["222869.xyz", "leecaiy.shop"],
   "externalPorts": {
     "lucky": 50000
   },
   "dns": {
-    "wildcardDomains": ["*.leecaiy.shop", "*.222869.xyz"],
-    "sslCertDomains": ["leecaiy.shop", "*.leecaiy.shop", "222869.xyz", "*.222869.xyz"]
+    "wildcardDomains": ["*.222869.xyz", "*.leecaiy.shop"],
+    "sslCertDomains": ["222869.xyz", "*.222869.xyz", "leecaiy.shop", "*.leecaiy.shop"]
   },
   "defaultProxyTemplate": "https://{serviceId}.{domain}:{port}",
   "defaultIpv6Template": "{lanProtocol}://[{ipv6}]:{lanPort}"

@@ -22,7 +22,7 @@
     "deviceMonitor": {
       "enabled": true,
       "checkInterval": 600,
-      "devices": ["2", "10", "200", "201", "254"],
+      "devices": ["2", "10", "200", "201"],
       "router": {
         "host": "192.168.3.1",
         "username": "root",
@@ -30,19 +30,22 @@
         "timeout": 10000
       }
     },
-    "ddns": {
+    "serviceRegistry": {
+      "enabled": true,
+      "allowedDevices": ["2", "10", "200", "201"]
+    },
       "enabled": true,
       "scriptPath": "./scripts/aliddns_sync.sh",
       "updateInterval": 600,
       "domains": {
         "ipv4": ["leecaiy.shop", "*.leecaiy.shop"],
-        "ipv6": ["10.v6.leecaiy.shop", "200.v6.leecaiy.shop", "201.v6.leecaiy.shop", "254.v6.leecaiy.shop"]
+        "ipv6": ["2.v6.leecaiy.shop", "10.v6.leecaiy.shop", "200.v6.leecaiy.shop", "201.v6.leecaiy.shop"]
       },
       "extraDomains": [
         {
           "domain": "222869.xyz",
           "ipv4": ["222869.xyz", "*.222869.xyz"],
-          "ipv6": ["10.v6.222869.xyz", "200.v6.222869.xyz", "201.v6.222869.xyz"]
+          "ipv6": ["2.v6.222869.xyz", "10.v6.222869.xyz", "200.v6.222869.xyz", "201.v6.222869.xyz"]
         }
       ]
     },

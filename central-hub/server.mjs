@@ -20,11 +20,15 @@ import { loadEnvFileAsync, getEnv } from '../lib/utils/env-loader.mjs';
 import { loadConfigWithEnv } from './modules/config-loader.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DEFAULT_DOMAIN = 'leecaiy.shop';
+const DEFAULT_DOMAIN = '222869.xyz';
 const LOCAL_HOSTS_FOR_PROBE = ['127.0.0.1', 'localhost'];
 
 function getManagedDomain() {
-  return getEnv('ALIYUN_DOMAIN', DEFAULT_DOMAIN).trim() || DEFAULT_DOMAIN;
+  const configured = getEnv('ALIYUN_DOMAIN', DEFAULT_DOMAIN)
+    .split(',')
+    .map(item => item.trim())
+    .filter(Boolean);
+  return configured[0] || DEFAULT_DOMAIN;
 }
 
 function createHealthProbeUrls(host, port) {
@@ -66,9 +70,10 @@ function applyRuntimeConfigOverrides(config) {
   const managedDomain = getManagedDomain();
 
   if (config?.modules?.ddns?.domains) {
+    const keyDeviceIds = ['2', '10', '200', '201'];
     config.modules.ddns.domains = {
       ipv4: [managedDomain, `*.${managedDomain}`],
-      ipv6: ['10', '200', '201', '254'].map(device => `${device}.v6.${managedDomain}`)
+      ipv6: keyDeviceIds.map(device => `${device}.v6.${managedDomain}`)
     };
 
     // 保持 extraDomains 配置（用于 222869.xyz 等额外域名）
@@ -77,26 +82,37 @@ function applyRuntimeConfigOverrides(config) {
 
   if (config?.modules?.lucky) {
     const luckyInstances = [];
-    if (process.env.LUCKY_API_BASE) {
+    const hasPrimaryLuckyConfig = Boolean(process.env.LUCKY_API_BASE || process.env.LUCKY_OPEN_TOKEN || process.env.LUCKY_ADMIN_TOKEN || process.env.LUCKY_TOKEN || process.env.LUCKY_API_TOKEN);
+    const hasBackupLuckyConfig = Boolean(process.env.LUCKY_BACKUP_API_BASE || process.env.LUCKY_BACKUP_OPEN_TOKEN || process.env.LUCKY_BACKUP_ADMIN_TOKEN || process.env.LUCKY_BACKUP_TOKEN || process.env.LUCKY_BACKUP_API_TOKEN);
+
+    if (hasPrimaryLuckyConfig) {
       luckyInstances.push({
-        apiBase: process.env.LUCKY_API_BASE,
-        token: process.env.LUCKY_TOKEN || process.env.LUCKY_API_TOKEN,
+        apiBase: process.env.LUCKY_API_BASE || config.modules.lucky.apiBase || `https://lucky.${managedDomain}:50000/666`,
+        openToken: process.env.LUCKY_OPEN_TOKEN || process.env.LUCKY_TOKEN || process.env.LUCKY_API_TOKEN || config.modules.lucky.openToken || '',
+        adminToken: process.env.LUCKY_ADMIN_TOKEN || config.modules.lucky.adminToken || '',
         username: process.env.LUCKY_USERNAME,
         password: process.env.LUCKY_PASSWORD
       });
-    } else {
-      luckyInstances.push({
-        apiBase: `https://lucky.${managedDomain}:50000/666`
-      });
     }
-    if (process.env.LUCKY_BACKUP_API_BASE) {
+
+    if (hasBackupLuckyConfig) {
       luckyInstances.push({
-        apiBase: process.env.LUCKY_BACKUP_API_BASE,
-        token: process.env.LUCKY_BACKUP_TOKEN || process.env.LUCKY_BACKUP_API_TOKEN,
+        apiBase: process.env.LUCKY_BACKUP_API_BASE || '',
+        openToken: process.env.LUCKY_BACKUP_OPEN_TOKEN || process.env.LUCKY_BACKUP_TOKEN || process.env.LUCKY_BACKUP_API_TOKEN || '',
+        adminToken: process.env.LUCKY_BACKUP_ADMIN_TOKEN || '',
         username: process.env.LUCKY_BACKUP_USERNAME,
         password: process.env.LUCKY_BACKUP_PASSWORD
       });
     }
+
+    if (luckyInstances.length === 0) {
+      luckyInstances.push({
+        apiBase: config.modules.lucky.apiBase || `https://lucky.${managedDomain}:50000/666`,
+        openToken: config.modules.lucky.openToken || '',
+        adminToken: config.modules.lucky.adminToken || ''
+      });
+    }
+
     config.modules.lucky.instances = luckyInstances;
   }
 
@@ -211,7 +227,7 @@ class CentralHub {
     // 服务清单管理模块
     if (this.config.modules.serviceRegistry?.enabled !== false) {
       this.modules.serviceRegistry = new ServiceRegistry(
-        { enabled: true },
+        { ...(this.config.modules.serviceRegistry || {}), enabled: true },
         this.stateManager,
         this.changelogManager
       );
@@ -221,7 +237,8 @@ class CentralHub {
     if (this.config.modules.ddns?.enabled) {
       this.modules.ddnsController = new DDNSController(
         this.config.modules.ddns,
-        this.stateManager
+        this.stateManager,
+        this.modules.serviceRegistry || null
       );
       this.modules.ddns = this.modules.ddnsController;
     }
@@ -347,6 +364,8 @@ class CentralHub {
     // 兼容旧的状态路由
     this.app.get('/api/status', (req, res) => {
       try {
+        const luckyStatus = this.modules.luckyManager?.getStatus?.();
+
         res.json({
           status: this.coordinator.isRunning ? 'healthy' : 'stopped',
           uptime: Math.floor((Date.now() - this.startTime) / 1000),
@@ -358,6 +377,10 @@ class CentralHub {
             lucky: this.modules.luckyManager?.getStatus()?.lucky?.enabled ? 'ok' : 'disabled',
             sunpanel: this.modules.sunpanelManager?.config?.enabled ? 'ok' : 'disabled',
             cloudflare: this.modules.cloudflareManager?.getStatus()?.enabled ? 'ok' : 'disabled'
+          },
+          integrations: {
+            lucky: luckyStatus?.lucky || null,
+            sunpanel: luckyStatus?.sunpanel || null
           }
         });
       } catch (error) {

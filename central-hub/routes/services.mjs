@@ -65,6 +65,76 @@ export function serviceRoutes(modules) {
     }
   });
 
+  router.get('/inventory/export', async (_req, res) => {
+    try {
+      if (!modules.serviceRegistry) {
+        return res.status(503).json({ error: '服务清单模块未初始化' });
+      }
+
+      const inventory = modules.serviceRegistry.exportInventory();
+      await modules.stateManager?.save();
+      res.json({ success: true, inventory });
+    } catch (error) {
+      console.error('[Services] 导出清单失败:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  router.post('/inventory/preview', (_req, res) => {
+    try {
+      if (!modules.serviceRegistry) {
+        return res.status(503).json({ error: '服务清单模块未初始化' });
+      }
+
+      const payload = _req.body?.inventory || _req.body || {};
+      const mode = _req.body?.mode === 'replace' ? 'replace' : 'merge';
+      const preview = modules.serviceRegistry.previewImportInventory(payload, mode);
+      res.json({ success: true, preview });
+    } catch (error) {
+      console.error('[Services] 预览导入失败:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  router.post('/inventory/import', async (req, res) => {
+    try {
+      if (!modules.serviceRegistry) {
+        return res.status(503).json({ error: '服务清单模块未初始化' });
+      }
+
+      const payload = req.body?.inventory || req.body || {};
+      const mode = req.body?.mode === 'replace' ? 'replace' : 'merge';
+      const shouldSync = req.body?.sync !== false;
+
+      const result = await modules.serviceRegistry.importInventory(payload, { mode });
+      if (!result.success) {
+        return res.status(400).json(result);
+      }
+
+      const sync = shouldSync ? await triggerServiceSync(modules, `inventory_import_${mode}`) : null;
+      res.json({
+        success: true,
+        mode,
+        preview: result.preview,
+        inventory: result.inventory,
+        sync
+      });
+    } catch (error) {
+      console.error('[Services] 导入清单失败:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  router.post('/sync', async (req, res) => {
+    try {
+      const sync = await triggerServiceSync(modules, req.body?.reason || 'manual_inventory_sync');
+      res.json({ success: true, sync });
+    } catch (error) {
+      console.error('[Services] 手动同步失败:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   /**
    * 添加新服务
    */

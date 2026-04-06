@@ -31,6 +31,7 @@ fi
 ALIYUN_AK="${ALIYUN_AK:-}"
 ALIYUN_SK="${ALIYUN_SK:-}"
 DOMAIN="${DOMAIN:-${ALIYUN_DOMAIN:-leecaiy.shop}}"
+DOMAIN="$(printf '%s' "$DOMAIN" | cut -d',' -f1 | xargs)"
 
 # --- 路由器 SSH 配置 ---
 ROUTER_IP="${ROUTER_IP:-${ROUTER_HOST:-192.168.3.1}}"
@@ -82,6 +83,172 @@ validate_ddns_env() {
     require_env "DOMAIN（或 ALIYUN_DOMAIN）" "$DOMAIN"
 }
 
+json_escape() {
+    local value="${1:-}"
+    value=${value//\\/\\\\}
+    value=${value//"/\\"}
+    value=${value//$'\n'/\\n}
+    value=${value//$'\r'/\\r}
+    value=${value//$'\t'/\\t}
+    printf '%s' "$value"
+}
+
+aliyun_error_code() {
+    printf '%s' "$1" | grep -o '"Code":"[^"]*"' | head -n 1 | cut -d'"' -f4
+}
+
+aliyun_error_message() {
+    printf '%s' "$1" | grep -o '"Message":"[^"]*"' | head -n 1 | cut -d'"' -f4
+}
+
+aliyun_record_id() {
+    printf '%s' "$1" | grep -o '"RecordId":"[^"]*"' | head -n 1 | cut -d'"' -f4
+}
+
+aliyun_record_value() {
+    printf '%s' "$1" | grep -o '"Value":"[^"]*"' | head -n 1 | cut -d'"' -f4
+}
+
+aliyun_total_count() {
+    printf '%s' "$1" | grep -o '"TotalCount":[0-9]*' | head -n 1 | cut -d':' -f2
+}
+
+emit_ddns_result() {
+    local domain="$1"
+    local host_key="$2"
+    local family="$3"
+    local record_type="$4"
+    local rr="$5"
+    local fqdn="$6"
+    local value="$7"
+    local ipv4="$8"
+    local ipv6="$9"
+    local action="${10}"
+    local success="${11}"
+    local record_id="${12}"
+    local message="${13}"
+    local record_id_json="null"
+
+    if [ -n "$record_id" ]; then
+        record_id_json="\"$(json_escape "$record_id")\""
+    fi
+
+    printf '__DDNS_RESULT__{"domain":"%s","host":"%s","family":"%s","type":"%s","rr":"%s","fqdn":"%s","value":"%s","hostname":"%s","ipv4":"%s","ipv6":"%s","action":"%s","success":%s,"recordId":%s,"message":"%s"}\n' \
+        "$(json_escape "$domain")" \
+        "$(json_escape "$host_key")" \
+        "$(json_escape "$family")" \
+        "$(json_escape "$record_type")" \
+        "$(json_escape "$rr")" \
+        "$(json_escape "$fqdn")" \
+        "$(json_escape "$value")" \
+        "$(json_escape "$fqdn")" \
+        "$(json_escape "$ipv4")" \
+        "$(json_escape "$ipv6")" \
+        "$(json_escape "$action")" \
+        "$success" \
+        "$record_id_json" \
+        "$(json_escape "$message")"
+}
+
+emit_ddns_summary() {
+    local domain="$1"
+    local total="$2"
+    local success_count="$3"
+    local failed_count="$4"
+    local skipped_count="$5"
+    local added_count="$6"
+    local updated_count="$7"
+    local status="$8"
+    local public_ip="$9"
+    local ipv4_total="${10}"
+    local ipv4_success_count="${11}"
+    local ipv4_failed_count="${12}"
+    local ipv4_skipped_count="${13}"
+    local ipv4_added_count="${14}"
+    local ipv4_updated_count="${15}"
+    local ipv6_total="${16}"
+    local ipv6_success_count="${17}"
+    local ipv6_failed_count="${18}"
+    local ipv6_skipped_count="${19}"
+    local ipv6_added_count="${20}"
+    local ipv6_updated_count="${21}"
+
+    printf '__DDNS_SUMMARY__{"domain":"%s","total":%s,"successCount":%s,"failedCount":%s,"skippedCount":%s,"addedCount":%s,"updatedCount":%s,"status":"%s","publicIp":"%s","ipv4Total":%s,"ipv4SuccessCount":%s,"ipv4FailedCount":%s,"ipv4SkippedCount":%s,"ipv4AddedCount":%s,"ipv4UpdatedCount":%s,"ipv6Total":%s,"ipv6SuccessCount":%s,"ipv6FailedCount":%s,"ipv6SkippedCount":%s,"ipv6AddedCount":%s,"ipv6UpdatedCount":%s}\n' \
+        "$(json_escape "$domain")" \
+        "$total" \
+        "$success_count" \
+        "$failed_count" \
+        "$skipped_count" \
+        "$added_count" \
+        "$updated_count" \
+        "$(json_escape "$status")" \
+        "$(json_escape "$public_ip")" \
+        "$ipv4_total" \
+        "$ipv4_success_count" \
+        "$ipv4_failed_count" \
+        "$ipv4_skipped_count" \
+        "$ipv4_added_count" \
+        "$ipv4_updated_count" \
+        "$ipv6_total" \
+        "$ipv6_success_count" \
+        "$ipv6_failed_count" \
+        "$ipv6_skipped_count" \
+        "$ipv6_added_count" \
+        "$ipv6_updated_count"
+}
+
+is_valid_ipv4() {
+    local ip="$1"
+    if ! printf '%s' "$ip" | grep -Eq '^[0-9]{1,3}(\.[0-9]{1,3}){3}$'; then
+        return 1
+    fi
+
+    local IFS='.'
+    read -r o1 o2 o3 o4 <<< "$ip"
+    for octet in "$o1" "$o2" "$o3" "$o4"; do
+        if [ "$octet" -lt 0 ] || [ "$octet" -gt 255 ]; then
+            return 1
+        fi
+    done
+
+    return 0
+}
+
+fetch_public_ipv4() {
+    local configured_ip="${PUBLIC_IPV4:-}"
+    if [ -n "$configured_ip" ] && is_valid_ipv4 "$configured_ip"; then
+        printf '%s' "$configured_ip"
+        return 0
+    fi
+
+    local services=(
+        'https://api.ipify.org?format=json'
+        'https://httpbin.org/ip'
+        'https://api.ip.sb/ip'
+    )
+
+    for url in "${services[@]}"; do
+        local response=""
+        response=$(curl -fsS --max-time 5 "$url" 2>/dev/null) || continue
+
+        local candidate=""
+        if printf '%s' "$url" | grep -q 'ipify'; then
+            candidate=$(printf '%s' "$response" | grep -o '"ip":"[^"]*"' | head -n 1 | cut -d'"' -f4)
+        elif printf '%s' "$url" | grep -q 'httpbin'; then
+            candidate=$(printf '%s' "$response" | grep -o '"origin":"[^"]*"' | head -n 1 | cut -d'"' -f4 | cut -d',' -f1 | xargs)
+        else
+            candidate=$(printf '%s' "$response" | tr -d '\r' | xargs)
+        fi
+
+        if is_valid_ipv4 "$candidate"; then
+            printf '%s' "$candidate"
+            return 0
+        fi
+    done
+
+    return 1
+}
+
 # 工具函数：URL 编码
 urlencode() {
     local length="${#1}"
@@ -98,7 +265,7 @@ urlencode() {
 aliyun_api() {
     local action=$1
     shift
-    local timestamp=$(date -u "+%Y-%m-%dT%H%%3A%M%%3A%SZ")
+    local timestamp=$(date -u "+%Y-%m-%dT%H:%M:%SZ")
     local nonce=$RANDOM$RANDOM
     
     local query="AccessKeyId=$ALIYUN_AK&Action=$action&Format=JSON&SignatureMethod=HMAC-SHA1&SignatureNonce=$nonce&SignatureVersion=1.0&Timestamp=$timestamp&Version=2015-01-09"
@@ -265,40 +432,250 @@ step_ddns() {
         echo "[错误] 缓存文件 .lan_devices.txt 不存在，请先执行 scan 操作！"
         exit 1
     fi
-    
+
+    local total=0
+    local success_count=0
+    local failed_count=0
+    local skipped_count=0
+    local added_count=0
+    local updated_count=0
+    local ipv4_total=0
+    local ipv4_success_count=0
+    local ipv4_failed_count=0
+    local ipv4_skipped_count=0
+    local ipv4_added_count=0
+    local ipv4_updated_count=0
+    local ipv6_total=0
+    local ipv6_success_count=0
+    local ipv6_failed_count=0
+    local ipv6_skipped_count=0
+    local ipv6_added_count=0
+    local ipv6_updated_count=0
+    local public_ipv4=""
+
+    if public_ipv4=$(fetch_public_ipv4); then
+        echo "[公网 IPv4] $public_ipv4"
+    else
+        echo "[警告] 无法获取公网 IPv4，将跳过 A 记录发布"
+        public_ipv4=""
+    fi
+
+    process_record() {
+        local host_key="$1"
+        local family="$2"
+        local record_type="$3"
+        local rr="$4"
+        local fqdn="$5"
+        local desired_value="$6"
+        local base_ipv4="$7"
+        local base_ipv6="$8"
+
+        local action="failed"
+        local success=false
+        local record_id=""
+        local message=""
+        local res=""
+        local describe_error_code=""
+        local describe_error_message=""
+        local exist_value=""
+        local total_count=""
+
+        if [ -z "$desired_value" ]; then
+            action="failed"
+            success=false
+            message="缺少 ${record_type} 目标值"
+            echo "  |- 结果: $message"
+            failed_count=$((failed_count + 1))
+            if [ "$family" = "ipv4" ]; then
+                ipv4_total=$((ipv4_total + 1))
+                ipv4_failed_count=$((ipv4_failed_count + 1))
+            else
+                ipv6_total=$((ipv6_total + 1))
+                ipv6_failed_count=$((ipv6_failed_count + 1))
+            fi
+            emit_ddns_result "$DOMAIN" "$host_key" "$family" "$record_type" "$rr" "$fqdn" "$desired_value" "$base_ipv4" "$base_ipv6" "$action" "$success" "$record_id" "$message"
+            return
+        fi
+
+        total=$((total + 1))
+        if [ "$family" = "ipv4" ]; then
+            ipv4_total=$((ipv4_total + 1))
+        else
+            ipv6_total=$((ipv6_total + 1))
+        fi
+
+        echo "           目标域名: $fqdn"
+        res=$(aliyun_api "DescribeDomainRecords" "DomainName=$DOMAIN" "RRKeyWord=$rr" "TypeKeyWord=$record_type")
+        describe_error_code=$(aliyun_error_code "$res")
+        describe_error_message=$(aliyun_error_message "$res")
+
+        if [ -n "$describe_error_code" ]; then
+            message="DescribeDomainRecords 失败: ${describe_error_code}${describe_error_message:+ - $describe_error_message}"
+            echo "  |- 结果: $message"
+            failed_count=$((failed_count + 1))
+            if [ "$family" = "ipv4" ]; then
+                ipv4_failed_count=$((ipv4_failed_count + 1))
+            else
+                ipv6_failed_count=$((ipv6_failed_count + 1))
+            fi
+            emit_ddns_result "$DOMAIN" "$host_key" "$family" "$record_type" "$rr" "$fqdn" "$desired_value" "$base_ipv4" "$base_ipv6" "$action" "$success" "$record_id" "$message"
+            return
+        fi
+
+        record_id=$(aliyun_record_id "$res")
+        exist_value=$(aliyun_record_value "$res")
+        total_count=$(aliyun_total_count "$res")
+
+        if [ -n "$record_id" ]; then
+            if [ "$exist_value" = "$desired_value" ]; then
+                action="skip"
+                success=true
+                skipped_count=$((skipped_count + 1))
+                success_count=$((success_count + 1))
+                message="记录已存在且云端 ${record_type} 与目标值一致"
+                echo "  |- 状态: [跳过更新] $message"
+                if [ "$family" = "ipv4" ]; then
+                    ipv4_skipped_count=$((ipv4_skipped_count + 1))
+                    ipv4_success_count=$((ipv4_success_count + 1))
+                else
+                    ipv6_skipped_count=$((ipv6_skipped_count + 1))
+                    ipv6_success_count=$((ipv6_success_count + 1))
+                fi
+                emit_ddns_result "$DOMAIN" "$host_key" "$family" "$record_type" "$rr" "$fqdn" "$desired_value" "$base_ipv4" "$base_ipv6" "$action" "$success" "$record_id" "$message"
+                return
+            fi
+
+            echo "  |- 状态: [执行更新] ${record_type} 发生漂移 ($exist_value -> $desired_value) ..."
+            local update_res
+            update_res=$(aliyun_api "UpdateDomainRecord" "RecordId=$record_id" "RR=$rr" "Type=$record_type" "Value=$desired_value")
+            local update_error_code
+            update_error_code=$(aliyun_error_code "$update_res")
+            local update_error_message
+            update_error_message=$(aliyun_error_message "$update_res")
+            local updated_record_id
+            updated_record_id=$(aliyun_record_id "$update_res")
+
+            if [ -n "$update_error_code" ] || [ -z "$updated_record_id" ]; then
+                failed_count=$((failed_count + 1))
+                message="UpdateDomainRecord 失败"
+                if [ -n "$update_error_code" ]; then
+                    message="${message}: ${update_error_code}${update_error_message:+ - $update_error_message}"
+                else
+                    message="${message}: 返回结果缺少 RecordId"
+                fi
+                echo "  |- 结果: $message"
+                if [ "$family" = "ipv4" ]; then
+                    ipv4_failed_count=$((ipv4_failed_count + 1))
+                else
+                    ipv6_failed_count=$((ipv6_failed_count + 1))
+                fi
+                emit_ddns_result "$DOMAIN" "$host_key" "$family" "$record_type" "$rr" "$fqdn" "$desired_value" "$base_ipv4" "$base_ipv6" "$action" "$success" "$record_id" "$message"
+                return
+            fi
+
+            action="update"
+            success=true
+            record_id="$updated_record_id"
+            updated_count=$((updated_count + 1))
+            success_count=$((success_count + 1))
+            message="更新成功"
+            echo "  |- 结果: $message"
+            if [ "$family" = "ipv4" ]; then
+                ipv4_updated_count=$((ipv4_updated_count + 1))
+                ipv4_success_count=$((ipv4_success_count + 1))
+            else
+                ipv6_updated_count=$((ipv6_updated_count + 1))
+                ipv6_success_count=$((ipv6_success_count + 1))
+            fi
+            emit_ddns_result "$DOMAIN" "$host_key" "$family" "$record_type" "$rr" "$fqdn" "$desired_value" "$base_ipv4" "$base_ipv6" "$action" "$success" "$record_id" "$message"
+            return
+        fi
+
+        if [ -n "$total_count" ] && [ "$total_count" != "0" ]; then
+            message="DescribeDomainRecords 返回了无法识别的记录结果"
+            echo "  |- 结果: $message"
+            failed_count=$((failed_count + 1))
+            if [ "$family" = "ipv4" ]; then
+                ipv4_failed_count=$((ipv4_failed_count + 1))
+            else
+                ipv6_failed_count=$((ipv6_failed_count + 1))
+            fi
+            emit_ddns_result "$DOMAIN" "$host_key" "$family" "$record_type" "$rr" "$fqdn" "$desired_value" "$base_ipv4" "$base_ipv6" "$action" "$success" "$record_id" "$message"
+            return
+        fi
+
+        echo "  |- 状态: [执行新增] 该域名尚无记录，正在添加 ${record_type} 解析 ..."
+        local add_res
+        add_res=$(aliyun_api "AddDomainRecord" "DomainName=$DOMAIN" "RR=$rr" "Type=$record_type" "Value=$desired_value")
+        local add_error_code
+        add_error_code=$(aliyun_error_code "$add_res")
+        local add_error_message
+        add_error_message=$(aliyun_error_message "$add_res")
+        local added_record_id
+        added_record_id=$(aliyun_record_id "$add_res")
+
+        if [ -n "$add_error_code" ] || [ -z "$added_record_id" ]; then
+            failed_count=$((failed_count + 1))
+            message="AddDomainRecord 失败"
+            if [ -n "$add_error_code" ]; then
+                message="${message}: ${add_error_code}${add_error_message:+ - $add_error_message}"
+            else
+                message="${message}: 返回结果缺少 RecordId"
+            fi
+            echo "  |- 结果: $message"
+            if [ "$family" = "ipv4" ]; then
+                ipv4_failed_count=$((ipv4_failed_count + 1))
+            else
+                ipv6_failed_count=$((ipv6_failed_count + 1))
+            fi
+            emit_ddns_result "$DOMAIN" "$host_key" "$family" "$record_type" "$rr" "$fqdn" "$desired_value" "$base_ipv4" "$base_ipv6" "$action" "$success" "$record_id" "$message"
+            return
+        fi
+
+        action="add"
+        success=true
+        record_id="$added_record_id"
+        added_count=$((added_count + 1))
+        success_count=$((success_count + 1))
+        message="新增成功"
+        echo "  |- 结果: $message"
+        if [ "$family" = "ipv4" ]; then
+            ipv4_added_count=$((ipv4_added_count + 1))
+            ipv4_success_count=$((ipv4_success_count + 1))
+        else
+            ipv6_added_count=$((ipv6_added_count + 1))
+            ipv6_success_count=$((ipv6_success_count + 1))
+        fi
+        emit_ddns_result "$DOMAIN" "$host_key" "$family" "$record_type" "$rr" "$fqdn" "$desired_value" "$base_ipv4" "$base_ipv6" "$action" "$success" "$record_id" "$message"
+    }
+
     while IFS='|' read -r mac ipv4 ipv6 ports; do
         if [ -z "$ipv4" ] || [ -z "$ipv6" ]; then continue; fi
-        
-        # 提取 192.168.3.xxx 的最后一位作为子域
-        last_digit=${ipv4##*.}
-        sub_domain="${last_digit}.v6"
-        target_domain="${sub_domain}.${DOMAIN}"
-        
+
+        local last_digit=${ipv4##*.}
+        local host_key="$last_digit"
+        local ipv4_rr="$last_digit"
+        local ipv6_rr="${last_digit}.v6"
+        local ipv4_target_domain="${ipv4_rr}.${DOMAIN}"
+        local ipv6_target_domain="${ipv6_rr}.${DOMAIN}"
+
         echo -e "\n[处理项目] IP: $ipv4 -> 提取 IPv6: $ipv6"
-        echo "           目标域名: $target_domain"
-        
-        # 查询现在的解析记录
-        res=$(aliyun_api "DescribeDomainRecords" "DomainName=$DOMAIN" "RRKeyWord=$sub_domain" "TypeKeyWord=AAAA")
-        
-        # 提取 RecordId 和 API 中存留的 Value
-        record_id=$(echo "$res" | grep -o '"RecordId":"[^"]*"' | head -n 1 | cut -d'"' -f4)
-        exist_value=$(echo "$res" | grep -o '"Value":"[^"]*"' | head -n 1 | cut -d'"' -f4)
-        
-        if [ -n "$record_id" ]; then
-            if [ "$exist_value" == "$ipv6" ]; then
-                echo "  |- 状态: [跳过更新] 记录已存在，且云端 IP 与本地一致。"
-            else
-                echo "  |- 状态: [执行更新] IP 发生漂移 ($exist_value -> $ipv6) ..."
-                update_res=$(aliyun_api "UpdateDomainRecord" "RecordId=$record_id" "RR=$sub_domain" "Type=AAAA" "Value=$ipv6")
-                echo "  |- 结果: 成功触发！"
-            fi
-        else
-            echo "  |- 状态: [执行新增] 该域名尚无记录，正在添加 AAAA 解析 ..."
-            add_res=$(aliyun_api "AddDomainRecord" "DomainName=$DOMAIN" "RR=$sub_domain" "Type=AAAA" "Value=$ipv6")
-            echo "  |- 结果: 添加完成！"
-        fi
-        
+        process_record "$host_key" "ipv4" "A" "$ipv4_rr" "$ipv4_target_domain" "$public_ipv4" "$ipv4" "$ipv6"
+        process_record "$host_key" "ipv6" "AAAA" "$ipv6_rr" "$ipv6_target_domain" "$ipv6" "$ipv4" "$ipv6"
     done < .lan_devices.txt
+
+    local status="success"
+    if [ "$failed_count" -gt 0 ] && [ "$success_count" -gt 0 ]; then
+        status="degraded"
+    elif [ "$failed_count" -gt 0 ]; then
+        status="failed"
+    fi
+
+    emit_ddns_summary "$DOMAIN" "$total" "$success_count" "$failed_count" "$skipped_count" "$added_count" "$updated_count" "$status" "$public_ipv4" "$ipv4_total" "$ipv4_success_count" "$ipv4_failed_count" "$ipv4_skipped_count" "$ipv4_added_count" "$ipv4_updated_count" "$ipv6_total" "$ipv6_success_count" "$ipv6_failed_count" "$ipv6_skipped_count" "$ipv6_added_count" "$ipv6_updated_count"
+
+    if [ "$failed_count" -gt 0 ]; then
+        return 1
+    fi
 }
 
 # --- 步骤 4：生成 HTML 静态页面 ---

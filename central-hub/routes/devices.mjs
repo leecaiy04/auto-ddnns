@@ -126,7 +126,7 @@ export function deviceRoutes(modules) {
       }
 
       const { deviceId } = req.params;
-      const { ports } = req.body; // optional custom port list
+      const { ports } = req.body || {}; // optional custom port list
 
       // Get device info
       const device = modules.deviceMonitor.getDeviceInfo(deviceId);
@@ -205,6 +205,7 @@ export function deviceRoutes(modules) {
       const enriched = keyMachines.map(machine => ({
         ...machine,
         ipv6: ipv6Map[machine.id] || null,
+        ddnsHostname: modules.serviceRegistry.getDeviceDdnsHostname(machine.id),
         servicesCount: modules.serviceRegistry.getServicesByDevice(machine.id).length
       }));
       

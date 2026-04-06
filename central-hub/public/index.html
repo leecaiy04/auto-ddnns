@@ -270,6 +270,80 @@
         .toast.show { transform: translateX(0); }
         .toast.success { border-left: 4px solid var(--success); }
         .toast.error { border-left: 4px solid var(--danger); }
+
+        .panel-section {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .status-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        .status-note {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        .mini-stat {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 14px;
+        }
+        .mini-stat .label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        .mini-stat .value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .detail-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .detail-item {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 12px;
+        }
+        .detail-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        .code-block {
+            background: rgba(0,0,0,0.22);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .empty-state {
+            color: var(--text-secondary);
+            font-size: 13px;
+            padding: 8px 0;
+        }
     </style>
 </head>
 <body>
@@ -304,13 +378,19 @@
                         <span class="text-muted">路由 DDNS</span>
                         <span class="badge success" id="status-ddns">检测中</span>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-muted">Lucky 反代</span>
-                        <span class="badge success" id="status-lucky">检测中</span>
+                    <div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-muted">Lucky 反代</span>
+                            <span class="badge success" id="status-lucky">检测中</span>
+                        </div>
+                        <div class="text-sm text-muted mono mt-2" id="status-lucky-auth">鉴权状态读取中</div>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-muted">SunPanel 面板</span>
-                        <span class="badge success" id="status-sunpanel">检测中</span>
+                    <div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-muted">SunPanel 面板</span>
+                            <span class="badge success" id="status-sunpanel">检测中</span>
+                        </div>
+                        <div class="text-sm text-muted mono mt-2" id="status-sunpanel-auth">鉴权状态读取中</div>
                     </div>
                 </div>
             </div>
@@ -328,7 +408,7 @@
                     </div>
                     <div>
                         <label class="form-label">管理域名 (多域名逗号分隔)</label>
-                        <input class="form-control" id="pd-domains" placeholder="leecaiy.shop, 222869.xyz">
+                        <input class="form-control" id="pd-domains" placeholder="222869.xyz, leecaiy.shop">
                     </div>
                     <div>
                         <label class="form-label">Lucky 暴露端口</label>
@@ -338,6 +418,185 @@
                         <button type="submit" class="btn btn-primary btn-sm">保存设置</button>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <!-- DDNS & Inventory -->
+        <div class="grid-2">
+            <div class="glass-panel">
+                <div class="flex justify-between items-center mb-4">
+                    <h2>🌐 DDNS 总览</h2>
+                    <div class="flex gap-2">
+                        <button class="btn btn-sm" onclick="fetchDdnsPanel()">刷新</button>
+                        <button class="btn btn-sm btn-primary" onclick="refreshDdnsNow()">立即推送</button>
+                    </div>
+                </div>
+                <div class="panel-section">
+                    <div class="status-summary">
+                        <span class="badge warning" id="ddnsPublishStatus">检测中</span>
+                        <span class="status-note" id="ddnsPublishNote">等待最新发布结果</span>
+                    </div>
+                    <div class="card-grid">
+                        <div class="mini-stat">
+                            <div class="label">公网 IPv4</div>
+                            <div class="value mono" id="ddnsPublicIp">-</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="label">自动同步</div>
+                            <div class="value" id="ddnsAutoSync">-</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="label">IPv6 主机数</div>
+                            <div class="value" id="ddnsIpv6HostCount">0</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="label">最近更新</div>
+                            <div class="value" id="ddnsLastUpdate" style="font-size:14px; line-height:1.5;">-</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="label">最近成功</div>
+                            <div class="value" id="ddnsLastSuccess" style="font-size:14px; line-height:1.5;">-</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="label">最近失败</div>
+                            <div class="value" id="ddnsLastFailure" style="font-size:14px; line-height:1.5;">-</div>
+                        </div>
+                    </div>
+                    <div class="grid-2" style="gap: 12px;">
+                        <div>
+                            <label class="form-label">主域名</label>
+                            <div class="code-block" id="ddnsPrimaryDomain">-</div>
+                        </div>
+                        <div>
+                            <label class="form-label">泛域名</label>
+                            <div class="code-block" id="ddnsWildcardDomain">-</div>
+                        </div>
+                    </div>
+                    <div class="grid-2" style="gap: 12px;">
+                        <div>
+                            <label class="form-label">失败域名</label>
+                            <div class="code-block" id="ddnsFailedDomains">-</div>
+                        </div>
+                        <div>
+                            <label class="form-label">域名发布统计</label>
+                            <div class="code-block" id="ddnsPublishCounts">-</div>
+                        </div>
+                    </div>
+                    <div class="grid-2" style="gap: 12px;">
+                        <div>
+                            <label class="form-label">IPv4 / A 摘要</label>
+                            <div class="code-block" id="ddnsIpv4Counts">-</div>
+                        </div>
+                        <div>
+                            <label class="form-label">IPv6 / AAAA 摘要</label>
+                            <div class="code-block" id="ddnsIpv6Counts">-</div>
+                        </div>
+                    </div>
+                    <form class="grid-2" style="gap: 10px;" onsubmit="saveDdnsSchedule(event)">
+                        <div>
+                            <label class="form-label">自动同步开关</label>
+                            <select class="form-control" id="ddnsScheduleEnabled">
+                                <option value="true">启用</option>
+                                <option value="false">禁用</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Cron 表达式</label>
+                            <input class="form-control mono" id="ddnsScheduleExpression" placeholder="*/10 * * * *">
+                        </div>
+                        <div style="grid-column: 1 / -1; display:flex; justify-content:flex-end;">
+                            <button type="submit" class="btn btn-primary btn-sm">保存 DDNS 调度</button>
+                        </div>
+                    </form>
+                    <div>
+                        <label class="form-label">IPv6 主机发布状态</label>
+                        <div id="ddnsHostsList" class="detail-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel">
+                <div class="flex justify-between items-center mb-4">
+                    <h2>📦 Inventory 导入 / 导出</h2>
+                    <div class="flex gap-2">
+                        <button class="btn btn-sm" onclick="exportInventory()">导出</button>
+                        <button class="btn btn-sm" onclick="syncInventoryNow()">按清单重同步</button>
+                        <button class="btn btn-sm btn-primary" onclick="previewInventoryImport()">预览导入</button>
+                    </div>
+                </div>
+                <div class="panel-section">
+                    <div class="card-grid">
+                        <div class="mini-stat">
+                            <div class="label">服务总数</div>
+                            <div class="value" id="inventoryServicesCount">0</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="label">已代理服务</div>
+                            <div class="value" id="inventoryProxiedCount">0</div>
+                        </div>
+                    </div>
+                    <div class="grid-2" style="gap: 12px;">
+                        <div>
+                            <label class="form-label">上次导出</label>
+                            <div class="code-block" id="inventoryLastExport">-</div>
+                        </div>
+                        <div>
+                            <label class="form-label">上次导入</label>
+                            <div class="code-block" id="inventoryLastImport">-</div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">导入模式</label>
+                        <select class="form-control" id="inventoryImportMode">
+                            <option value="merge">merge</option>
+                            <option value="replace">replace</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Inventory JSON</label>
+                        <textarea class="form-control mono" id="inventoryJson" rows="10" placeholder='粘贴 inventory JSON'></textarea>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-sm text-muted"><input type="checkbox" id="inventoryAutoSync" checked style="margin-right:6px;">导入后立即同步 Lucky / SunPanel</label>
+                        <button class="btn btn-success btn-sm" onclick="importInventory()">执行导入</button>
+                    </div>
+                    <div>
+                        <label class="form-label">预览结果</label>
+                        <div class="code-block" id="inventoryPreview">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consistency -->
+        <div class="glass-panel">
+            <div class="flex justify-between items-center mb-4">
+                <h2>🧭 Lucky / SunPanel 一致性</h2>
+                <button class="btn btn-sm" onclick="fetchConsistencyPanel()">刷新</button>
+            </div>
+            <div class="grid-2">
+                <div class="panel-section">
+                    <div class="flex justify-between items-center">
+                        <h2 style="margin:0; font-size:16px;">🍀 Lucky</h2>
+                        <span class="badge" id="luckyConsistencyBadge">检测中</span>
+                    </div>
+                    <div class="card-grid" id="luckyConsistencyStats"></div>
+                    <div>
+                        <label class="form-label">Managed / Drift / Extra</label>
+                        <div id="luckyConsistencyList" class="detail-list"></div>
+                    </div>
+                </div>
+                <div class="panel-section">
+                    <div class="flex justify-between items-center">
+                        <h2 style="margin:0; font-size:16px;">☀️ SunPanel</h2>
+                        <span class="badge" id="sunpanelConsistencyBadge">检测中</span>
+                    </div>
+                    <div class="card-grid" id="sunpanelConsistencyStats"></div>
+                    <div>
+                        <label class="form-label">Managed / Drift / Missing / StaleState</label>
+                        <div id="sunpanelConsistencyList" class="detail-list"></div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -377,13 +636,12 @@
                             <th>设备:端口</th>
                             <th>IPv4 域名映射 (外网)</th>
                             <th>IPv6 直连通道 (直连)</th>
-                            <th>测速延时</th>
                             <th>操作</th>
                         </tr>
                     </thead>
                     <tbody id="servicesTableBody">
                         <!-- Data injected via JS -->
-                        <tr><td colspan="7" class="text-muted text-sm" style="text-align:center;">加载中...</td></tr>
+                        <tr><td colspan="6" class="text-muted text-sm" style="text-align:center;">加载中...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -450,6 +708,52 @@
         </div>
     </div>
 
+    <!-- Add Service Modal -->
+    <div class="modal-backdrop" id="addServiceModal">
+        <div class="modal" style="max-width: 640px;">
+            <h2 class="mb-4">➕ 手动添加服务</h2>
+            <form onsubmit="submitAddService(event)">
+                <div class="grid-2" style="gap: 12px;">
+                    <div class="form-group">
+                        <label class="form-label">服务ID</label>
+                        <input class="form-control" id="add-id" placeholder="如: nas-web" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">服务名称</label>
+                        <input class="form-control" id="add-name" placeholder="如: 群晖控制台" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">设备ID</label>
+                        <input class="form-control" id="add-device" placeholder="如: 200" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">内部端口</label>
+                        <input class="form-control" id="add-port" type="number" placeholder="如: 5001" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">内部协议</label>
+                        <select class="form-control" id="add-protocol">
+                            <option value="http">http</option>
+                            <option value="https">https</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">SunPanel 分组</label>
+                        <input class="form-control" id="add-group" value="其他">
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label class="form-label">描述</label>
+                        <input class="form-control" id="add-description" placeholder="可选">
+                    </div>
+                </div>
+                <div class="flex justify-between mt-4">
+                    <button type="button" class="btn" onclick="closeModal('addServiceModal')">取消</button>
+                    <button type="submit" class="btn btn-primary">添加并同步</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // Utilities
         function showToast(message, type = 'success') {
@@ -497,20 +801,401 @@
         function closeModal(id) { document.getElementById(id).classList.remove('show'); }
         function openModal(id) { document.getElementById(id).classList.add('show'); }
 
-        // Data Fetching
+        function formatDateTime(value) {
+            if (!value) return '-';
+            try {
+                return new Date(value).toLocaleString('zh-CN');
+            } catch {
+                return value;
+            }
+        }
+
+        function escapeHtml(value) {
+            return `${value ?? ''}`
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderBadge(status) {
+            const mapping = {
+                synced: ['success', '已同步'],
+                success: ['success', '成功'],
+                healthy: ['success', '健康'],
+                missing: ['danger', '缺失'],
+                drift: ['warning', '漂移'],
+                degraded: ['warning', '部分失败'],
+                failed: ['danger', '失败'],
+                error: ['danger', '异常'],
+                stale: ['warning', '陈旧'],
+                disabled: ['warning', '已停用']
+            };
+            const [cls, text] = mapping[status] || ['warning', status || '-'];
+            return `<span class="badge ${cls}">${text}</span>`;
+        }
+
+        function renderDdnsStatusBadge(status, text) {
+            const el = document.getElementById('ddnsPublishStatus');
+            if (!el) return;
+            const mapping = {
+                success: ['success', text || '最近发布成功'],
+                degraded: ['warning', text || '部分失败'],
+                failed: ['danger', text || '最近发布失败'],
+                disabled: ['warning', text || '已停用']
+            };
+            const [cls, label] = mapping[status] || ['warning', text || '未知'];
+            el.className = `badge ${cls}`;
+            el.textContent = label;
+        }
+
+        function setStatusBadge(id, ok, text) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.className = `badge ${ok ? 'success' : 'warning'}`;
+            el.textContent = text;
+        }
+
+        function renderMiniStats(containerId, stats = []) {
+            const el = document.getElementById(containerId);
+            if (!el) return;
+            el.innerHTML = stats.map(item => `
+                <div class="mini-stat">
+                    <div class="label">${escapeHtml(item.label)}</div>
+                    <div class="value">${escapeHtml(item.value)}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderDetailItems(containerId, items = [], formatter) {
+            const el = document.getElementById(containerId);
+            if (!el) return;
+            if (!items.length) {
+                el.innerHTML = '<div class="empty-state">暂无数据</div>';
+                return;
+            }
+            el.innerHTML = items.map(formatter).join('');
+        }
+
+        function summarizeInventoryPreview(preview) {
+            if (!preview) return '-';
+            const counts = preview.counts || {};
+            const lines = [
+                `mode: ${preview.mode || '-'}`,
+                `incoming: ${counts.incoming || 0}`,
+                `additions: ${counts.additions || 0}`,
+                `updates: ${counts.updates || 0}`,
+                `duplicates: ${counts.duplicates || 0}`,
+                `validationErrors: ${counts.validationErrors || 0}`
+            ];
+            if (Array.isArray(preview.duplicateIds) && preview.duplicateIds.length) {
+                lines.push(`duplicateIds: ${preview.duplicateIds.join(', ')}`);
+            }
+            if (Array.isArray(preview.validationErrors) && preview.validationErrors.length) {
+                lines.push(`validationErrorsDetail: ${preview.validationErrors.map(item => `${item.id || '-'} => ${(item.errors || []).join('; ')}`).join(' | ')}`);
+            }
+            return lines.join('\n');
+        }
+
+        function openAddServiceModal() {
+            document.getElementById('add-id').value = '';
+            document.getElementById('add-name').value = '';
+            document.getElementById('add-device').value = '';
+            document.getElementById('add-port').value = '';
+            document.getElementById('add-protocol').value = 'http';
+            document.getElementById('add-group').value = '其他';
+            document.getElementById('add-description').value = '';
+            openModal('addServiceModal');
+        }
+
+        async function submitAddService(e) {
+            e.preventDefault();
+            const payload = {
+                id: document.getElementById('add-id').value.trim(),
+                name: document.getElementById('add-name').value.trim(),
+                device: document.getElementById('add-device').value.trim(),
+                internalPort: parseInt(document.getElementById('add-port').value, 10),
+                internalProtocol: document.getElementById('add-protocol').value,
+                enableTLS: document.getElementById('add-protocol').value === 'https',
+                description: document.getElementById('add-description').value.trim(),
+                sunpanel: {
+                    group: document.getElementById('add-group').value.trim() || '其他'
+                }
+            };
+            await apiCall('/api/services/add', 'POST', '添加服务', payload);
+            closeModal('addServiceModal');
+        }
+
+        function formatLuckyAuthStatus(integration) {
+            if (!integration) return '-';
+            const parts = [
+                `mode=${integration.authMode || 'none'}`,
+                `open=${integration.hasOpenToken ? 'yes' : 'no'}`,
+                `admin=${integration.hasAdminToken ? 'yes' : 'no'}`
+            ];
+            if (integration.apiBase) parts.push(integration.apiBase);
+            return parts.join(' · ');
+        }
+
+        function formatSunPanelAuthStatus(integration) {
+            if (!integration) return '-';
+            const parts = [
+                `token=${integration.hasToken ? 'yes' : 'no'}`
+            ];
+            if (integration.apiBase) parts.push(integration.apiBase);
+            return parts.join(' · ');
+        }
+
+        function formatDdnsOverviewText(ddns = {}) {
+            const status = ddns.publishStatus || 'unknown';
+            const failedCount = Number(ddns.failedDomainCount || 0);
+            if (status === 'success') {
+                return `最近发布成功 · 域名 ${ddns.trackedDomains?.length || 0}`;
+            }
+            if (status === 'degraded') {
+                return `部分失败 · 失败域名 ${failedCount}`;
+            }
+            if (status === 'failed') {
+                return `最近发布失败 · 失败域名 ${failedCount}`;
+            }
+            return ddns.enabled ? '等待真实发布结果' : '未激活';
+        }
+
+        function formatFamilySummary(summary = {}, label) {
+            return [
+                `${label} total=${summary.total || 0}`,
+                `ok=${summary.success || 0}`,
+                `fail=${summary.failure || 0}`,
+                `skip=${summary.skipped || 0}`,
+                `update=${summary.updated || 0}`,
+                `add=${summary.added || 0}`
+            ].join(' · ');
+        }
+
+        function formatDdnsPublishCounts(summary = {}) {
+            return [
+                `domains=${summary.trackedDomains?.length || 0}`,
+                `records=${(summary.ipv4Summary?.total || 0) + (summary.ipv6Summary?.total || 0)}`,
+                `ok=${summary.successCount || 0}`,
+                `fail=${summary.failureCount || 0}`
+            ].join(' · ');
+        }
+
         async function fetchSystemStatus() {
             try {
-                const data = await apiCall('/api/dashboard/overview');
-                const updateStatus = (id, valid, text) => {
-                    const el = document.getElementById(id);
-                    el.className = `badge ${valid ? 'success' : 'danger'}`;
-                    el.textContent = text;
-                };
-                
-                updateStatus('status-ddns', data.ddns?.enabled, data.ddns?.enabled ? '激活' : '未激活');
-                updateStatus('status-lucky', true, `共 ${data.proxies?.lucky || 0} 条规则`);
-                updateStatus('status-sunpanel', true, `卡片数: ${data.sunpanel?.cardsCount || 0}`);
+                const [overview, status] = await Promise.all([
+                    apiCall('/api/dashboard/overview'),
+                    apiCall('/api/status')
+                ]);
+                const luckyIntegration = status.integrations?.lucky || null;
+                const sunpanelIntegration = status.integrations?.sunpanel || null;
+                const ddnsOverview = overview.ddns || {};
+                const ddnsOk = ddnsOverview.enabled && ddnsOverview.publishStatus === 'success';
+
+                setStatusBadge('status-ddns', ddnsOk, formatDdnsOverviewText(ddnsOverview));
+                setStatusBadge(
+                    'status-lucky',
+                    luckyIntegration?.authMode === 'open' || luckyIntegration?.authMode === 'admin',
+                    `规则 ${overview.proxies?.lucky || 0}`
+                );
+                setStatusBadge(
+                    'status-sunpanel',
+                    Boolean(sunpanelIntegration?.hasToken),
+                    `卡片 ${overview.sunpanel?.cardsCount || 0}`
+                );
+                document.getElementById('status-lucky-auth').textContent = formatLuckyAuthStatus(luckyIntegration);
+                document.getElementById('status-sunpanel-auth').textContent = formatSunPanelAuthStatus(sunpanelIntegration);
             } catch(e){}
+        }
+
+        async function fetchDdnsPanel() {
+            const [ddnsState, scheduleRes] = await Promise.all([
+                apiCall('/api/ddns'),
+                apiCall('/api/ddns/schedule')
+            ]);
+            const summary = ddnsState.summary || {};
+            const schedule = scheduleRes.task || {};
+            const ipv4Summary = summary.ipv4Summary || {};
+            const ipv6Summary = summary.ipv6Summary || {};
+
+            document.getElementById('ddnsPublicIp').textContent = summary.publicIp || '-';
+            document.getElementById('ddnsAutoSync').textContent = schedule.enabled ? '开启' : '关闭';
+            document.getElementById('ddnsIpv6HostCount').textContent = `${summary.ipv6Hosts?.length || 0}`;
+            document.getElementById('ddnsLastUpdate').textContent = formatDateTime(summary.lastUpdate);
+            document.getElementById('ddnsLastSuccess').textContent = formatDateTime(summary.lastSuccessAt);
+            document.getElementById('ddnsLastFailure').textContent = formatDateTime(summary.lastFailureAt);
+            document.getElementById('ddnsPrimaryDomain').textContent = summary.primaryDomain || '-';
+            document.getElementById('ddnsWildcardDomain').textContent = (summary.trackedDomains || [])
+                .filter(Boolean)
+                .map(domain => `*.${domain}`)
+                .join(', ') || (summary.wildcardDomain || '-');
+            document.getElementById('ddnsFailedDomains').textContent = (summary.failedDomains || []).join(', ') || '-';
+            document.getElementById('ddnsPublishCounts').textContent = formatDdnsPublishCounts(summary);
+            document.getElementById('ddnsIpv4Counts').textContent = formatFamilySummary(ipv4Summary, 'A');
+            document.getElementById('ddnsIpv6Counts').textContent = formatFamilySummary(ipv6Summary, 'AAAA');
+            document.getElementById('ddnsScheduleEnabled').value = `${Boolean(schedule.enabled)}`;
+            document.getElementById('ddnsScheduleExpression').value = schedule.expression || '';
+
+            renderDdnsStatusBadge(ddnsState.publishStatus || summary.publishStatus || 'unknown');
+            document.getElementById('ddnsPublishNote').textContent = formatDdnsOverviewText({
+                enabled: ddnsState.enabled,
+                publishStatus: ddnsState.publishStatus || summary.publishStatus,
+                failedDomainCount: summary.failedDomainCount,
+                trackedDomains: summary.trackedDomains
+            });
+
+            renderDetailItems('ddnsHostsList', summary.dualStackHosts || summary.ipv6Hosts || [], host => {
+                const ipv4Record = host.ipv4Record || null;
+                const ipv6Record = host.ipv6Record || null;
+                const ipv4Label = ipv4Record?.hostname || ipv4Record?.fqdn || host.ipv4 || '-';
+                const ipv6Label = ipv6Record?.hostname || ipv6Record?.fqdn || host.hostname || '-';
+                const ipv4Message = ipv4Record?.message || '-';
+                const ipv6Message = ipv6Record?.message || '-';
+                return `
+                <div class="detail-item">
+                    <div class="detail-item-header">
+                        <div>
+                            <div style="font-weight:600;">${escapeHtml(host.name || host.deviceId || host.host)}</div>
+                            <div class="text-sm text-muted mono">host=${escapeHtml(host.host || '-')}</div>
+                        </div>
+                        ${renderBadge(host.publishStatus || 'missing')}
+                    </div>
+                    <div class="text-sm text-muted">IPv4: ${escapeHtml(host.ipv4 || '-')}</div>
+                    <div class="text-sm text-muted mono">A: ${escapeHtml(ipv4Label)} · ${escapeHtml(ipv4Message)}</div>
+                    <div class="text-sm text-muted mono">IPv6: ${escapeHtml(host.ipv6 || '-')}</div>
+                    <div class="text-sm text-muted mono">AAAA: ${escapeHtml(ipv6Label)} · ${escapeHtml(ipv6Message)}</div>
+                    <div class="text-sm text-muted">最近在线: ${escapeHtml(formatDateTime(host.lastSeen))}</div>
+                </div>
+            `;
+            });
+        }
+
+
+        async function refreshDdnsNow() {
+            await apiCall('/api/ddns/refresh', 'POST', 'DDNS 立即推送');
+            await fetchDdnsPanel();
+            await fetchSystemStatus();
+        }
+
+        async function saveDdnsSchedule(e) {
+            e.preventDefault();
+            const payload = {
+                enabled: document.getElementById('ddnsScheduleEnabled').value === 'true',
+                expression: document.getElementById('ddnsScheduleExpression').value.trim()
+            };
+            await apiCall('/api/ddns/schedule', 'PUT', '保存 DDNS 调度', payload);
+        }
+
+
+        async function fetchInventoryPanel() {
+            const [status, exportRes] = await Promise.all([
+                apiCall('/api/services/status'),
+                apiCall('/api/services/inventory/export')
+            ]);
+
+            document.getElementById('inventoryServicesCount').textContent = `${status.totalServices || 0}`;
+            document.getElementById('inventoryProxiedCount').textContent = `${status.proxiedServices || 0}`;
+            document.getElementById('inventoryLastExport').textContent = formatDateTime(status.lastExport?.timestamp || exportRes.inventory?.exportedAt);
+            document.getElementById('inventoryLastImport').textContent = formatDateTime(status.lastImport?.timestamp);
+            document.getElementById('inventoryJson').value = JSON.stringify(exportRes.inventory || {}, null, 2);
+        }
+
+        async function syncInventoryNow() {
+            await apiCall('/api/services/sync', 'POST', '按清单重同步', { reason: 'dashboard_manual_sync' });
+        }
+
+        async function exportInventory() {
+            const data = await apiCall('/api/services/inventory/export');
+            document.getElementById('inventoryJson').value = JSON.stringify(data.inventory || {}, null, 2);
+            document.getElementById('inventoryLastExport').textContent = formatDateTime(data.inventory?.exportedAt);
+            document.getElementById('inventoryPreview').textContent = '已导出到文本框，可复制保存。';
+            showToast('Inventory 已导出到文本框');
+        }
+
+        async function previewInventoryImport() {
+            const raw = document.getElementById('inventoryJson').value.trim();
+            if (!raw) {
+                showToast('请先粘贴 inventory JSON', 'error');
+                return;
+            }
+            const inventory = JSON.parse(raw);
+            const mode = document.getElementById('inventoryImportMode').value;
+            const data = await apiCall('/api/services/inventory/preview', 'POST', '预览导入', { inventory, mode });
+            document.getElementById('inventoryPreview').textContent = summarizeInventoryPreview(data.preview);
+        }
+
+        async function importInventory() {
+            const raw = document.getElementById('inventoryJson').value.trim();
+            if (!raw) {
+                showToast('请先粘贴 inventory JSON', 'error');
+                return;
+            }
+            const inventory = JSON.parse(raw);
+            const mode = document.getElementById('inventoryImportMode').value;
+            const sync = document.getElementById('inventoryAutoSync').checked;
+            const data = await apiCall('/api/services/inventory/import', 'POST', '导入 inventory', { inventory, mode, sync });
+            document.getElementById('inventoryPreview').textContent = summarizeInventoryPreview(data.preview);
+        }
+
+        async function fetchConsistencyPanel() {
+            const data = await apiCall('/api/dashboard/consistency');
+            const lucky = data.consistency?.lucky || {};
+            const sunpanel = data.consistency?.sunpanel || {};
+
+            document.getElementById('luckyConsistencyBadge').className = `badge ${lucky.summary?.healthy ? 'success' : 'warning'}`;
+            document.getElementById('luckyConsistencyBadge').textContent = lucky.summary?.healthy ? '健康' : '需处理';
+            renderMiniStats('luckyConsistencyStats', [
+                { label: 'Managed', value: lucky.summary?.managedCount || 0 },
+                { label: 'Synced', value: lucky.summary?.syncedCount || 0 },
+                { label: 'Drift', value: lucky.summary?.driftCount || 0 },
+                { label: 'Extra', value: lucky.summary?.extraCount || 0 }
+            ]);
+            renderDetailItems('luckyConsistencyList', [
+                ...(lucky.managed || []),
+                ...((lucky.extras || []).map(item => ({ ...item, status: 'extra', name: item.domain, expected: null, actual: item })))
+            ], item => `
+                <div class="detail-item">
+                    <div class="detail-item-header">
+                        <div>
+                            <div style="font-weight:600;">${escapeHtml(item.name || item.serviceId || item.domain || '-')}</div>
+                            <div class="text-sm text-muted mono">${escapeHtml(item.domain || '-')}</div>
+                        </div>
+                        ${item.status === 'extra' ? '<span class="badge warning">Extra</span>' : renderBadge(item.status)}
+                    </div>
+                    ${item.expected ? `<div class="text-sm text-muted mono">期望: ${escapeHtml(item.expected.target || '-')}</div>` : ''}
+                    ${item.actual ? `<div class="text-sm text-muted mono">实际: ${escapeHtml(item.actual.target || item.target || '-')}</div>` : ''}
+                    ${item.driftFields?.length ? `<div class="text-sm text-muted">漂移字段: ${escapeHtml(item.driftFields.join(', '))}</div>` : ''}
+                </div>
+            `);
+
+            document.getElementById('sunpanelConsistencyBadge').className = `badge ${sunpanel.summary?.healthy ? 'success' : 'warning'}`;
+            document.getElementById('sunpanelConsistencyBadge').textContent = sunpanel.summary?.healthy ? '健康' : '需处理';
+            renderMiniStats('sunpanelConsistencyStats', [
+                { label: 'Managed', value: sunpanel.summary?.managedCount || 0 },
+                { label: 'Synced', value: sunpanel.summary?.syncedCount || 0 },
+                { label: 'Drift', value: sunpanel.summary?.driftCount || 0 },
+                { label: 'StaleState', value: sunpanel.summary?.staleStateCount || 0 }
+            ]);
+            renderDetailItems('sunpanelConsistencyList', [
+                ...(sunpanel.managed || []),
+                ...((sunpanel.staleState || []).map(item => ({ ...item, status: 'stale', name: item.onlyName })))
+            ], item => `
+                <div class="detail-item">
+                    <div class="detail-item-header">
+                        <div>
+                            <div style="font-weight:600;">${escapeHtml(item.name || item.onlyName || item.serviceId || '-')}</div>
+                            <div class="text-sm text-muted mono">${escapeHtml(item.domain || item.onlyName || '-')}</div>
+                        </div>
+                        ${renderBadge(item.status)}
+                    </div>
+                    ${item.expected ? `<div class="text-sm text-muted mono">期望 URL: ${escapeHtml(item.expected.url || '-')}</div>` : ''}
+                    ${item.actual ? `<div class="text-sm text-muted mono">实际 URL: ${escapeHtml(item.actual.url || '-')}</div>` : ''}
+                    ${item.driftFields?.length ? `<div class="text-sm text-muted">漂移字段: ${escapeHtml(item.driftFields.join(', '))}</div>` : ''}
+                    ${item.lastSync ? `<div class="text-sm text-muted">最近同步: ${escapeHtml(formatDateTime(item.lastSync))}</div>` : ''}
+                    ${item.error ? `<div class="text-sm" style="color:#fca5a5;">${escapeHtml(item.error)}</div>` : ''}
+                </div>
+            `);
         }
 
         async function fetchProxyDefaults() {
@@ -546,7 +1231,9 @@
                         </div>
                         <button class="btn btn-sm btn-primary" onclick="scanDevice('${m.id}')">扫描端口</button>
                     </div>
-                    ${m.ipv6 ? `<div class="text-sm text-muted" style="word-break: break-all;">[${m.ipv6}]</div>` : ''}
+                    ${m.ddnsHostname ? `<div class="text-sm text-muted mono">DDNS: ${m.ddnsHostname}</div>` : ''}
+                    <div class="text-sm text-muted">服务数: ${m.servicesCount || 0}</div>
+                    ${m.ipv6 ? `<div class="text-sm text-muted mono" style="word-break: break-all;">[${m.ipv6}]</div>` : ''}
                     <div id="scan-res-${m.id}" class="flex gap-2 mt-2" style="flex-wrap: wrap;"></div>
                 </div>
             `).join('');
@@ -611,18 +1298,19 @@
         async function fetchServices() {
             const services = await apiCall('/api/services/list');
             const tbody = document.getElementById('servicesTableBody');
-            
+
             if(!services.length) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">安全白名单完全空白，请进行网络探索或纯手动添加。</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">安全白名单完全空白，请进行网络探索或纯手动添加。</td></tr>`;
                 return;
             }
-            
+
             tbody.innerHTML = services.map(s => {
-                const ipv4Url = `https://${s.proxyDomain}:50000`; // Will be mapped by defaults
-                
+                const luckyPort = s.lucky?.port || 50000;
+                const ipv4Url = `https://${s.proxyDomain}:${luckyPort}`;
+
                 return `
                 <tr>
-                    <td><span class="badge ${s.enableProxy ? 'success' : 'warning'}"></span></td>
+                    <td>${renderBadge(s.enableProxy ? 'synced' : 'disabled')}</td>
                     <td style="font-family:monospace; color:#93c5fd">${s.id}</td>
                     <td class="text-sm text-muted">${s.device}:${s.internalPort}</td>
                     <td>
@@ -636,8 +1324,7 @@
                     <td><button class="btn btn-sm btn-danger" onclick="apiCall('/api/services/${s.id}', 'DELETE', '删除服务')">移除</button></td>
                 </tr>
             `}).join('');
-            
-            // Do passive connectivity check silently behind scenes
+
             checkConnectivity(true);
         }
 
@@ -734,6 +1421,9 @@
         // Init
         function refreshAll() {
             fetchSystemStatus();
+            fetchDdnsPanel();
+            fetchInventoryPanel();
+            fetchConsistencyPanel();
             fetchProxyDefaults();
             fetchKeyMachines();
             fetchServices();

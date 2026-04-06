@@ -16,9 +16,11 @@ export class StateManager {
       uptime: 0,
       startTime: new Date().toISOString(),
       router: { history: [] },
-      ddns: { domains: [], history: [] },
-      lucky: { proxies: [], history: [] },
-      sunpanel: { cards: [], history: [] }
+      ddns: { domains: [], history: [], summary: { publicIp: null, primaryDomain: null, wildcardDomain: null, ipv6Hosts: [] } },
+      lucky: { proxies: [], history: [], syncStatus: {} },
+      sunpanel: { cards: [], history: [], syncStatus: {} },
+      scheduler: { tasks: {} },
+      services: { lastUpdate: null, totalServices: 0, proxiedServices: 0, lastImport: null, lastExport: null }
     };
     this.initialized = false;
   }
@@ -49,6 +51,7 @@ export class StateManager {
     try {
       const content = await fs.readFile(this.config.path, 'utf-8');
       this.state = JSON.parse(content);
+      this.ensureDefaults();
       console.log('✅ 状态加载成功');
     } catch (error) {
       if (error.code === 'ENOENT') {
@@ -58,10 +61,44 @@ export class StateManager {
     }
   }
 
+  ensureDefaults() {
+    this.state.router = { history: [], ...(this.state.router || {}) };
+    this.state.ddns = {
+      domains: [],
+      history: [],
+      summary: {
+        publicIp: null,
+        primaryDomain: null,
+        wildcardDomain: null,
+        ipv6Hosts: []
+      },
+      ...(this.state.ddns || {})
+    };
+    this.state.ddns.summary = {
+      publicIp: null,
+      primaryDomain: null,
+      wildcardDomain: null,
+      ipv6Hosts: [],
+      ...(this.state.ddns.summary || {})
+    };
+    this.state.lucky = { proxies: [], history: [], syncStatus: {}, ...(this.state.lucky || {}) };
+    this.state.sunpanel = { cards: [], history: [], syncStatus: {}, ...(this.state.sunpanel || {}) };
+    this.state.scheduler = { tasks: {}, ...(this.state.scheduler || {}) };
+    this.state.services = {
+      lastUpdate: null,
+      totalServices: 0,
+      proxiedServices: 0,
+      lastImport: null,
+      lastExport: null,
+      ...(this.state.services || {})
+    };
+  }
+
   async save() {
     if (!this.initialized) return;
 
     try {
+      this.ensureDefaults();
       // 更新时间戳
       this.state.lastUpdate = new Date().toISOString();
       this.state.uptime = Math.floor((Date.now() - new Date(this.state.startTime)) / 1000);
@@ -108,7 +145,20 @@ export class StateManager {
 
         for (const file of toDelete) {
           const filePath = path.join(this.config.backupPath, file);
-          await fs.unlink(filePath);
+          try {
+            await fs.unlink(filePath);
+          } catch (error) {
+            if (error.code === 'ENOENT') {
+              continue;
+            }
+
+            if (error.code === 'EPERM' || error.code === 'EBUSY') {
+              console.warn(`⚠️ 跳过备份清理: ${path.basename(filePath)} - ${error.code}`);
+              continue;
+            }
+
+            throw error;
+          }
         }
       }
     } catch (error) {

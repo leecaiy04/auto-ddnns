@@ -14,7 +14,12 @@ const REGISTRY_PATH = path.resolve(__dirname, '..', '..', 'config', 'services-re
 const PROXY_DEFAULTS_PATH = path.resolve(__dirname, '..', '..', 'config', 'proxy-defaults.json');
 const DEVICES_PATH = path.resolve(__dirname, '..', '..', 'config', 'devices.json');
 
-const MANAGED_DOMAIN = getEnv('ALIYUN_DOMAIN', 'leecaiy.shop');
+const MANAGED_DOMAIN = getEnv('ALIYUN_DOMAIN', '222869.xyz');
+const MANAGED_DOMAINS = `${MANAGED_DOMAIN}`
+  .split(',')
+  .map(domain => domain.trim())
+  .filter(Boolean);
+const PRIMARY_MANAGED_DOMAIN = MANAGED_DOMAINS[0] || '222869.xyz';
 
 // ==================== 工具函数 ====================
 
@@ -27,7 +32,7 @@ function loadJSON(filePath) {
 }
 
 function buildManagedDomain(domainPrefix) {
-  return `${domainPrefix}.${MANAGED_DOMAIN}`;
+  return `${domainPrefix}.${PRIMARY_MANAGED_DOMAIN}`;
 }
 
 function normalizeServiceDomains(service) {
@@ -73,11 +78,20 @@ function formatTargetHost(targetHost) {
 }
 
 function isManagedDomain(domain) {
-  return domain === MANAGED_DOMAIN || domain.endsWith(`.${MANAGED_DOMAIN}`);
+  return MANAGED_DOMAINS.some(managedDomain => domain === managedDomain || domain.endsWith(`.${managedDomain}`));
+}
+
+
+function buildIpv6Hostname(ipv4, domain = MANAGED_DOMAIN) {
+  const lastOctet = `${ipv4 || ''}`.trim().split('.').pop();
+  if (!lastOctet || !/^\d+$/.test(lastOctet)) {
+    return null;
+  }
+  return `${lastOctet}.v6.${domain}`;
 }
 
 function sanitizeId(id) {
-  return id.toLowerCase().replace(/[^a-z0-9_-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+  return `${id || ''}`.toLowerCase().replace(/[^a-z0-9_-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
 }
 
 // ==================== 主类 ====================
@@ -127,43 +141,182 @@ export class ServiceRegistry {
     this.devices = data?.devices || [];
   }
 
-  /**
-   * 获取全局反代默认配置
-   */
   getProxyDefaults() {
     return this.proxyDefaults;
   }
 
-  /**
-   * 更新全局反代默认配置
-   */
-  async updateProxyDefaults(updates) {
-    this.proxyDefaults = { ...this.proxyDefaults, ...updates };
+  async updateProxyDefaults(updates = {}) {
+    this.proxyDefaults = {
+      ...this.proxyDefaults,
+      ...updates,
+      externalPorts: {
+        ...(this.proxyDefaults?.externalPorts || {}),
+        ...(updates.externalPorts || {})
+      },
+      dns: {
+        ...(this.proxyDefaults?.dns || {}),
+        ...(updates.dns || {})
+      }
+    };
+
     fs.writeFileSync(PROXY_DEFAULTS_PATH, JSON.stringify(this.proxyDefaults, null, 2));
-    this.changelog?.append('update_proxy_defaults', 'proxy-defaults', '更新全局反代配置', updates);
+    await this.updateState();
     return this.proxyDefaults;
   }
 
-  /**
-   * 获取关键机器列表
-   */
-  getKeyMachines() {
-    return this.devices.filter(d => d.isKeyMachine);
+  getManagedDomain() {
+    return this.proxyDefaults?.domains?.[0] || MANAGED_DOMAIN;
   }
 
-  /**
-   * 获取所有设备列表
-   */
-  getDeviceList() {
-    return this.devices;
+  getWildcardDomain() {
+    return `*.${this.getManagedDomain()}`;
   }
 
-  /**
-   * 获取设备 by ID
-   */
-  getDeviceById(deviceId) {
-    return this.devices.find(d => d.id === deviceId) || null;
+  getDeviceDdnsHostname(deviceId) {
+    const device = this.getDeviceById(deviceId);
+    return buildIpv6Hostname(device?.ipv4, this.getManagedDomain());
   }
+
+  getKeyMachinesWithDomains() {
+    return this.getKeyMachines().map(machine => ({
+      ...machine,
+      ddnsHostname: this.getDeviceDdnsHostname(machine.id)
+    }));
+  }
+
+  exportInventory() {
+    const inventory = {
+      version: '1.0.0',
+      exportedAt: new Date().toISOString(),
+      metadata: {
+        managedDomain: this.getManagedDomain(),
+        wildcardDomain: this.getWildcardDomain()
+      },
+      services: this.services.map(denormalizeServiceDomains),
+      proxyDefaults: this.proxyDefaults,
+      keyMachines: this.getKeyMachines(),
+      devices: this.devices
+    };
+
+    this.stateManager.state.services = {
+      ...(this.stateManager.state.services || {}),
+      lastExport: {
+        timestamp: inventory.exportedAt,
+        counts: {
+          services: inventory.services.length,
+          keyMachines: inventory.keyMachines.length,
+          devices: inventory.devices.length
+        }
+      }
+    };
+
+    return inventory;
+  }
+
+  previewImportInventory(payload = {}, mode = 'merge') {
+    const services = Array.isArray(payload.services) ? payload.services : [];
+    const incomingIds = services.map(service => sanitizeId(service.id)).filter(Boolean);
+    const existingIds = new Set(this.services.map(service => service.id));
+    const duplicateIds = incomingIds.filter((id, index) => incomingIds.indexOf(id) !== index);
+    const updates = incomingIds.filter(id => existingIds.has(id));
+    const additions = incomingIds.filter(id => !existingIds.has(id));
+    const validationErrors = [];
+
+    for (const service of services) {
+      const normalizedService = {
+        ...service,
+        id: sanitizeId(service.id)
+      };
+      const validation = this.validateService(normalizedService);
+      if (!validation.valid) {
+        validationErrors.push({ id: normalizedService.id || null, errors: validation.errors });
+      }
+    }
+
+    return {
+      mode,
+      counts: {
+        incoming: services.length,
+        additions: additions.length,
+        updates: updates.length,
+        duplicates: duplicateIds.length,
+        validationErrors: validationErrors.length
+      },
+      duplicateIds,
+      validationErrors,
+      additions,
+      updates,
+      willReplaceExisting: mode === 'replace'
+    };
+  }
+
+  async importInventory(payload = {}, options = {}) {
+    const mode = options.mode === 'replace' ? 'replace' : 'merge';
+    const preview = this.previewImportInventory(payload, mode);
+
+    if (preview.duplicateIds.length > 0 || preview.validationErrors.length > 0) {
+      return {
+        success: false,
+        preview,
+        error: '导入清单校验失败'
+      };
+    }
+
+    const incomingServices = (Array.isArray(payload.services) ? payload.services : [])
+      .map(service => normalizeServiceDomains({ ...service, id: sanitizeId(service.id) }));
+
+    let nextServices = [...this.services];
+    if (mode === 'replace') {
+      nextServices = incomingServices;
+    } else {
+      const nextById = new Map(this.services.map(service => [service.id, service]));
+      for (const service of incomingServices) {
+        nextById.set(service.id, service);
+      }
+      nextServices = Array.from(nextById.values());
+    }
+
+    this.services = nextServices;
+
+    if (payload.proxyDefaults && typeof payload.proxyDefaults === 'object') {
+      this.proxyDefaults = {
+        ...this.proxyDefaults,
+        ...payload.proxyDefaults,
+        externalPorts: {
+          ...(this.proxyDefaults?.externalPorts || {}),
+          ...(payload.proxyDefaults.externalPorts || {})
+        },
+        dns: {
+          ...(this.proxyDefaults?.dns || {}),
+          ...(payload.proxyDefaults.dns || {})
+        }
+      };
+      fs.writeFileSync(PROXY_DEFAULTS_PATH, JSON.stringify(this.proxyDefaults, null, 2));
+    }
+
+    if (Array.isArray(payload.devices)) {
+      this.devices = payload.devices;
+      fs.writeFileSync(DEVICES_PATH, JSON.stringify({ devices: this.devices }, null, 2));
+    }
+
+    await this.saveRegistry();
+    this.stateManager.state.services = {
+      ...(this.stateManager.state.services || {}),
+      lastImport: {
+        timestamp: new Date().toISOString(),
+        mode,
+        counts: preview.counts
+      }
+    };
+    await this.updateState();
+
+    return {
+      success: true,
+      preview,
+      inventory: this.exportInventory()
+    };
+  }
+
 
   // ==================== 加载/保存 ====================
 
@@ -408,6 +561,7 @@ export class ServiceRegistry {
 
   async updateState() {
     this.stateManager.state.services = {
+      ...(this.stateManager.state.services || {}),
       lastUpdate: new Date().toISOString(),
       totalServices: this.services.length,
       proxiedServices: this.services.filter(s => s.enableProxy).length
@@ -418,6 +572,8 @@ export class ServiceRegistry {
   getStatus() {
     return {
       lastUpdate: this.stateManager.state.services?.lastUpdate || null,
+      lastImport: this.stateManager.state.services?.lastImport || null,
+      lastExport: this.stateManager.state.services?.lastExport || null,
       totalServices: this.services.length,
       proxiedServices: this.services.filter(s => s.enableProxy).length,
       enabled: this.config.enabled
@@ -438,6 +594,41 @@ export class ServiceRegistry {
 
     // Fallback to devices.json
     return this.devices.map(d => d.id);
+  }
+
+  getDeviceById(deviceId) {
+    const normalizedId = String(deviceId);
+    const configuredDevice = this.devices.find(device => String(device.id) === normalizedId) || null;
+    const liveDevice = this.stateManager.state.devices?.devices?.[normalizedId] || null;
+
+    if (!configuredDevice && !liveDevice) {
+      return null;
+    }
+
+    return {
+      id: normalizedId,
+      name: configuredDevice?.name || `Device ${normalizedId}`,
+      isKeyMachine: this.getAllowedDeviceIds().includes(normalizedId),
+      ...configuredDevice,
+      ...liveDevice
+    };
+  }
+
+  getKeyMachines() {
+    return this.getAllowedDeviceIds()
+      .map(deviceId => this.getDeviceById(deviceId) || {
+        id: String(deviceId),
+        name: `Device ${deviceId}`,
+        isKeyMachine: true,
+        ipv4: `192.168.3.${deviceId}`,
+        ipv6: null
+      })
+      .map(device => ({
+        ...device,
+        id: String(device.id),
+        isKeyMachine: true
+      }))
+      .sort((a, b) => Number(a.id) - Number(b.id));
   }
 
   // ==================== 校验 ====================

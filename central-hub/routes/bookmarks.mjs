@@ -116,8 +116,19 @@ export default function bookmarkRoutes(modules) {
 
           if (!groupId) {
             try {
-              const result = await createGroup({ title: bm.group || '收藏', onlyName: groupOnlyName }, sunpanelConfig);
-              groupId = result.itemGroupID;
+              const createdGroup = await createGroup({ title: bm.group || '收藏', onlyName: groupOnlyName }, sunpanelConfig);
+              groupId = createdGroup?.itemGroupID;
+
+              if (!groupId) {
+                const refreshedGroups = await getGroupList(sunpanelConfig);
+                const matchedGroup = (refreshedGroups.list || []).find(group => group.onlyName === groupOnlyName);
+                groupId = matchedGroup?.itemGroupID;
+              }
+
+              if (!groupId) {
+                throw new Error('未返回 itemGroupID');
+              }
+
               groupMap.set(groupOnlyName, groupId);
               console.log(`[Bookmarks] ✅ [实例 ${i+1}] 创建分组: ${bm.group}`);
             } catch (error) {

@@ -7,7 +7,18 @@
     "start": "cd central-hub && node server.mjs",
     "dev": "cd central-hub && node --watch server.mjs",
     "test": "node --test test/*.test.mjs",
-    "init": "node scripts/init-setup.mjs"
+    "init": "node scripts/init-setup.mjs",
+    "install:deps": "npm install && npm --prefix central-hub install",
+    "test:steps": "node scripts/test-functional-steps.mjs all",
+    "test:steps:start": "node scripts/test-functional-steps.mjs all --spawn",
+    "test:step:health": "node scripts/test-functional-steps.mjs health",
+    "test:step:status": "node scripts/test-functional-steps.mjs status",
+    "test:step:overview": "node scripts/test-functional-steps.mjs overview",
+    "test:step:devices": "node scripts/test-functional-steps.mjs devices",
+    "test:step:ddns": "node scripts/test-functional-steps.mjs ddns",
+    "test:step:schedule": "node scripts/test-functional-steps.mjs schedule",
+    "test:step:services": "node scripts/test-functional-steps.mjs services",
+    "test:step:inventory": "node scripts/test-functional-steps.mjs inventory"
   },
   "keywords": [
     "ddns",

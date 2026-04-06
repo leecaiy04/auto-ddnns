@@ -20,6 +20,12 @@ export class DeviceMonitor {
     };
   }
 
+  getTrackedDeviceIds() {
+    return Array.isArray(this.config.devices)
+      ? this.config.devices.map(deviceId => String(deviceId))
+      : [];
+  }
+
   /**
    * 初始化模块
    */
@@ -65,8 +71,12 @@ export class DeviceMonitor {
       const devices = {};
       const ipv6Map = {};
 
+      const trackedDeviceIds = this.getTrackedDeviceIds();
       for (const [ipv4, info] of deviceMap.entries()) {
         const deviceId = ipv4.split('.').pop(); // 获取IP最后一位作为设备ID
+        if (trackedDeviceIds.length > 0 && !trackedDeviceIds.includes(deviceId)) {
+          continue;
+        }
 
         devices[deviceId] = {
           ipv4,
