@@ -341,6 +341,16 @@
             </div>
         </div>
 
+        <div class="glass-panel">
+            <div class="flex justify-between items-center mb-4">
+                <h2>🔗 基础服务快捷入口</h2>
+                <button class="btn btn-sm" onclick="fetchInfrastructureLinks()">刷新</button>
+            </div>
+            <div id="infraLinksArea" class="grid-3">
+                <div class="text-muted text-sm">加载中...</div>
+            </div>
+        </div>
+
         <!-- Radar & Key Machines -->
         <div class="glass-panel">
             <div class="flex justify-between items-center mb-4">
@@ -375,15 +385,16 @@
                             <th>状态</th>
                             <th>服务ID</th>
                             <th>设备:端口</th>
+                            <th>内网直连</th>
                             <th>IPv4 域名映射 (外网)</th>
                             <th>IPv6 直连通道 (直连)</th>
-                            <th>测速延时</th>
+                            <th>诊断</th>
                             <th>操作</th>
                         </tr>
                     </thead>
                     <tbody id="servicesTableBody">
                         <!-- Data injected via JS -->
-                        <tr><td colspan="7" class="text-muted text-sm" style="text-align:center;">加载中...</td></tr>
+                        <tr><td colspan="8" class="text-muted text-sm" style="text-align:center;">加载中...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -513,6 +524,36 @@
             } catch(e){}
         }
 
+        function renderInfraLink(label, url) {
+            if(!url) {
+                return `<span class="text-muted text-sm">${label}: 暂无</span>`;
+            }
+
+            return `<a href="${url}" target="_blank" style="display:block; color:#a78bfa; text-decoration:none; font-size:13px; margin-top:4px;">${label}: ${url}</a>`;
+        }
+
+        async function fetchInfrastructureLinks() {
+            try {
+                const data = await apiCall('/api/services/infrastructure-links');
+                const services = data.services || {};
+                const html = Object.values(services).map(service => `
+                    <div class="device-card">
+                        <div style="font-weight:600; color:#fff;">${service.name}</div>
+                        <div class="text-sm text-muted mt-1">${service.note || ''}</div>
+                        <div class="mt-2">
+                            ${renderInfraLink('内网', service.lan)}
+                            ${renderInfraLink('外网', service.public)}
+                            ${renderInfraLink('IPv6', service.ipv6)}
+                        </div>
+                        ${(service.warnings || []).length ? `<div class="text-sm" style="color:#fca5a5; margin-top:8px; line-height:1.5;">${service.warnings.join('<br>')}</div>` : ''}
+                    </div>
+                `).join('');
+                document.getElementById('infraLinksArea').innerHTML = html || '<div class="text-muted text-sm">暂无基础服务入口</div>';
+            } catch (e) {
+                document.getElementById('infraLinksArea').innerHTML = '<div class="text-danger text-sm">基础服务入口加载失败</div>';
+            }
+        }
+
         async function fetchProxyDefaults() {
             const data = await apiCall('/api/services/proxy-defaults');
             if(data) {
@@ -613,7 +654,7 @@
             const tbody = document.getElementById('servicesTableBody');
             
             if(!services.length) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">安全白名单完全空白，请进行网络探索或纯手动添加。</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted">安全白名单完全空白，请进行网络探索或纯手动添加。</td></tr>`;
                 return;
             }
             
@@ -626,6 +667,10 @@
                     <td style="font-family:monospace; color:#93c5fd">${s.id}</td>
                     <td class="text-sm text-muted">${s.device}:${s.internalPort}</td>
                     <td>
+                        <a href="${s.sunpanel?.lanUrl || '#'}" target="_blank" style="color:#a78bfa; text-decoration:none; display:block; font-size:13px;" id="link-lan-${s.id}">内网直连</a>
+                        <div class="text-muted" style="font-size:11px;" id="latency-lan-${s.id}">-</div>
+                    </td>
+                    <td>
                         <a href="${ipv4Url}" target="_blank" style="color:#a78bfa; text-decoration:none; display:block; font-size:13px;" id="link-v4-${s.id}">${s.proxyDomain}</a>
                         <div class="text-muted" style="font-size:11px;" id="latency-v4-${s.id}">-</div>
                     </td>
@@ -633,6 +678,7 @@
                         <a href="#" target="_blank" style="color:#a78bfa; text-decoration:none; display:none; font-size:13px;" id="link-v6-${s.id}">IPv6 直连通道</a>
                         <div class="text-muted" style="font-size:11px;" id="latency-v6-${s.id}">-</div>
                     </td>
+                    <td class="text-muted" style="font-size:11px; line-height:1.5;" id="diag-${s.id}">-</td>
                     <td><button class="btn btn-sm btn-danger" onclick="apiCall('/api/services/${s.id}', 'DELETE', '删除服务')">移除</button></td>
                 </tr>
             `}).join('');
@@ -647,6 +693,20 @@
             if(!data.services) return;
             
             for(const sc of data.services) {
+                // Update LAN
+                const lanSpan = document.getElementById(`latency-lan-${sc.id}`);
+                const lanLink = document.getElementById(`link-lan-${sc.id}`);
+                if(lanSpan && lanLink) {
+                    if(sc.lanDirect.url) lanLink.href = sc.lanDirect.url;
+                    if(sc.lanDirect.ok) {
+                        lanLink.style.color = '#34d399';
+                        lanSpan.innerHTML = `<span style="color:#10b981">${sc.lanDirect.latency}ms (HTTP ${sc.lanDirect.status})</span>`;
+                    } else {
+                        lanLink.style.color = '#ef4444';
+                        lanSpan.innerHTML = `<span style="color:#ef4444">不可达</span>`;
+                    }
+                }
+
                 // Update IPv4
                 const v4Span = document.getElementById(`latency-v4-${sc.id}`);
                 const v4Link = document.getElementById(`link-v4-${sc.id}`);
@@ -677,6 +737,13 @@
                     }
                 } else if(v6Span) {
                     v6Span.textContent = '无 IPv6 通道';
+                }
+
+                const diagCell = document.getElementById(`diag-${sc.id}`);
+                if(diagCell) {
+                    diagCell.innerHTML = (sc.warnings && sc.warnings.length)
+                        ? `<span style="color:#fca5a5">${sc.warnings.join('<br>')}</span>`
+                        : `<span style="color:#10b981">配置一致</span>`;
                 }
             }
         }
@@ -734,6 +801,7 @@
         // Init
         function refreshAll() {
             fetchSystemStatus();
+            fetchInfrastructureLinks();
             fetchProxyDefaults();
             fetchKeyMachines();
             fetchServices();

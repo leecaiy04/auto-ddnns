@@ -6,6 +6,46 @@
 
 import express from 'express';
 
+function parseUrl(value) {
+  try {
+    return new URL(value);
+  } catch {
+    return null;
+  }
+}
+
+function getFirstManagedDomain(modules) {
+  const ipv4Domains = modules.config?.modules?.ddns?.domains?.ipv4 || [];
+  const directDomain = ipv4Domains.find(domain => domain && !domain.startsWith('*.'));
+  return directDomain || process.env.ALIYUN_DOMAIN || '222869.xyz';
+}
+
+function getServiceByAliases(services, aliases) {
+  const normalizedAliases = aliases.map(alias => alias.toLowerCase());
+  return services.find((service) => {
+    const id = `${service.id || ''}`.toLowerCase();
+    const name = `${service.name || ''}`.toLowerCase();
+    const proxyDomain = `${service.proxyDomain || ''}`.toLowerCase();
+    return normalizedAliases.some(alias => id === alias || name.includes(alias) || proxyDomain.startsWith(`${alias}.`));
+  }) || null;
+}
+
+function buildExternalUrl(hostname, luckyPort) {
+  return `https://${hostname}:${luckyPort}`;
+}
+
+function stripSunPanelApiPath(apiBase) {
+  const parsedUrl = parseUrl(apiBase);
+  if (!parsedUrl) {
+    return apiBase;
+  }
+
+  parsedUrl.pathname = '/';
+  parsedUrl.search = '';
+  parsedUrl.hash = '';
+  return parsedUrl.toString();
+}
+
 async function triggerServiceSync(modules, reason) {
   if (!modules.coordinator) {
     return null;
@@ -30,6 +70,86 @@ async function triggerServiceSync(modules, reason) {
 
 export function serviceRoutes(modules) {
   const router = express.Router();
+
+  router.get('/infrastructure-links', (_req, res) => {
+    try {
+      const services = modules.serviceRegistry?.getAllServices() || [];
+      const proxyDefaults = modules.serviceRegistry?.getProxyDefaults() || {};
+      const luckyPort = proxyDefaults?.externalPorts?.lucky || 50000;
+      const managedDomain = getFirstManagedDomain(modules);
+      const ipv6Map = modules.deviceMonitor?.getIPv6Map?.() || {};
+
+      const luckyService = getServiceByAliases(services, ['lucky']);
+      const sunpanelService = getServiceByAliases(services, ['sunpanel']);
+      const hubService = getServiceByAliases(services, ['hub', 'central-hub']);
+
+      const luckyLan = modules.luckyManager?.luckyConfig?.apiBase || 'http://192.168.3.2:16601/666';
+      const sunpanelLanApi = modules.luckyManager?.sunpanelConfig?.apiBase || 'http://192.168.3.2:20001/openapi/v1';
+      const hubLan = hubService
+        ? modules.serviceRegistry.buildLanDirectUrl(hubService.id)
+        : 'http://192.168.3.200:51000';
+
+      const device2Ipv6 = ipv6Map['2'] || null;
+      const device200Ipv6 = ipv6Map['200'] || null;
+
+      const luckyIpv6 = device2Ipv6 ? luckyLan.replace('192.168.3.2', `[${device2Ipv6}]`) : null;
+      const sunpanelIpv6 = device2Ipv6 ? stripSunPanelApiPath(sunpanelLanApi).replace('192.168.3.2', `[${device2Ipv6}]`) : null;
+      const hubIpv6 = device200Ipv6 ? hubLan.replace('192.168.3.200', `[${device200Ipv6}]`) : null;
+
+      const hubWarnings = [];
+      if (hubService) {
+        const diagnostics = modules.serviceRegistry.getServiceRouteDiagnostics(hubService.id);
+        if (String(hubService.device) !== '200') {
+          hubWarnings.push(`Hub 服务当前绑定设备 ${hubService.device}，实际应为 200`);
+        }
+        if (Number(hubService.internalPort) !== 51000) {
+          hubWarnings.push(`Hub 服务当前端口是 ${hubService.internalPort}，实际应为 51000`);
+        }
+        if (diagnostics?.warnings?.length) {
+          hubWarnings.push(...diagnostics.warnings);
+        }
+      } else {
+        hubWarnings.push('未在白名单服务中找到 hub / central-hub 记录');
+      }
+
+      res.json({
+        success: true,
+        services: {
+          lucky: {
+            name: 'Lucky',
+            lan: luckyLan,
+            public: luckyService ? buildExternalUrl(luckyService.proxyDomain, luckyPort) : buildExternalUrl(`lucky.${managedDomain}`, luckyPort),
+            ipv6: luckyIpv6,
+            note: 'Lucky 当前部署在 192.168.3.2'
+          },
+          sunpanel: {
+            name: 'SunPanel',
+            lan: stripSunPanelApiPath(sunpanelLanApi),
+            public: sunpanelService ? buildExternalUrl(sunpanelService.proxyDomain, luckyPort) : buildExternalUrl(`sunpanel.${managedDomain}`, luckyPort),
+            ipv6: sunpanelIpv6,
+            note: 'SunPanel 当前部署在 192.168.3.2'
+          },
+          hub: {
+            name: 'Hub',
+            lan: hubLan,
+            public: hubService ? buildExternalUrl(hubService.proxyDomain, luckyPort) : buildExternalUrl(`hub.${managedDomain}`, luckyPort),
+            ipv6: hubIpv6,
+            note: 'Hub 服务当前在 192.168.3.200:51000',
+            warnings: hubWarnings,
+            registered: hubService ? {
+              id: hubService.id,
+              device: hubService.device,
+              internalPort: hubService.internalPort,
+              proxyDomain: hubService.proxyDomain
+            } : null
+          }
+        }
+      });
+    } catch (error) {
+      console.error('[Services] 基础服务入口生成失败:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
 
   // ==================== 基本 CRUD ====================
 
@@ -292,9 +412,31 @@ export function serviceRoutes(modules) {
         const result = {
           id: service.id,
           name: service.name,
+          lanDirect: { url: null, ok: false, status: null, latency: null },
           ipv4Proxy: { url: null, ok: false, status: null, latency: null },
-          ipv6Direct: { url: null, ok: false, status: null, latency: null }
+          ipv6Direct: { url: null, ok: false, status: null, latency: null },
+          warnings: modules.serviceRegistry.getServiceRouteDiagnostics(service.id)?.warnings || []
         };
+
+        result.lanDirect.url = modules.serviceRegistry.buildLanDirectUrl(service.id);
+
+        try {
+          const startTime = Date.now();
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 8000);
+          const response = await fetch(result.lanDirect.url, {
+            method: 'HEAD',
+            signal: controller.signal,
+            redirect: 'manual'
+          }).catch(() => null);
+          clearTimeout(timeout);
+
+          if (response) {
+            result.lanDirect.ok = response.status < 500;
+            result.lanDirect.status = response.status;
+            result.lanDirect.latency = Date.now() - startTime;
+          }
+        } catch { /* ignore */ }
 
         // IPv4 反向代理 URL
         const luckyPort = proxyDefaults?.externalPorts?.lucky || 50000;

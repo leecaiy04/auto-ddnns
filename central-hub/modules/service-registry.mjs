@@ -68,6 +68,33 @@ function buildDefaultLanUrl(service) {
   return `${protocol}://192.168.3.${service.device}:${service.internalPort}`;
 }
 
+function parseUrl(value) {
+  try {
+    return new URL(value);
+  } catch {
+    return null;
+  }
+}
+
+function getEffectivePort(parsedUrl) {
+  if (!parsedUrl) return null;
+  if (parsedUrl.port) {
+    return Number.parseInt(parsedUrl.port, 10);
+  }
+
+  return parsedUrl.protocol === 'https:' ? 443 : 80;
+}
+
+function replaceUrlHost(sourceUrl, nextHost) {
+  const parsedUrl = parseUrl(sourceUrl);
+  if (!parsedUrl) {
+    return sourceUrl;
+  }
+
+  parsedUrl.hostname = `${nextHost || ''}`.replace(/^\[/u, '').replace(/\]$/u, '');
+  return parsedUrl.toString();
+}
+
 function formatTargetHost(targetHost) {
   return targetHost?.includes(':') ? `[${targetHost}]` : targetHost;
 }
@@ -485,11 +512,9 @@ export class ServiceRegistry {
       throw new Error(`服务ID ${id} 不存在`);
     }
 
-    const targetHost = deviceIPv6 || `192.168.3.${service.device}`;
-    const formattedTargetHost = formatTargetHost(targetHost);
-    const target = service.enableTLS
-      ? `https://${formattedTargetHost}:${service.internalPort}`
-      : `http://${formattedTargetHost}:${service.internalPort}`;
+    const lanUrl = this.buildLanDirectUrl(id);
+    const targetHost = deviceIPv6 || null;
+    const target = targetHost ? replaceUrlHost(lanUrl, targetHost) : lanUrl;
 
     return {
       port: service.lucky.port,
@@ -501,6 +526,47 @@ export class ServiceRegistry {
       tls: service.enableTLS,
       advancedConfig: service.lucky.advancedConfig
     };
+  }
+
+  buildLanDirectUrl(serviceId) {
+    const service = this.getServiceById(serviceId);
+    if (!service) return null;
+
+    return service.sunpanel?.lanUrl || buildDefaultLanUrl(service);
+  }
+
+  getServiceRouteDiagnostics(serviceId) {
+    const service = this.getServiceById(serviceId);
+    if (!service) {
+      return null;
+    }
+
+    const lanUrl = this.buildLanDirectUrl(serviceId);
+    const parsedLanUrl = parseUrl(lanUrl);
+    const deviceInfo = this.getDeviceById(String(service.device));
+    const expectedHost = deviceInfo?.ipv4 || `192.168.3.${service.device}`;
+    const expectedProtocol = service.internalProtocol || inferInternalProtocol(service.internalPort);
+    const warnings = [];
+
+    if (!parsedLanUrl) {
+      warnings.push('内网直连地址无法解析');
+      return { lanUrl, expectedHost, warnings };
+    }
+
+    const actualPort = getEffectivePort(parsedLanUrl);
+    if (parsedLanUrl.hostname !== expectedHost) {
+      warnings.push(`内网地址主机为 ${parsedLanUrl.hostname}，但设备 ${service.device} 当前 IPv4 是 ${expectedHost}`);
+    }
+
+    if (actualPort !== Number(service.internalPort)) {
+      warnings.push(`内网地址端口为 ${actualPort}，但服务端口配置是 ${service.internalPort}`);
+    }
+
+    if (parsedLanUrl.protocol.replace(/:$/u, '') !== expectedProtocol) {
+      warnings.push(`内网地址协议为 ${parsedLanUrl.protocol.replace(/:$/u, '')}，但服务协议配置是 ${expectedProtocol}`);
+    }
+
+    return { lanUrl, expectedHost, warnings };
   }
 
   prepareSunPanelCardConfig(id, options = {}) {
@@ -540,8 +606,7 @@ export class ServiceRegistry {
     const service = this.getServiceById(serviceId);
     if (!service || !ipv6Address) return null;
 
-    const protocol = service.internalProtocol || inferInternalProtocol(service.internalPort);
-    return `${protocol}://[${ipv6Address}]:${service.internalPort}`;
+    return replaceUrlHost(this.buildLanDirectUrl(serviceId), ipv6Address);
   }
 }
 
