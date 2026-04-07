@@ -64,7 +64,22 @@ jobs:
           done
 
           git -C "${DEPLOY_DIR}" status --short || true
-          git -C "${DEPLOY_DIR}" fetch --prune origin "${DEPLOY_BRANCH}"
+
+          fetch_ok=false
+          for attempt in 1 2 3 4 5; do
+            if git -C "${DEPLOY_DIR}" fetch --prune origin "${DEPLOY_BRANCH}"; then
+              fetch_ok=true
+              break
+            fi
+            echo "Fetch attempt ${attempt} failed; retrying..."
+            sleep 5
+          done
+
+          if [ "${fetch_ok}" != "true" ]; then
+            echo "::error::Failed to fetch origin/${DEPLOY_BRANCH} after multiple attempts"
+            exit 1
+          fi
+
           git -C "${DEPLOY_DIR}" checkout "${DEPLOY_BRANCH}"
           git -C "${DEPLOY_DIR}" reset --hard "origin/${DEPLOY_BRANCH}"
           git -C "${DEPLOY_DIR}" clean -fd
