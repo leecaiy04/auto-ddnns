@@ -41,9 +41,42 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          backup_dir="$(mktemp -d)"
+          preserve_paths=(
+            ".env"
+            "central-hub/data"
+            "data"
+            "config/changelog.json"
+            "config/services-registry.json"
+            "index.html"
+            "logs"
+            "temp"
+          )
+
+          restore_paths=()
+          for relpath in "${preserve_paths[@]}"; do
+            src="${DEPLOY_DIR}/${relpath}"
+            if [ -e "${src}" ]; then
+              mkdir -p "${backup_dir}/$(dirname "${relpath}")"
+              cp -a "${src}" "${backup_dir}/${relpath}"
+              restore_paths+=("${relpath}")
+            fi
+          done
+
+          git -C "${DEPLOY_DIR}" status --short || true
           git -C "${DEPLOY_DIR}" fetch --prune origin "${DEPLOY_BRANCH}"
           git -C "${DEPLOY_DIR}" checkout "${DEPLOY_BRANCH}"
-          git -C "${DEPLOY_DIR}" pull --ff-only origin "${DEPLOY_BRANCH}"
+          git -C "${DEPLOY_DIR}" reset --hard "origin/${DEPLOY_BRANCH}"
+          git -C "${DEPLOY_DIR}" clean -fd
+
+          for relpath in "${restore_paths[@]}"; do
+            src="${backup_dir}/${relpath}"
+            dest="${DEPLOY_DIR}/${relpath}"
+            rm -rf "${dest}"
+            mkdir -p "$(dirname "${dest}")"
+            cp -a "${src}" "${dest}"
+          done
+
           echo "Deploying commit: $(git -C "${DEPLOY_DIR}" rev-parse --short HEAD)"
 
       - name: Install dependencies
