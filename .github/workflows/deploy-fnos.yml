@@ -98,8 +98,38 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+
+          for profile in "$HOME/.profile" "$HOME/.bashrc" "$HOME/.bash_profile"; do
+            if [ -f "$profile" ]; then
+              . "$profile"
+            fi
+          done
+
+          if [ -s "$HOME/.nvm/nvm.sh" ]; then
+            . "$HOME/.nvm/nvm.sh"
+          fi
+
+          npm_bin="$(command -v npm || true)"
+          if [ -z "${npm_bin}" ]; then
+            for candidate in \
+              /usr/local/bin/npm \
+              /usr/bin/npm \
+              "$HOME/.nvm/versions/node"/*/bin/npm; do
+              if [ -x "$candidate" ]; then
+                npm_bin="$candidate"
+                break
+              fi
+            done
+          fi
+
+          if [ -z "${npm_bin}" ]; then
+            echo "::error::npm not found on runner"
+            exit 1
+          fi
+
+          "$npm_bin" --version
           cd "${DEPLOY_DIR}"
-          npm install
+          "$npm_bin" install
 
       - name: Restart service
         shell: bash
