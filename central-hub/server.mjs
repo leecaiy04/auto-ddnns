@@ -20,7 +20,7 @@ import { loadEnvFileAsync, getEnv } from '../lib/utils/env-loader.mjs';
 import { loadConfigWithEnv } from './modules/config-loader.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DEFAULT_DOMAIN = 'leecaiy.shop';
+const DEFAULT_DOMAIN = '222869.xyz';
 const LOCAL_HOSTS_FOR_PROBE = ['127.0.0.1', 'localhost'];
 
 function getManagedDomain() {

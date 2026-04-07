@@ -30,7 +30,7 @@ fi
 # --- 阿里云 API 密钥与域名配置 ---
 ALIYUN_AK="${ALIYUN_AK:-}"
 ALIYUN_SK="${ALIYUN_SK:-}"
-DOMAIN="${DOMAIN:-${ALIYUN_DOMAIN:-leecaiy.shop}}"
+DOMAIN="${DOMAIN:-${ALIYUN_DOMAIN:-222869.xyz}}"
 
 # --- 路由器 SSH 配置 ---
 ROUTER_IP="${ROUTER_IP:-${ROUTER_HOST:-192.168.3.1}}"

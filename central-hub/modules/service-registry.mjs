@@ -14,7 +14,7 @@ const REGISTRY_PATH = path.resolve(__dirname, '..', '..', 'config', 'services-re
 const PROXY_DEFAULTS_PATH = path.resolve(__dirname, '..', '..', 'config', 'proxy-defaults.json');
 const DEVICES_PATH = path.resolve(__dirname, '..', '..', 'config', 'devices.json');
 
-const MANAGED_DOMAIN = getEnv('ALIYUN_DOMAIN', 'leecaiy.shop');
+const MANAGED_DOMAIN = getEnv('ALIYUN_DOMAIN', '222869.xyz');
 
 // ==================== 工具函数 ====================
 

@@ -35,27 +35,20 @@
       "scriptPath": "./scripts/aliddns_sync.sh",
       "updateInterval": 600,
       "domains": {
-        "ipv4": ["leecaiy.shop", "*.leecaiy.shop"],
-        "ipv6": ["10.v6.leecaiy.shop", "200.v6.leecaiy.shop", "201.v6.leecaiy.shop", "254.v6.leecaiy.shop"]
-      },
-      "extraDomains": [
-        {
-          "domain": "222869.xyz",
-          "ipv4": ["222869.xyz", "*.222869.xyz"],
-          "ipv6": ["10.v6.222869.xyz", "200.v6.222869.xyz", "201.v6.222869.xyz"]
-        }
-      ]
+        "ipv4": ["222869.xyz", "*.222869.xyz"],
+        "ipv6": ["10.v6.222869.xyz", "200.v6.222869.xyz", "201.v6.222869.xyz", "254.v6.222869.xyz"]
+      }
     },
     "lucky": {
       "enabled": true,
-      "apiBase": "https://lucky.leecaiy.shop:50000/666",
+      "apiBase": "http://192.168.3.2:16601/666",
       "httpsPort": 50000,
       "autoSync": true,
       "autoCreateProxy": true
     },
     "sunpanel": {
       "enabled": true,
-      "apiBase": "http://192.168.3.200:20001/openapi/v1",
+      "apiBase": "http://192.168.3.2:20001/openapi/v1",
       "autoSync": true,
       "autoCreateGroups": true
     },

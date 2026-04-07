@@ -82,7 +82,7 @@ export class DDNSController {
       const lanDevicesLines = buildLanDevicesCacheLines(this.stateManager);
 
       // 收集需要更新的域名列表（主域名 + extraDomains）
-      const primaryDomain = process.env.ALIYUN_DOMAIN || process.env.DOMAIN || 'leecaiy.shop';
+      const primaryDomain = process.env.ALIYUN_DOMAIN || process.env.DOMAIN || '222869.xyz';
       const domains = [primaryDomain];
 
       if (this.config.extraDomains && Array.isArray(this.config.extraDomains)) {

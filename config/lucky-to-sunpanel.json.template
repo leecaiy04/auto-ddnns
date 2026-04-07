@@ -1,10 +1,10 @@
 {
   "lucky": {
-    "apiBase": "http://192.168.3.200:16601",
+    "apiBase": "http://192.168.3.2:16601/666",
     "openToken": "your-lucky-open-token-here"
   },
   "sunpanel": {
-    "apiBase": "http://192.168.3.200:20001/openapi/v1",
+    "apiBase": "http://192.168.3.2:20001/openapi/v1",
     "apiToken": "your-sunpanel-api-token",
     "defaultGroupId": 9
   },
