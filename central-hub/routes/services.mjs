@@ -151,6 +151,57 @@ export function serviceRoutes(modules) {
     }
   });
 
+  router.post('/fix-hub', async (_req, res) => {
+    try {
+      if (!modules.serviceRegistry) {
+        return res.status(503).json({ error: '服务清单模块未初始化' });
+      }
+
+      const services = modules.serviceRegistry.getAllServices();
+      const existingHub = getServiceByAliases(services, ['hub', 'central-hub']);
+      const managedDomain = getFirstManagedDomain(modules);
+      const luckyPort = modules.serviceRegistry.getProxyDefaults()?.externalPorts?.lucky || 50000;
+      const proxyDomain = existingHub?.proxyDomain || `hub.${managedDomain}`;
+      const nextPayload = {
+        name: existingHub?.name || 'Central Hub',
+        device: '200',
+        internalPort: 51000,
+        internalProtocol: 'http',
+        enableProxy: true,
+        enableTLS: false,
+        proxyType: 'reverseproxy',
+        proxyDomain,
+        description: existingHub?.description || 'Central Hub on FNOS host',
+        lucky: {
+          port: existingHub?.lucky?.port || luckyPort,
+          remark: existingHub?.lucky?.remark || existingHub?.name || 'Central Hub',
+          advancedConfig: existingHub?.lucky?.advancedConfig || ''
+        },
+        sunpanel: {
+          group: existingHub?.sunpanel?.group || '管理面板',
+          icon: existingHub?.sunpanel?.icon || `https://${proxyDomain}/favicon.ico`,
+          lanUrl: 'http://192.168.3.200:51000'
+        }
+      };
+
+      let service;
+      if (existingHub) {
+        service = await modules.serviceRegistry.updateService(existingHub.id, nextPayload);
+      } else {
+        service = await modules.serviceRegistry.addService({
+          id: 'hub',
+          ...nextPayload
+        });
+      }
+
+      const sync = await triggerServiceSync(modules, 'service_fix_hub');
+      res.json({ success: true, service, sync });
+    } catch (error) {
+      console.error('[Services] 修复 Hub 服务失败:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // ==================== 基本 CRUD ====================
 
   /**

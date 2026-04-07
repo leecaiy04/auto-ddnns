@@ -532,13 +532,20 @@
             return `<a href="${url}" target="_blank" style="display:block; color:#a78bfa; text-decoration:none; font-size:13px; margin-top:4px;">${label}: ${url}</a>`;
         }
 
+        async function fixHubService() {
+            await apiCall('/api/services/fix-hub', 'POST', '修复 Hub 服务');
+        }
+
         async function fetchInfrastructureLinks() {
             try {
                 const data = await apiCall('/api/services/infrastructure-links');
                 const services = data.services || {};
-                const html = Object.values(services).map(service => `
+                const html = Object.entries(services).map(([key, service]) => `
                     <div class="device-card">
-                        <div style="font-weight:600; color:#fff;">${service.name}</div>
+                        <div class="flex justify-between items-center">
+                            <div style="font-weight:600; color:#fff;">${service.name}</div>
+                            ${key === 'hub' ? '<button class="btn btn-sm btn-primary" onclick="fixHubService()">修复 Hub</button>' : ''}
+                        </div>
                         <div class="text-sm text-muted mt-1">${service.note || ''}</div>
                         <div class="mt-2">
                             ${renderInfraLink('内网', service.lan)}
