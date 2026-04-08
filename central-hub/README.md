@@ -110,12 +110,12 @@ curl -X POST http://localhost:3000/api/ddns/refresh
   },
   "lucky": {
     "enabled": true,
-    "apiBase": "http://192.168.3.200:16601",
+    "apiBase": "http://192.168.3.2:16601/666",
     "openToken": "your-token"
   },
   "sunpanel": {
     "enabled": true,
-    "apiBase": "http://192.168.3.200:20001/openapi/v1",
+    "apiBase": "http://192.168.3.2:20001/openapi/v1",
     "apiToken": "your-token"
   }
 }

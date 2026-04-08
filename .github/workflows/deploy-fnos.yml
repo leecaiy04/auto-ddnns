@@ -1,0 +1,158 @@
+name: Deploy to FNOS
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-fnos-main
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy main to FNOS
+    runs-on:
+      - self-hosted
+      - linux
+      - x64
+      - fnos
+    env:
+      DEPLOY_DIR: /vol1/1000/code/deplay/auto-dnns
+      DEPLOY_BRANCH: main
+      SERVICE_NAME: auto-dnns
+    steps:
+      - name: Ensure workflow runs for main only
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_REF}" != "refs/heads/main" ]; then
+            echo "::error::This workflow only deploys the main branch. Current ref: ${GITHUB_REF}"
+            exit 1
+          fi
+
+      - name: Check deployment directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -d "${DEPLOY_DIR}"
+          test -d "${DEPLOY_DIR}/.git"
+          git -C "${DEPLOY_DIR}" remote -v
+
+      - name: Update repository to latest main
+        shell: bash
+        run: |
+          set -euo pipefail
+          backup_dir="$(mktemp -d)"
+          preserve_paths=(
+            ".env"
+            "central-hub/data"
+            "data"
+            "config/changelog.json"
+            "config/services-registry.json"
+            "index.html"
+            "logs"
+            "temp"
+          )
+
+          restore_paths=()
+          for relpath in "${preserve_paths[@]}"; do
+            src="${DEPLOY_DIR}/${relpath}"
+            if [ -e "${src}" ]; then
+              mkdir -p "${backup_dir}/$(dirname "${relpath}")"
+              cp -a "${src}" "${backup_dir}/${relpath}"
+              restore_paths+=("${relpath}")
+            fi
+          done
+
+          git -C "${DEPLOY_DIR}" status --short || true
+
+          fetch_ok=false
+          for attempt in 1 2 3 4 5; do
+            if git -C "${DEPLOY_DIR}" fetch --prune origin "${DEPLOY_BRANCH}"; then
+              fetch_ok=true
+              break
+            fi
+            echo "Fetch attempt ${attempt} failed; retrying..."
+            sleep 5
+          done
+
+          if [ "${fetch_ok}" != "true" ]; then
+            echo "::error::Failed to fetch origin/${DEPLOY_BRANCH} after multiple attempts"
+            exit 1
+          fi
+
+          git -C "${DEPLOY_DIR}" checkout "${DEPLOY_BRANCH}"
+          git -C "${DEPLOY_DIR}" reset --hard "origin/${DEPLOY_BRANCH}"
+          git -C "${DEPLOY_DIR}" clean -fd
+
+          for relpath in "${restore_paths[@]}"; do
+            src="${backup_dir}/${relpath}"
+            dest="${DEPLOY_DIR}/${relpath}"
+            rm -rf "${dest}"
+            mkdir -p "$(dirname "${dest}")"
+            cp -a "${src}" "${dest}"
+          done
+
+          echo "Deploying commit: $(git -C "${DEPLOY_DIR}" rev-parse --short HEAD)"
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for profile in "$HOME/.profile" "$HOME/.bashrc" "$HOME/.bash_profile"; do
+            if [ -f "$profile" ]; then
+              . "$profile"
+            fi
+          done
+
+          if [ -s "$HOME/.nvm/nvm.sh" ]; then
+            . "$HOME/.nvm/nvm.sh"
+          fi
+
+          npm_bin="$(command -v npm || true)"
+          if [ -z "${npm_bin}" ]; then
+            for candidate in \
+              /usr/local/bin/npm \
+              /usr/bin/npm \
+              "$HOME/.nvm/versions/node"/*/bin/npm; do
+              if [ -x "$candidate" ]; then
+                npm_bin="$candidate"
+                break
+              fi
+            done
+          fi
+
+          if [ -z "${npm_bin}" ]; then
+            echo "::error::npm not found on runner"
+            exit 1
+          fi
+
+          "$npm_bin" --version
+          cd "${DEPLOY_DIR}"
+          "$npm_bin" install
+
+      - name: Restart service
+        shell: bash
+        env:
+          FOS_SUDO_PASSWORD: ${{ secrets.FOS_SUDO_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -z "${FOS_SUDO_PASSWORD:-}" ]; then
+            echo "::error::Missing secret FOS_SUDO_PASSWORD"
+            exit 1
+          fi
+          printf '%s\n' "${FOS_SUDO_PASSWORD}" | sudo -S -p '' systemctl restart "${SERVICE_NAME}"
+
+      - name: Verify health endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          sleep 3
+          curl -fsS http://127.0.0.1:51100/api/health
+
+      - name: Show deployed revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C "${DEPLOY_DIR}" branch --show-current
+          git -C "${DEPLOY_DIR}" rev-parse HEAD

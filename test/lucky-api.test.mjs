@@ -59,6 +59,36 @@ function restoreRequests() {
 // ── tests ──
 
 describe('lucky-api config resolution', () => {
+  it('getLuckyAuthConfig falls back to legacy open token env names', () => {
+    const previousOpenToken = process.env.LUCKY_OPEN_TOKEN;
+    const previousToken = process.env.LUCKY_TOKEN;
+    const previousApiToken = process.env.LUCKY_API_TOKEN;
+
+    try {
+      delete process.env.LUCKY_OPEN_TOKEN;
+      delete process.env.LUCKY_TOKEN;
+      process.env.LUCKY_API_TOKEN = 'legacy-open-token';
+
+      const config = getLuckyAuthConfig({
+        apiBase: 'http://lucky-instance.local:16601/666',
+        openToken: undefined,
+        adminToken: ''
+      });
+
+      assert.equal(config.authMode, 'open');
+      assert.equal(config.hasOpenToken, true);
+    } finally {
+      if (previousOpenToken === undefined) delete process.env.LUCKY_OPEN_TOKEN;
+      else process.env.LUCKY_OPEN_TOKEN = previousOpenToken;
+
+      if (previousToken === undefined) delete process.env.LUCKY_TOKEN;
+      else process.env.LUCKY_TOKEN = previousToken;
+
+      if (previousApiToken === undefined) delete process.env.LUCKY_API_TOKEN;
+      else process.env.LUCKY_API_TOKEN = previousApiToken;
+    }
+  });
+
   it('getLuckyAuthConfig reports open token auth when token provided', () => {
     const config = getLuckyAuthConfig({
       apiBase: 'https://lucky.example.com:50000/666',

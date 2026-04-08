@@ -125,11 +125,11 @@ async function loadConfig() {
     // 环境变量优先
     return {
       lucky: {
-        apiBase: process.env.LUCKY_API_BASE || config.lucky?.apiBase || 'http://192.168.3.200:16601',
-        openToken: process.env.LUCKY_OPEN_TOKEN || config.lucky?.openToken
+        apiBase: process.env.LUCKY_API_BASE || config.lucky?.apiBase || 'http://192.168.3.2:16601/666',
+        openToken: process.env.LUCKY_OPEN_TOKEN || process.env.LUCKY_TOKEN || process.env.LUCKY_API_TOKEN || config.lucky?.openToken
       },
       sunpanel: {
-        apiBase: process.env.SUNPANEL_API_BASE || config.sunpanel?.apiBase || 'http://192.168.3.200:20001/openapi/v1',
+        apiBase: process.env.SUNPANEL_API_BASE || config.sunpanel?.apiBase || 'http://192.168.3.2:20001/openapi/v1',
         apiToken: process.env.SUNPANEL_API_TOKEN || config.sunpanel?.apiToken,
         defaultGroupId: config.sunpanel?.defaultGroupId || 9
       },

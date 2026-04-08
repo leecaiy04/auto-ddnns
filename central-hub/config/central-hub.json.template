@@ -16,17 +16,17 @@
     "enabled": true,
     "checkInterval": 300,
     "scriptPath": "/home/leecaiy/ddns_work/update_all_ddns.sh",
-    "domains": ["leecaiy.shop", "*.leecaiy.shop"]
+    "domains": ["222869.xyz", "*.222869.xyz"]
   },
   "lucky": {
     "enabled": true,
-    "apiBase": "http://192.168.3.200:16601",
+    "apiBase": "http://192.168.3.2:16601/666",
     "openToken": "your-lucky-token",
     "syncInterval": 600
   },
   "sunpanel": {
     "enabled": true,
-    "apiBase": "http://192.168.3.200:20001/openapi/v1",
+    "apiBase": "http://192.168.3.2:20001/openapi/v1",
     "apiToken": "your-sunpanel-api-token",
     "syncOnProxyChange": true
   },
