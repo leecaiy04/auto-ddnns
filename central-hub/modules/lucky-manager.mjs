@@ -134,14 +134,14 @@ export class LuckyManager {
     this.config = config;
     this.stateManager = stateManager;
     this.luckyConfig = {
-      apiBase: config.apiBase || getEnv('LUCKY_API_BASE', 'http://192.168.3.200:16601'),
+      apiBase: config.apiBase || getEnv('LUCKY_API_BASE', 'http://192.168.3.2:16601'),
       openToken: config.openToken || config.token || getEnv('LUCKY_OPEN_TOKEN', ''),
       adminToken: config.adminToken || getEnv('LUCKY_ADMIN_TOKEN', ''),
       httpsPort: parseInt(`${config.httpsPort || getEnv('LUCKY_HTTPS_PORT', '50000')}`, 10),
       instances: Array.isArray(config.instances) ? config.instances : []
     };
     this.sunpanelConfig = {
-      apiBase: sunpanelModuleConfig?.apiBase || getEnv('SUNPANEL_API_BASE', 'http://192.168.3.200:20001/openapi/v1'),
+      apiBase: sunpanelModuleConfig?.apiBase || getEnv('SUNPANEL_API_BASE', 'http://192.168.3.2:20001/openapi/v1'),
       apiToken: sunpanelModuleConfig?.apiToken || getEnv('SUNPANEL_API_TOKEN', ''),
       instances: Array.isArray(sunpanelModuleConfig?.instances) ? sunpanelModuleConfig.instances : []
     };

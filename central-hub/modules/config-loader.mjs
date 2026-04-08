@@ -162,7 +162,7 @@ export async function loadConfigWithEnv(configPath, envPath = null) {
     lucky: {
       ...luckyConfig,
       enabled: toBool(getConfig(env, 'LUCKY_ENABLED', luckyConfig.enabled, true), true),
-      apiBase: getConfig(env, 'LUCKY_API_BASE', luckyConfig.apiBase),
+      apiBase: getConfig(env, 'LUCKY_API_BASE', luckyConfig.apiBase, 'http://192.168.3.2:16601'),
       openToken: getConfig(env, 'LUCKY_OPEN_TOKEN', luckyConfig.openToken, ''),
       adminToken: getConfig(env, 'LUCKY_ADMIN_TOKEN', luckyConfig.adminToken, ''),
       httpsPort: toInt(getConfig(env, 'LUCKY_HTTPS_PORT', luckyConfig.httpsPort, 50000), 50000),
@@ -175,7 +175,7 @@ export async function loadConfigWithEnv(configPath, envPath = null) {
     sunpanel: {
       ...sunpanelConfig,
       enabled: toBool(getConfig(env, 'SUNPANEL_ENABLED', sunpanelConfig.enabled, true), true),
-      apiBase: getConfig(env, 'SUNPANEL_API_BASE', sunpanelConfig.apiBase),
+      apiBase: getConfig(env, 'SUNPANEL_API_BASE', sunpanelConfig.apiBase, 'http://192.168.3.2:20001/openapi/v1'),
       apiToken: getConfig(env, 'SUNPANEL_API_TOKEN', sunpanelConfig.apiToken, ''),
       autoSync: toBool(getConfig(env, 'SUNPANEL_AUTO_SYNC', sunpanelConfig.autoSync, true), true),
       autoCreateGroups: toBool(

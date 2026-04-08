@@ -95,7 +95,7 @@ export default function bookmarkRoutes(modules) {
 
       // 从 luckyManager 的配置中读取 SunPanel 实例列表，或者回退到环境变量单实例
       const sunInstances = luckyManager.sunpanelConfig?.instances || [{
-        apiBase: getEnv('SUNPANEL_API_BASE', 'http://192.168.3.200:20001/openapi/v1'),
+        apiBase: getEnv('SUNPANEL_API_BASE', 'http://192.168.3.2:20001/openapi/v1'),
         apiToken: getEnv('SUNPANEL_API_TOKEN', '')
       }];
 

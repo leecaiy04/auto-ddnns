@@ -1,0 +1,98 @@
+name: Deploy on main push (self-hosted)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on:
+      - self-hosted
+      - linux
+      - x64
+    env:
+      DEPLOY_DIR: ${{ vars.AUTO_DNNS_DEPLOY_DIR }}
+      SERVICE_NAME: ${{ vars.AUTO_DNNS_SERVICE }}
+      HEALTH_URL: ${{ vars.AUTO_DNNS_HEALTH_URL }}
+      SYSTEMD_SCOPE: ${{ vars.AUTO_DNNS_SYSTEMD_SCOPE }}
+      TARGET_RUNNER_IP: 192.168.3.200
+      SUDO_PASSWORD: ${{ secrets.FOS_SUDO_PASSWORD }}
+    steps:
+      - name: Validate runner host IP
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if ip -4 addr show | grep -q "${TARGET_RUNNER_IP}/"; then
+            echo "Runner host IP validated: ${TARGET_RUNNER_IP}"
+            exit 0
+          fi
+
+          if hostname -I | tr ' ' '\n' | grep -Fxq "${TARGET_RUNNER_IP}"; then
+            echo "Runner host IP validated: ${TARGET_RUNNER_IP}"
+            exit 0
+          fi
+
+          echo "::error::Runner is not on ${TARGET_RUNNER_IP}, aborting deployment."
+          exit 1
+
+      - name: Deploy and restart service
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          DEPLOY_DIR="${DEPLOY_DIR:-/vol1/1000/code/deplay/auto-dnns}"
+          SERVICE_NAME="${SERVICE_NAME:-auto-dnns}"
+          HEALTH_URL="${HEALTH_URL:-http://127.0.0.1:51100/api/health}"
+          SYSTEMD_SCOPE="${SYSTEMD_SCOPE:-system}"
+
+          if [[ "${SYSTEMD_SCOPE}" == "user" ]]; then
+            RESTART_CMD=(systemctl --user restart "${SERVICE_NAME}")
+          else
+            if [[ -n "${SUDO_PASSWORD:-}" ]]; then
+              RESTART_CMD=(bash -lc "echo \"${SUDO_PASSWORD}\" | sudo -S systemctl restart \"${SERVICE_NAME}\"")
+            else
+              RESTART_CMD=(sudo systemctl restart "${SERVICE_NAME}")
+            fi
+          fi
+
+          mkdir -p "${DEPLOY_DIR}"
+
+          if [[ ! -d "${DEPLOY_DIR}/.git" ]]; then
+            git clone --branch main "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git" "${DEPLOY_DIR}"
+          fi
+
+          cd "${DEPLOY_DIR}"
+          PREV_COMMIT="$(git rev-parse --verify HEAD 2>/dev/null || true)"
+
+          rollback() {
+            local code=$?
+            if [[ ${code} -eq 0 ]]; then
+              return
+            fi
+
+            echo "Deploy failed, starting rollback..."
+            if [[ -n "${PREV_COMMIT}" ]]; then
+              git reset --hard "${PREV_COMMIT}" || true
+              "${RESTART_CMD[@]}" || true
+            fi
+            exit ${code}
+          }
+          trap rollback EXIT
+
+          git fetch origin main --tags
+          git checkout main
+          git pull --ff-only origin main
+
+          npm ci
+          npm --prefix central-hub ci
+
+          "${RESTART_CMD[@]}"
+
+          curl --fail --show-error --silent --max-time 15 "${HEALTH_URL}" >/dev/null
+          echo "Deploy succeeded and health check passed: ${HEALTH_URL}"

@@ -87,7 +87,7 @@ function applyRuntimeConfigOverrides(config) {
 
     if (hasPrimaryLuckyConfig) {
       luckyInstances.push({
-        apiBase: process.env.LUCKY_API_BASE || config.modules.lucky.apiBase || `https://lucky.${managedDomain}:50000/666`,
+        apiBase: process.env.LUCKY_API_BASE || config.modules.lucky.apiBase || 'http://192.168.3.2:16601',
         openToken: process.env.LUCKY_OPEN_TOKEN || process.env.LUCKY_TOKEN || process.env.LUCKY_API_TOKEN || config.modules.lucky.openToken || '',
         adminToken: process.env.LUCKY_ADMIN_TOKEN || config.modules.lucky.adminToken || '',
         username: process.env.LUCKY_USERNAME,
@@ -107,7 +107,7 @@ function applyRuntimeConfigOverrides(config) {
 
     if (luckyInstances.length === 0) {
       luckyInstances.push({
-        apiBase: config.modules.lucky.apiBase || `https://lucky.${managedDomain}:50000/666`,
+        apiBase: config.modules.lucky.apiBase || 'http://192.168.3.2:16601',
         openToken: config.modules.lucky.openToken || '',
         adminToken: config.modules.lucky.adminToken || ''
       });
