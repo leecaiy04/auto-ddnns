@@ -1389,6 +1389,288 @@
           }
         }
       }
+    },
+    {
+      "timestamp": "2026-04-14T16:58:53.795Z",
+      "action": "update_proxy_defaults",
+      "target": "proxy-defaults",
+      "detail": "更新全局反代配置",
+      "user": "admin",
+      "data": {
+        "protocol": "https",
+        "domains": [
+          "222869.xyz"
+        ],
+        "externalPorts": {
+          "lucky": 50000
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-14T17:07:29.746Z",
+      "action": "scan_device",
+      "target": "1",
+      "detail": "扫描设备 1 (192.168.3.1), 发现 2 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-14T17:07:32.365Z",
+      "action": "scan_device",
+      "target": "2",
+      "detail": "扫描设备 2 (192.168.3.2), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-14T18:13:47.361Z",
+      "action": "add_service",
+      "target": "debian",
+      "detail": "手动添加服务: debian小龙虾",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "debian",
+          "name": "debian小龙虾",
+          "device": "10",
+          "internalPort": 18789,
+          "proxyDomain": "openclaw.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "debian小龙虾",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "internalProtocol": "http",
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://openclaw.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.10:18789"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-14T18:13:47.364Z",
+      "action": "add_service",
+      "target": "nextcloud",
+      "detail": "手动添加服务: nextcloud",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "nextcloud",
+          "name": "nextcloud",
+          "device": "200",
+          "internalPort": 58841,
+          "proxyDomain": "nextcloud.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "nextcloud",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "internalProtocol": "http",
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://nextcloud.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.200:58841"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-14T18:13:47.367Z",
+      "action": "add_service",
+      "target": "cc-live-verify",
+      "detail": "手动添加服务: CC Live Verify",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "cc-live-verify",
+          "name": "CC Live Verify",
+          "device": "10",
+          "internalPort": 18789,
+          "proxyDomain": "cc-live-verify-1775675411674.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "CC Live Verify",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "internalProtocol": "http",
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://cc-live-verify-1775675411674.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.10:18789"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-14T18:13:47.371Z",
+      "action": "add_service",
+      "target": "cc-live-add-verify",
+      "detail": "手动添加服务: CC Live Add Verify",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "cc-live-add-verify",
+          "name": "CC Live Add Verify",
+          "device": "10",
+          "internalPort": 18789,
+          "proxyDomain": "cc-live-add-1775675459436.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "CC Live Add Verify",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "internalProtocol": "http",
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://cc-live-add-1775675459436.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.10:18789"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-14T18:13:47.374Z",
+      "action": "add_service",
+      "target": "svc-jellyfin",
+      "detail": "手动添加服务: svc-jellyfin",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "svc-jellyfin",
+          "name": "svc-jellyfin",
+          "device": "2",
+          "internalPort": 8096,
+          "proxyDomain": "jellyfin.example.com",
+          "lucky": {
+            "port": 55000,
+            "remark": "svc-jellyfin",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "internalProtocol": "http",
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://jellyfin.example.com/favicon.ico",
+            "lanUrl": "http://192.168.3.2:8096"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-14T18:13:47.377Z",
+      "action": "add_service",
+      "target": "svc-homeassistant",
+      "detail": "手动添加服务: svc-homeassistant",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "svc-homeassistant",
+          "name": "svc-homeassistant",
+          "device": "10",
+          "internalPort": 8123,
+          "proxyDomain": "ha.example.com",
+          "lucky": {
+            "port": 55000,
+            "remark": "svc-homeassistant",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "internalProtocol": "http",
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://ha.example.com/favicon.ico",
+            "lanUrl": "http://192.168.3.10:8123"
+          }
+        }
+      }
     }
   ]
 }

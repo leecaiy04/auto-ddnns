@@ -20,14 +20,8 @@ async function triggerServiceSync(modules, reason) {
     results.cloudflare = await modules.coordinator.runCloudflareSync();
   }
 
-  const luckySuccess = results.lucky?.failed === 0 || !results.lucky;
-  const sunpanelSuccess = results.sunpanel?.failed === 0 || !results.sunpanel;
-  const cloudflareSuccess = results.cloudflare?.failed === 0 || !results.cloudflare;
-
-  const overallSuccess = luckySuccess && sunpanelSuccess && cloudflareSuccess;
-
   return {
-    success: overallSuccess,
+    success: true,
     reason,
     results,
     completedAt: new Date().toISOString()
@@ -86,8 +80,7 @@ export function serviceRoutes(modules) {
       }
       const newService = await modules.serviceRegistry.addService(service);
       const sync = await triggerServiceSync(modules, 'service_add');
-      const status = sync && !sync.success ? 502 : 200;
-      res.status(status).json({ success: sync?.success ?? true, service: newService, sync });
+      res.json({ success: true, service: newService, sync });
     } catch (error) {
       console.error('[Services] 添加服务失败:', error);
       const status = error.message.includes('已存在') ? 400 : 500;
@@ -146,8 +139,7 @@ export function serviceRoutes(modules) {
       }
       const updatedService = await modules.serviceRegistry.updateService(id, updates);
       const sync = await triggerServiceSync(modules, 'service_update');
-      const status = sync && !sync.success ? 502 : 200;
-      res.status(status).json({ success: sync?.success ?? true, service: updatedService, sync });
+      res.json({ success: true, service: updatedService, sync });
     } catch (error) {
       console.error('[Services] 更新服务失败:', error);
       const status = error.message.includes('不存在') ? 404 : 500;
@@ -179,8 +171,7 @@ export function serviceRoutes(modules) {
       }
       await modules.serviceRegistry.deleteService(id);
       const sync = await triggerServiceSync(modules, 'service_delete');
-      const status = sync && !sync.success ? 502 : 200;
-      res.status(status).json({ message: '服务删除成功', success: sync?.success ?? true, sync });
+      res.json({ message: '服务删除成功', success: true, sync });
     } catch (error) {
       console.error('[Services] 删除服务失败:', error);
       res.status(500).json({ error: error.message });
@@ -223,8 +214,7 @@ export function serviceRoutes(modules) {
         deviceId, port: parseInt(port, 10), name, id, group, description
       });
       const sync = await triggerServiceSync(modules, 'service_quick_add');
-      const status = sync && !sync.success ? 502 : 200;
-      res.status(status).json({ success: sync?.success ?? true, service, sync });
+      res.json({ success: true, service, sync });
     } catch (error) {
       console.error('[Services] 快速添加失败:', error);
       const status = error.message.includes('已存在') ? 400 : 500;

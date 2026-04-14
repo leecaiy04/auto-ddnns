@@ -120,12 +120,12 @@ export class LuckyManager {
     this.config = config;
     this.stateManager = stateManager;
     this.luckyConfig = {
-      apiBase: config.apiBase || getEnv('LUCKY_API_BASE', 'http://192.168.3.2:16601/666'),
+      apiBase: config.apiBase || getEnv('LUCKY_API_BASE', 'http://192.168.3.200:16601'),
       openToken: config.openToken || getEnv('LUCKY_OPEN_TOKEN', ''),
       httpsPort: parseInt(`${config.httpsPort || getEnv('LUCKY_HTTPS_PORT', '50000')}`, 10)
     };
     this.sunpanelConfig = {
-      apiBase: sunpanelModuleConfig?.apiBase || getEnv('SUNPANEL_API_BASE', 'http://192.168.3.2:20001/openapi/v1'),
+      apiBase: sunpanelModuleConfig?.apiBase || getEnv('SUNPANEL_API_BASE', 'http://192.168.3.200:20001/openapi/v1'),
       apiToken: sunpanelModuleConfig?.apiToken || getEnv('SUNPANEL_API_TOKEN', '')
     };
     this.luckyLanHost = this.resolveLuckyLanHost();
