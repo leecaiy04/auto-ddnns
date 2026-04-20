@@ -74,16 +74,16 @@ npm start
 
 ```bash
 # 健康检查
-curl http://localhost:3000/api/health
+curl http://localhost:51000/api/health
 
 # 获取状态
-curl http://localhost:3000/api/status
+curl http://localhost:51000/api/status
 
 # 获取 IP
-curl http://localhost:3000/api/ip
+curl http://localhost:51000/api/ip
 
 # 触发 DDNS 更新
-curl -X POST http://localhost:3000/api/ddns/refresh
+curl -X POST http://localhost:51000/api/ddns/refresh
 ```
 
 ## ⚙️ 配置说明
@@ -91,7 +91,7 @@ curl -X POST http://localhost:3000/api/ddns/refresh
 ```json
 {
   "server": {
-    "port": 3000,          // 服务端口
+    "port": 51000,          // 服务端口
     "host": "0.0.0.0",     // 监听地址
     "cors": {
       "enabled": true,
@@ -127,10 +127,10 @@ curl -X POST http://localhost:3000/api/ddns/refresh
 
 ```bash
 # 安装服务
-sudo ln -s /home/leecaiy/workspace/auto-dnns/central-hub/central-hub.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable central-hub
-sudo systemctl start central-hub
+mkdir -p ~/.config/systemd/user
+ln -sf /vol1/1000/code/auto-ddnns/central-hub/central-hub.service ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now central-hub.service
 
 # 查看状态
 sudo systemctl status central-hub
@@ -149,8 +149,8 @@ docker build -t central-hub .
 docker run -d \
   --name central-hub \
   --network host \
-  -v /home/leecaiy/workspace/auto-dnns/config:/app/config \
-  -v /home/leecaiy/workspace/auto-dnns/data:/app/data \
+  -v /vol1/1000/code/auto-ddnns/config:/app/config \
+  -v /vol1/1000/code/auto-ddnns/data:/app/data \
   central-hub
 ```
 
@@ -188,17 +188,17 @@ docker run -d \
 
 ```bash
 # 简单查询
-curl http://192.168.3.x:3000/api/ip
+curl http://192.168.3.x:51000/api/ip
 
 # 获取 JSON 并解析
-curl -s http://192.168.3.x:3000/api/ip | jq '.ipv4'
+curl -s http://192.168.3.x:51000/api/ip | jq '.ipv4'
 ```
 
 ### Shell 脚本中使用
 
 ```bash
 #!/bin/bash
-HUB_API="http://192.168.3.x:3000/api"
+HUB_API="http://192.168.3.x:51000/api"
 
 # 获取当前公网 IP
 IPV4=$(curl -s "$HUB_API/ip" | jq -r '.ipv4')
@@ -216,7 +216,7 @@ curl -s "$HUB_API/proxies" | jq '.'
 ```python
 import requests
 
-hub_api = "http://192.168.3.x:3000/api"
+hub_api = "http://192.168.3.x:51000/api"
 
 # 获取状态
 status = requests.get(f"{hub_api}/status").json()

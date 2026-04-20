@@ -33,10 +33,10 @@
 ### 1. 记录当前运行状态
 
 ```bash
-curl http://your-hub:51100/api/health
-curl http://your-hub:51100/api/status
-curl http://your-hub:51100/api/services/list
-curl http://your-hub:51100/api/cloudflare/status
+curl http://your-hub:51000/api/health
+curl http://your-hub:51000/api/status
+curl http://your-hub:51000/api/services/list
+curl http://your-hub:51000/api/cloudflare/status
 ```
 
 ### 2. 备份配置与状态
@@ -83,22 +83,22 @@ node cli.mjs sync-all
 
 ```bash
 # Hub 健康
-curl http://your-hub:51100/api/health
+curl http://your-hub:51000/api/health
 
 # DDNS
-curl -X POST http://your-hub:51100/api/ddns/refresh
+curl -X POST http://your-hub:51000/api/ddns/refresh
 
 # Lucky
-curl -X POST http://your-hub:51100/api/proxies/sync
+curl -X POST http://your-hub:51000/api/proxies/sync
 
 # SunPanel
-curl -X POST http://your-hub:51100/api/sunpanel/sync
+curl -X POST http://your-hub:51000/api/sunpanel/sync
 
 # Cloudflare
-curl -X POST http://your-hub:51100/api/cloudflare/sync
+curl -X POST http://your-hub:51000/api/cloudflare/sync
 
 # 服务连通性
-curl http://your-hub:51100/api/services/connectivity
+curl http://your-hub:51000/api/services/connectivity
 ```
 
 ## 常见迁移场景

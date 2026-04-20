@@ -31,37 +31,9 @@ function loadEnvFile() {
   return loadSharedEnvFile({
     searchPaths: [
       path.join(ROOT_DIR, '.env'),
-      '/home/leecaiy/workspace/auto-dnms/.env',
-      '/home/leecaiy/workspace/auto-dnns/.env'
+      '/vol1/1000/code/auto-ddnns/.env'
     ]
   });
-
-  const possiblePaths = [
-    path.join(ROOT_DIR, '.env'),
-    '/home/leecaiy/workspace/auto-dnms/.env',
-    '/home/leecaiy/workspace/auto-dnns/.env'
-  ];
-
-  for (const envPath of possiblePaths) {
-    try {
-      if (fs.existsSync(envPath)) {
-        const content = fs.readFileSync(envPath, 'utf-8');
-        content.split('\n').forEach(line => {
-          const trimmed = line.trim();
-          if (trimmed && !trimmed.startsWith('#')) {
-            const [key, ...valueParts] = trimmed.split('=');
-            if (key && valueParts.length > 0) {
-              process.env[key.trim()] = valueParts.join('=').trim();
-            }
-          }
-        });
-        console.log(`✅ 已加载 .env 文件: ${envPath}`);
-        break;
-      }
-    } catch (error) {
-      // 继续尝试下一个路径
-    }
-  }
 }
 
 // 自动加载 .env

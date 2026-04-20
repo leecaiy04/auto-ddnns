@@ -165,7 +165,7 @@ export async function loadConfigWithEnv(configPath, envPath = null) {
       apiBase: getConfig(env, 'LUCKY_API_BASE', luckyConfig.apiBase),
       openToken: getConfig(env, 'LUCKY_OPEN_TOKEN', luckyConfig.openToken, ''),
       adminToken: getConfig(env, 'LUCKY_ADMIN_TOKEN', luckyConfig.adminToken, ''),
-      httpsPort: toInt(getConfig(env, 'LUCKY_HTTPS_PORT', luckyConfig.httpsPort, 50000), 50000),
+      httpsPort: toInt(getConfig(env, 'LUCKY_HTTPS_PORT', luckyConfig.httpsPort, 55000), 55000),
       autoSync: toBool(getConfig(env, 'LUCKY_AUTO_SYNC', luckyConfig.autoSync, true), true),
       autoCreateProxy: toBool(
         getConfig(env, 'LUCKY_AUTO_CREATE_PROXY', luckyConfig.autoCreateProxy, true),
@@ -196,7 +196,7 @@ export async function loadConfigWithEnv(configPath, envPath = null) {
 
   return {
     server: {
-      port: toInt(getConfig(env, 'HUB_PORT', serverConfig.port, 3000), 3000),
+      port: toInt(getConfig(env, 'HUB_PORT', serverConfig.port, 51000), 51000),
       host: getConfig(env, 'HUB_HOST', serverConfig.host, '0.0.0.0'),
       cors: serverConfig.cors || { enabled: true, origin: '*' }
     },

@@ -38,7 +38,7 @@ services:
     command: npm start
     restart: unless-stopped
     ports:
-      - "51100:51100"
+      - "51000:51000"
     volumes:
       - ./.env:/app/.env:ro
       - ./central-hub/config:/app/central-hub/config
@@ -60,7 +60,7 @@ RUN npm ci --omit=dev
 
 COPY . .
 
-EXPOSE 51100
+EXPOSE 51000
 
 CMD ["npm", "start"]
 ```
@@ -91,7 +91,7 @@ CF_API_TOKEN=your-cloudflare-api-token
 CF_ZONE_ID=your-zone-id
 CF_DOMAIN=example.com
 
-HUB_PORT=51100
+HUB_PORT=51000
 HUB_HOST=0.0.0.0
 ```
 
@@ -126,19 +126,19 @@ docker compose logs -f central-hub
 
 ```bash
 # 健康检查
-curl http://localhost:51100/api/health
+curl http://localhost:51000/api/health
 
 # 完整同步
-curl -X POST http://localhost:51100/api/sync/full
+curl -X POST http://localhost:51000/api/sync/full
 
 # Lucky 同步
-curl -X POST http://localhost:51100/api/proxies/sync
+curl -X POST http://localhost:51000/api/proxies/sync
 
 # SunPanel 同步
-curl -X POST http://localhost:51100/api/sunpanel/sync
+curl -X POST http://localhost:51000/api/sunpanel/sync
 
 # Cloudflare 状态
-curl http://localhost:51100/api/cloudflare/status
+curl http://localhost:51000/api/cloudflare/status
 ```
 
 ## 部署建议

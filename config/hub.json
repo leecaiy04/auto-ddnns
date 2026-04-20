@@ -1,6 +1,6 @@
 {
   "server": {
-    "port": 51100,
+    "port": 51000,
     "host": "0.0.0.0",
     "cors": {
       "enabled": true,
@@ -22,7 +22,13 @@
     "deviceMonitor": {
       "enabled": true,
       "checkInterval": 600,
-      "devices": ["2", "10", "200", "201", "254"],
+      "devices": [
+        "2",
+        "10",
+        "200",
+        "201",
+        "254"
+      ],
       "router": {
         "host": "192.168.3.1",
         "username": "root",
@@ -35,27 +41,43 @@
       "scriptPath": "./scripts/aliddns_sync.sh",
       "updateInterval": 600,
       "domains": {
-        "ipv4": ["leecaiy.shop", "*.leecaiy.shop"],
-        "ipv6": ["10.v6.leecaiy.shop", "200.v6.leecaiy.shop", "201.v6.leecaiy.shop", "254.v6.leecaiy.shop"]
+        "ipv4": [
+          "leecaiy.shop",
+          "*.leecaiy.shop"
+        ],
+        "ipv6": [
+          "10.v6.leecaiy.shop",
+          "200.v6.leecaiy.shop",
+          "201.v6.leecaiy.shop",
+          "254.v6.leecaiy.shop"
+        ]
       },
       "extraDomains": [
         {
           "domain": "222869.xyz",
-          "ipv4": ["222869.xyz", "*.222869.xyz"],
-          "ipv6": ["10.v6.222869.xyz", "200.v6.222869.xyz", "201.v6.222869.xyz"]
+          "ipv4": [
+            "222869.xyz",
+            "*.222869.xyz"
+          ],
+          "ipv6": [
+            "10.v6.222869.xyz",
+            "200.v6.222869.xyz",
+            "201.v6.222869.xyz"
+          ]
         }
       ]
     },
     "lucky": {
       "enabled": true,
       "apiBase": "http://192.168.3.2:16601/666",
-      "httpsPort": 50000,
+      "httpsPort": 55000,
       "autoSync": true,
       "autoCreateProxy": true
     },
     "sunpanel": {
       "enabled": true,
       "apiBase": "http://192.168.3.2:20001/openapi/v1",
+      "apiToken": "${SUNPANEL_API_TOKEN}",
       "autoSync": true,
       "autoCreateGroups": true
     },

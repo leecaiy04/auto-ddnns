@@ -35,14 +35,14 @@ LUCKY_OPEN_TOKEN=your-lucky-open-token-here
 LUCKY_API_BASE=http://192.168.3.200:16601
 
 # ========== Central Hub ==========
-HUB_PORT=3000
+HUB_PORT=51000
 HUB_HOST=0.0.0.0
 
 # ========== DDNS ==========
 DDNS_SCRIPT_PATH=/home/leecaiy/ddns_work/update_all_ddns.sh
 
 # ========== 路由器 ==========
-ROUTER_GATEWAY=192.168.3.1
+ROUTER_HOST=192.168.3.1
 ```
 
 ### 3. 设置权限
@@ -55,8 +55,8 @@ chmod 600 .env  # 仅所有者可读写
 
 服务会在以下位置查找 `.env` 文件（按优先级）：
 
-1. `/home/leecaiy/workspace/auto-dnns/.env` (推荐)
-2. `/home/leecaiy/workspace/auto-dnns/central-hub/.env`
+1. `/vol1/1000/code/auto-ddnns/.env` (推荐)
+2. `/vol1/1000/code/auto-ddnns/central-hub/.env`
 3. 当前工作目录的 `.env`
 
 ## 🔧 各服务配置项
@@ -121,8 +121,9 @@ node scripts/sync-lucky-to-sunpanel.mjs --sync 2>&1 | grep ".env"
 | `LUCKY_OPEN_TOKEN` | Lucky OpenToken | (必填) |
 | `SUNPANEL_API_BASE` | SunPanel API 地址 | `http://192.168.3.200:20001/openapi/v1` |
 | `SUNPANEL_API_TOKEN` | SunPanel API Token | (必填) |
-| `DDNS_SCRIPT_PATH` | DDNS 脚本路径 | `/home/leecaiy/ddns_work/update_all_ddns.sh` |
-| `ROUTER_GATEWAY` | 路由器网关 | `192.168.3.1` |
+| `DDNS_SCRIPT_PATH` | DDNS 脚本入口（兼容保留） | `./scripts/aliddns_sync.sh` |
+| `DDNS_TARGETS_CONFIG` | Python 版 IPv6 DDNS 目标配置 | `./config/private_ipv6_ddns_targets.json` |
+| `ROUTER_HOST` | 路由器网关 | `192.168.3.1` |
 
 **使用示例**:
 ```bash

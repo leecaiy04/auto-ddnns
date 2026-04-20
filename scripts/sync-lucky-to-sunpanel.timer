@@ -1,6 +1,6 @@
 [Unit]
 Description=Lucky to SunPanel Auto Sync Timer
-Documentation=file:///home/leecaiy/workspace/auto-dnns/docs/lucky-to-sunpanel.md
+Documentation=file:///vol1/1000/code/auto-ddnns/docs/lucky-to-sunpanel.md
 Requires=sync-lucky-to-sunpanel.service
 
 [Timer]

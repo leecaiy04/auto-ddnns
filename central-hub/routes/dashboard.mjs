@@ -5,18 +5,44 @@
 
 import express from 'express';
 
-async function buildOverview(modules) {
-  const overview = modules.coordinator.getOverview();
+const DASHBOARD_LUCKY_TIMEOUT_MS = 1500;
 
-  let luckyActual = overview.proxies?.lucky ?? 0;
+function getDashboardLuckyTimeout(modules) {
+  const configured = Number(modules?.routeOptions?.dashboardLuckyTimeoutMs);
+  return Number.isFinite(configured) && configured > 0
+    ? configured
+    : DASHBOARD_LUCKY_TIMEOUT_MS;
+}
 
-  if (modules.luckyManager?.config?.enabled) {
-    try {
-      luckyActual = (await modules.luckyManager.getLuckyProxies()).length;
-    } catch (error) {
-      console.error('[Dashboard] 获取 Lucky 实际代理数失败:', error.message);
+async function resolveLuckyActual(modules, fallbackCount) {
+  if (!modules.luckyManager?.config?.enabled || typeof modules.luckyManager.getLuckyProxies !== 'function') {
+    return fallbackCount;
+  }
+
+  let timer = null;
+
+  try {
+    const proxies = await Promise.race([
+      Promise.resolve().then(() => modules.luckyManager.getLuckyProxies()),
+      new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error('获取 Lucky 实际代理数超时')), getDashboardLuckyTimeout(modules));
+      })
+    ]);
+
+    return Array.isArray(proxies) ? proxies.length : fallbackCount;
+  } catch (error) {
+    console.error('[Dashboard] 获取 Lucky 实际代理数失败:', error.message);
+    return fallbackCount;
+  } finally {
+    if (timer) {
+      clearTimeout(timer);
     }
   }
+}
+
+async function buildOverview(modules) {
+  const overview = modules.coordinator.getOverview();
+  const luckyActual = await resolveLuckyActual(modules, overview.proxies?.lucky ?? 0);
 
   return {
     ...overview,

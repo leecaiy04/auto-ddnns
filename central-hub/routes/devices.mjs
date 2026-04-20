@@ -137,8 +137,10 @@ export function deviceRoutes(modules) {
       }
 
       const ipv4 = device?.ipv4 || deviceConfig?.ipv4 || `192.168.3.${deviceId}`;
+      const ipv6Map = modules.deviceMonitor?.getIPv6Map?.() || {};
+      const ipv6 = device?.ipv6 || ipv6Map[deviceId] || deviceConfig?.ipv6 || null;
 
-      const COMMON_PORTS = ports || [80, 443, 3000, 5000, 5001, 5122, 5666, 8006, 8080, 8443, 9090, 13005, 16601, 18789, 20000, 20001, 21001, 24377, 31568, 33100, 38280, 38357, 40002, 40003, 40031, 40042, 45678, 45683, 48014, 49665, 50000, 50001, 51100, 52000, 53080, 54396, 58841, 58842];
+      const COMMON_PORTS = ports || [80, 443, 3000, 5000, 5001, 5122, 5666, 8006, 8080, 8443, 9090, 13005, 16601, 18789, 20000, 20001, 21001, 24377, 31568, 33100, 38280, 38357, 40002, 40003, 40031, 40042, 45678, 45683, 48014, 49665, 50000, 50001, 51000, 52000, 53080, 54396, 58841, 58842];
       const net = await import('net');
 
       const checkPort = (host, port) => {
@@ -179,7 +181,8 @@ export function deviceRoutes(modules) {
       res.json({
         deviceId,
         ipv4,
-        deviceName: deviceConfig?.name || `Device ${deviceId}`,
+        ipv6,
+        deviceName: deviceConfig?.name || device?.name || `Device ${deviceId}`,
         isKeyMachine: deviceConfig?.isKeyMachine || false,
         scannedAt: new Date().toISOString(),
         openPorts

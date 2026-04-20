@@ -68,7 +68,7 @@ function applyRuntimeConfigOverrides(config) {
   if (config?.modules?.ddns?.domains) {
     config.modules.ddns.domains = {
       ipv4: [managedDomain, `*.${managedDomain}`],
-      ipv6: ['10', '200', '201', '254'].map(device => `${device}.v6.${managedDomain}`)
+      ipv6: ['2', '10', '200', '201'].map(device => `${device}.v6.${managedDomain}`)
     };
 
     // 保持 extraDomains 配置（用于 222869.xyz 等额外域名）
@@ -80,19 +80,19 @@ function applyRuntimeConfigOverrides(config) {
     if (process.env.LUCKY_API_BASE) {
       luckyInstances.push({
         apiBase: process.env.LUCKY_API_BASE,
-        token: process.env.LUCKY_TOKEN || process.env.LUCKY_API_TOKEN,
+        openToken: process.env.LUCKY_OPEN_TOKEN || process.env.LUCKY_TOKEN || process.env.LUCKY_API_TOKEN,
         username: process.env.LUCKY_USERNAME,
         password: process.env.LUCKY_PASSWORD
       });
     } else {
       luckyInstances.push({
-        apiBase: `https://lucky.${managedDomain}:50000/666`
+        apiBase: `https://lucky.${managedDomain}:55000/666`
       });
     }
     if (process.env.LUCKY_BACKUP_API_BASE) {
       luckyInstances.push({
         apiBase: process.env.LUCKY_BACKUP_API_BASE,
-        token: process.env.LUCKY_BACKUP_TOKEN || process.env.LUCKY_BACKUP_API_TOKEN,
+        openToken: process.env.LUCKY_BACKUP_OPEN_TOKEN || process.env.LUCKY_BACKUP_TOKEN || process.env.LUCKY_BACKUP_API_TOKEN,
         username: process.env.LUCKY_BACKUP_USERNAME,
         password: process.env.LUCKY_BACKUP_PASSWORD
       });
@@ -392,7 +392,7 @@ class CentralHub {
       // 加载配置
       await this.loadConfig();
 
-      const port = this.config.server.port || 3000;
+      const port = this.config.server.port || 51000;
       const host = this.config.server.host || '0.0.0.0';
       const runningHub = await isHubAlreadyRunning(host, port);
 

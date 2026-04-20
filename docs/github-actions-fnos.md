@@ -87,7 +87,7 @@ GitHub 会给出一组安装命令，在飞牛 OS 上执行即可。
 5. 执行 `git pull --ff-only origin main`
 6. 执行 `npm install`
 7. 重启 `auto-dnns`
-8. 检查 `http://127.0.0.1:51100/api/health`
+8. 检查 `http://127.0.0.1:51000/api/health`
 
 ## 手动触发部署方式
 
@@ -103,4 +103,4 @@ GitHub 会给出一组安装命令，在飞牛 OS 上执行即可。
 
 - 代码目录：`/vol1/1000/code/deplay/auto-dnns`
 - 服务名：`auto-dnns`
-- 健康接口：`http://127.0.0.1:51100/api/health`
+- 健康接口：`http://127.0.0.1:51000/api/health`

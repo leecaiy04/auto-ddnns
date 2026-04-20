@@ -10,15 +10,21 @@ import {
   listAllPorts
 } from '../../lib/api-clients/lucky-port-manager.mjs';
 import {
-  deletePort
+  deletePort,
+  deleteSubRuleByDomain
 } from '../../lib/api-clients/lucky-reverseproxy.mjs';
 import {
   getGroupList,
   createGroup,
   createItem,
   updateItem,
-  getItemInfo
+  getItemInfo,
+  deleteItem
 } from '../../lib/api-clients/sunpanel-api.mjs';
+import {
+  getSSLList,
+  applyACMECert
+} from '../../lib/api-clients/lucky-ssl.mjs';
 import { getEnv } from '../../lib/utils/env-loader.mjs';
 
 function formatTargetHost(targetHost) {
@@ -115,6 +121,50 @@ async function syncSunPanelCard(upsert, cardConfig) {
   }
 }
 
+function normalizeDomain(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function isSingleLabelSubdomain(host, baseDomain) {
+  if (!host || !baseDomain) return false;
+  if (!host.endsWith(`.${baseDomain}`)) return false;
+
+  const hostParts = host.split('.');
+  const baseParts = baseDomain.split('.');
+  return hostParts.length === baseParts.length + 1;
+}
+
+function doesCertDomainCoverTarget(certDomain, targetDomain) {
+  const cert = normalizeDomain(certDomain);
+  const target = normalizeDomain(targetDomain);
+
+  if (!cert || !target) return false;
+  if (cert === target) return true;
+
+  if (cert.startsWith('*.') && !target.startsWith('*.')) {
+    return isSingleLabelSubdomain(target, cert.slice(2));
+  }
+
+  return false;
+}
+
+function extractCertDomains(cert) {
+  const candidates = cert?.CertsInfo?.Domains || cert?.Domains || cert?.domains || [];
+
+  if (Array.isArray(candidates)) {
+    return candidates.map(normalizeDomain).filter(Boolean);
+  }
+
+  if (typeof candidates === 'string') {
+    return candidates
+      .split(',')
+      .map(normalizeDomain)
+      .filter(Boolean);
+  }
+
+  return [];
+}
+
 export class LuckyManager {
   constructor(config, stateManager, sunpanelModuleConfig = null) {
     this.config = config;
@@ -122,13 +172,23 @@ export class LuckyManager {
     this.luckyConfig = {
       apiBase: config.apiBase || getEnv('LUCKY_API_BASE', 'http://192.168.3.2:16601/666'),
       openToken: config.openToken || getEnv('LUCKY_OPEN_TOKEN', ''),
-      httpsPort: parseInt(`${config.httpsPort || getEnv('LUCKY_HTTPS_PORT', '50000')}`, 10)
+      httpsPort: parseInt(`${config.httpsPort || getEnv('LUCKY_HTTPS_PORT', '55000')}`, 10)
     };
     this.sunpanelConfig = {
       apiBase: sunpanelModuleConfig?.apiBase || getEnv('SUNPANEL_API_BASE', 'http://192.168.3.2:20001/openapi/v1'),
       apiToken: sunpanelModuleConfig?.apiToken || getEnv('SUNPANEL_API_TOKEN', '')
     };
+    console.log('[LuckyManager] SunPanel config initialized:', {
+      apiBase: this.sunpanelConfig.apiBase,
+      apiToken: this.sunpanelConfig.apiToken ? `${this.sunpanelConfig.apiToken.substring(0, 10)}...` : 'EMPTY',
+      fromModuleConfig: !!sunpanelModuleConfig?.apiToken,
+      fromEnv: !sunpanelModuleConfig?.apiToken
+    });
     this.luckyLanHost = this.resolveLuckyLanHost();
+    this.sslApi = {
+      getSSLList,
+      applyACMECert
+    };
   }
 
   /**
@@ -268,6 +328,7 @@ export class LuckyManager {
       const proxies = await getAllProxies(mainConfig);
       return proxies.map(p => ({
         port: p.port,
+        ruleKey: p.ruleKey,  // 保留 ruleKey 用于删除操作
         remark: p.remark,
         domains: p.domains,
         target: p.target,
@@ -299,6 +360,7 @@ export class LuckyManager {
       success: 0,
       failed: 0,
       skipped: 0,
+      deleted: 0,
       details: []
     };
 
@@ -306,6 +368,31 @@ export class LuckyManager {
       const instanceConfig = { ...this.luckyConfig, ...instances[i] };
       console.log(`[LuckyManager] ➡️ 正在同步到 Lucky 实例 ${i + 1} (${instanceConfig.apiBase})`);
 
+      // 获取当前 Lucky 中的所有代理规则
+      const luckyProxies = await this.getLuckyProxies();
+      const serviceDomains = new Set(services.filter(s => s.enableProxy).map(s => s.proxyDomain));
+
+      // 删除不在服务列表中的规则
+      for (const proxy of luckyProxies) {
+        const domain = proxy.domains[0];
+        if (domain && !serviceDomains.has(domain)) {
+          try {
+            console.log(`[LuckyManager] 🗑️  [实例 ${i+1}] 删除不存在的服务: ${proxy.remark} (${domain})`);
+            const deleteResult = await deleteSubRuleByDomain(proxy.ruleKey, domain, instanceConfig);
+            if (deleteResult.deleted) {
+              if (i === 0) results.deleted++;
+              results.details.push({ service: proxy.remark, instance: i, action: 'deleted', domain });
+              console.log(`[LuckyManager] ✅ [实例 ${i+1}] 成功删除: ${proxy.remark} (${domain})`);
+            } else {
+              console.error(`[LuckyManager] ❌ [实例 ${i+1}] 删除失败: ${proxy.remark} - ${deleteResult.msg}`);
+            }
+          } catch (error) {
+            console.error(`[LuckyManager] ❌ [实例 ${i+1}] 删除规则失败: ${proxy.remark} - ${error.message}`);
+          }
+        }
+      }
+
+      // 添加或更新服务
       for (const service of services) {
         if (!service.enableProxy) {
           if (i === 0) results.skipped++;
@@ -316,12 +403,11 @@ export class LuckyManager {
           const deviceIPv6 = ipv6Map[service.device] || null;
           const targetHost = deviceIPv6 || `192.168.3.${service.device}`;
           const formattedTargetHost = formatTargetHost(targetHost);
-          const target = service.enableTLS
-            ? `https://${formattedTargetHost}:${service.internalPort}`
-            : `http://${formattedTargetHost}:${service.internalPort}`;
+          const protocol = service.internalProtocol || 'http';
+          const target = `${protocol}://${formattedTargetHost}:${service.internalPort}`;
 
-          if (i === 0 && service.lucky.port !== 50000) {
-            console.warn(`[LuckyManager] ⚠️  服务 ${service.id} 未使用统一的50000端口，当前端口: ${service.lucky.port}`);
+          if (i === 0 && service.lucky.port !== 55000) {
+            console.warn(`[LuckyManager] ⚠️  服务 ${service.id} 未使用统一的55000端口，当前端口: ${service.lucky.port}`);
           }
 
           const result = await smartAddOrUpdateSubRule(
@@ -351,7 +437,7 @@ export class LuckyManager {
 
     this.stateManager.state.lucky.lastSync = new Date().toISOString();
     await this.stateManager.save();
-    console.log(`[LuckyManager] 🎉 所有实例同步完成.`);
+    console.log(`[LuckyManager] 🎉 所有实例同步完成 (成功: ${results.success}, 删除: ${results.deleted}, 失败: ${results.failed}).`);
     return results;
   }
 
@@ -452,6 +538,35 @@ export class LuckyManager {
             console.error(`[LuckyManager] ❌ [实例 ${i+1}] 同步失败: ${proxy.domains[0]} - ${error.message}`);
           }
         }
+
+        // 清理不在 Lucky 代理列表中的 SunPanel 卡片
+        const luckyDomains = new Set(luckyProxies.flatMap(p => p.domains));
+        const syncStatusKeys = Object.keys(this.stateManager.state.sunpanel.syncStatus || {});
+
+        for (const key of syncStatusKeys) {
+          if (!key.endsWith(`_${i}`)) continue; // 只处理当前实例的卡片
+
+          const status = this.stateManager.state.sunpanel.syncStatus[key];
+          if (!status || !status.domain) continue;
+
+          if (!luckyDomains.has(status.domain)) {
+            try {
+              const onlyName = key.replace(`_${i}`, '');
+              await deleteItem(onlyName, instanceConfig);
+              delete this.stateManager.state.sunpanel.syncStatus[key];
+              if (i === 0) results.success++;
+              console.log(`[LuckyManager] 🗑️ [实例 ${i+1}] 已删除不存在的卡片: ${status.domain}`);
+            } catch (error) {
+              // 如果卡片不存在（1203错误），也删除状态记录
+              if (error.message.includes('1203')) {
+                delete this.stateManager.state.sunpanel.syncStatus[key];
+                console.log(`[LuckyManager] 🗑️ [实例 ${i+1}] 清理状态: ${status.domain} (卡片已不存在)`);
+              } else {
+                console.error(`[LuckyManager] ❌ [实例 ${i+1}] 删除卡片失败: ${status.domain} - ${error.message}`);
+              }
+            }
+          }
+        }
       }
 
       this.stateManager.state.sunpanel.lastSync = new Date().toISOString();
@@ -462,6 +577,122 @@ export class LuckyManager {
     } catch (error) {
       console.error('[LuckyManager] ❌ 同步到SunPanel失败:', error.message);
       throw error;
+    }
+  }
+
+  async ensureManagedDomainCertificates(proxyDefaults = {}) {
+    try {
+      const configuredDomains = proxyDefaults?.dns?.sslCertDomains;
+      const targetDomains = Array.isArray(configuredDomains)
+        ? [...new Set(configuredDomains.map(normalizeDomain).filter(Boolean))]
+        : [];
+
+      if (targetDomains.length === 0) {
+        return {
+          success: 0,
+          failed: 0,
+          skipped: 1,
+          details: [{ action: 'skipped', reason: 'no_ssl_cert_domains' }]
+        };
+      }
+
+      const email = getEnv('LUCKY_ACME_EMAIL', '').trim();
+      const dnsId = getEnv('ALIYUN_AK', '').trim();
+      const dnsSecret = getEnv('ALIYUN_SK', '').trim();
+
+      if (!email || !dnsId || !dnsSecret) {
+        return {
+          success: 0,
+          failed: 1,
+          skipped: 0,
+          error: 'missing_credentials',
+          details: [{
+            action: 'failed',
+            reason: 'missing_credentials',
+            missing: {
+              LUCKY_ACME_EMAIL: !email,
+              ALIYUN_AK: !dnsId,
+              ALIYUN_SK: !dnsSecret
+            }
+          }]
+        };
+      }
+
+      const instances = this.luckyConfig.instances || [this.luckyConfig];
+      const results = {
+        success: 0,
+        failed: 0,
+        skipped: 0,
+        details: []
+      };
+
+      for (let i = 0; i < instances.length; i++) {
+        const instanceConfig = { ...this.luckyConfig, ...instances[i] };
+        const listResult = await this.sslApi.getSSLList(instanceConfig);
+
+        if (listResult?.ret !== 0) {
+          results.failed++;
+          results.details.push({
+            instance: i,
+            action: 'failed',
+            reason: 'ssl_list_failed',
+            error: listResult?.msg || 'unknown_error'
+          });
+          continue;
+        }
+
+        const certDomains = (listResult?.list || []).flatMap(extractCertDomains);
+        const missingDomains = targetDomains.filter((domain) => !certDomains.some((certDomain) => doesCertDomainCoverTarget(certDomain, domain)));
+
+        if (missingDomains.length === 0) {
+          results.skipped++;
+          results.details.push({
+            instance: i,
+            action: 'skipped',
+            reason: 'already_covered',
+            domains: targetDomains
+          });
+          continue;
+        }
+
+        const applyResult = await this.sslApi.applyACMECert({
+          remark: `managed-domains-${new Date().toISOString()}`,
+          domains: missingDomains,
+          email,
+          dnsProvider: 'alidns',
+          dnsId,
+          dnsSecret
+        }, instanceConfig);
+
+        if (applyResult?.ret === 0) {
+          results.success++;
+          results.details.push({
+            instance: i,
+            action: 'applied',
+            domains: missingDomains,
+            message: applyResult?.msg || 'ok'
+          });
+        } else {
+          results.failed++;
+          results.details.push({
+            instance: i,
+            action: 'failed',
+            reason: 'ssl_apply_failed',
+            domains: missingDomains,
+            error: applyResult?.msg || 'unknown_error'
+          });
+        }
+      }
+
+      return results;
+    } catch (error) {
+      return {
+        success: 0,
+        failed: 1,
+        skipped: 0,
+        error: error?.message || String(error),
+        details: [{ action: 'failed', reason: 'unexpected_error' }]
+      };
     }
   }
 
@@ -508,7 +739,7 @@ export class LuckyManager {
           const ports = await listAllPorts(instanceConfig);
 
           // 只删除 HTTPS 代理端口 (默认 50000)
-          const proxyPort = instanceConfig.httpsPort || 50000;
+          const proxyPort = instanceConfig.httpsPort || 55000;
           const proxyPorts = ports.filter(p => p.port === proxyPort);
 
           for (const port of proxyPorts) {

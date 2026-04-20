@@ -26,7 +26,7 @@ SUNPANEL_API_BASE=http://192.168.3.200:20001/openapi/v1
 SUNPANEL_BACKUP_API_BASE=http://192.168.3.2:20001/openapi/v1
 
 HUB_HOST=0.0.0.0
-HUB_PORT=51100
+HUB_PORT=51000
 ```
 
 ### JSON 配置
@@ -94,22 +94,22 @@ node cli.mjs sync-all
 
 ```bash
 # Hub 健康
-curl http://your-hub:51100/api/health
+curl http://your-hub:51000/api/health
 
 # 设备与 DDNS
-curl http://your-hub:51100/api/devices/list
-curl -X POST http://your-hub:51100/api/ddns/refresh
+curl http://your-hub:51000/api/devices/list
+curl -X POST http://your-hub:51000/api/ddns/refresh
 
 # Lucky 与 SunPanel
-curl -X POST http://your-hub:51100/api/proxies/sync
-curl -X POST http://your-hub:51100/api/sunpanel/sync
+curl -X POST http://your-hub:51000/api/proxies/sync
+curl -X POST http://your-hub:51000/api/sunpanel/sync
 
 # Cloudflare
-curl http://your-hub:51100/api/cloudflare/status
-curl -X POST http://your-hub:51100/api/cloudflare/sync
+curl http://your-hub:51000/api/cloudflare/status
+curl -X POST http://your-hub:51000/api/cloudflare/sync
 
 # 服务连通性
-curl http://your-hub:51100/api/services/connectivity
+curl http://your-hub:51000/api/services/connectivity
 ```
 
 ## 验证清单

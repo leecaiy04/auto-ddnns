@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastUpdate": "2026-04-14T19:32:00.541Z",
-  "uptime": 1400439,
+  "lastUpdate": "2026-04-14T20:49:00.867Z",
+  "uptime": 1405060,
   "startTime": "2026-03-29T14:31:20.610Z",
   "router": {
     "history": []
@@ -9,60 +9,6 @@
   "ddns": {
     "domains": [],
     "history": [
-      {
-        "event": "update",
-        "success": true,
-        "domains": [
-          "leecaiy.shop"
-        ],
-        "output": "\n--- leecaiy.shop ---\n>>> [步骤1] 扫描并提取局域网设备信息\n>>> [模式: 数组提取] 正在 Ping 测试配置的指定 IPv4 列表，唤醒并刷新其本地 ARP...\n读取局域网 IPv4 和 MAC...\n通过 SSH 连接路由器获取完整 IPv6 表...\n[警告] 未找到 expect 命令。如果您正在 Linux/WSL 下，请使用 'sudo apt install expect' 补充。\n[提示] 将尝试以免密密钥方式直连一次 (如果在路由器配置过 SSH Key)...\n整理对应关系到 .lan_devices.txt ...\n[成功] 已提取发现 0 个含有稳定 IPv6 的局域网设备！\n>>> [步骤2] 更新 Ali DDNS 解析记录\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
-        "timestamp": "2026-04-14T17:40:07.086Z"
-      },
-      {
-        "event": "update",
-        "success": true,
-        "domains": [
-          "leecaiy.shop"
-        ],
-        "output": "\n--- leecaiy.shop ---\n>>> [步骤1] 扫描并提取局域网设备信息\n>>> [模式: 数组提取] 正在 Ping 测试配置的指定 IPv4 列表，唤醒并刷新其本地 ARP...\n读取局域网 IPv4 和 MAC...\n通过 SSH 连接路由器获取完整 IPv6 表...\n[警告] 未找到 expect 命令。如果您正在 Linux/WSL 下，请使用 'sudo apt install expect' 补充。\n[提示] 将尝试以免密密钥方式直连一次 (如果在路由器配置过 SSH Key)...\n整理对应关系到 .lan_devices.txt ...\n[成功] 已提取发现 0 个含有稳定 IPv6 的局域网设备！\n>>> [步骤2] 更新 Ali DDNS 解析记录\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
-        "timestamp": "2026-04-14T17:50:07.245Z"
-      },
-      {
-        "event": "update",
-        "success": true,
-        "domains": [
-          "leecaiy.shop"
-        ],
-        "output": "\n--- leecaiy.shop ---\n>>> [步骤1] 扫描并提取局域网设备信息\n>>> [模式: 数组提取] 正在 Ping 测试配置的指定 IPv4 列表，唤醒并刷新其本地 ARP...\n读取局域网 IPv4 和 MAC...\n通过 SSH 连接路由器获取完整 IPv6 表...\n[警告] 未找到 expect 命令。如果您正在 Linux/WSL 下，请使用 'sudo apt install expect' 补充。\n[提示] 将尝试以免密密钥方式直连一次 (如果在路由器配置过 SSH Key)...\n整理对应关系到 .lan_devices.txt ...\n[成功] 已提取发现 0 个含有稳定 IPv6 的局域网设备！\n>>> [步骤2] 更新 Ali DDNS 解析记录\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
-        "timestamp": "2026-04-14T18:00:06.738Z"
-      },
-      {
-        "event": "update",
-        "success": true,
-        "domains": [
-          "leecaiy.shop"
-        ],
-        "output": "\n--- leecaiy.shop ---\n>>> [步骤1] 扫描并提取局域网设备信息\n>>> [模式: 数组提取] 正在 Ping 测试配置的指定 IPv4 列表，唤醒并刷新其本地 ARP...\n读取局域网 IPv4 和 MAC...\n通过 SSH 连接路由器获取完整 IPv6 表...\n[警告] 未找到 expect 命令。如果您正在 Linux/WSL 下，请使用 'sudo apt install expect' 补充。\n[提示] 将尝试以免密密钥方式直连一次 (如果在路由器配置过 SSH Key)...\n整理对应关系到 .lan_devices.txt ...\n[成功] 已提取发现 0 个含有稳定 IPv6 的局域网设备！\n>>> [步骤2] 更新 Ali DDNS 解析记录\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
-        "timestamp": "2026-04-14T18:10:07.393Z"
-      },
-      {
-        "event": "update",
-        "success": true,
-        "domains": [
-          "leecaiy.shop"
-        ],
-        "output": "\n--- leecaiy.shop ---\n>>> [步骤1] 扫描并提取局域网设备信息\n>>> [模式: 数组提取] 正在 Ping 测试配置的指定 IPv4 列表，唤醒并刷新其本地 ARP...\n读取局域网 IPv4 和 MAC...\n通过 SSH 连接路由器获取完整 IPv6 表...\n[警告] 未找到 expect 命令。如果您正在 Linux/WSL 下，请使用 'sudo apt install expect' 补充。\n[提示] 将尝试以免密密钥方式直连一次 (如果在路由器配置过 SSH Key)...\n整理对应关系到 .lan_devices.txt ...\n[成功] 已提取发现 0 个含有稳定 IPv6 的局域网设备！\n>>> [步骤2] 更新 Ali DDNS 解析记录\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
-        "timestamp": "2026-04-14T18:30:08.341Z"
-      },
-      {
-        "event": "update",
-        "success": true,
-        "domains": [
-          "leecaiy.shop"
-        ],
-        "output": "\n--- leecaiy.shop ---\n>>> [步骤1] 扫描并提取局域网设备信息\n>>> [模式: 数组提取] 正在 Ping 测试配置的指定 IPv4 列表，唤醒并刷新其本地 ARP...\n读取局域网 IPv4 和 MAC...\n通过 SSH 连接路由器获取完整 IPv6 表...\n[警告] 未找到 expect 命令。如果您正在 Linux/WSL 下，请使用 'sudo apt install expect' 补充。\n[提示] 将尝试以免密密钥方式直连一次 (如果在路由器配置过 SSH Key)...\n整理对应关系到 .lan_devices.txt ...\n[成功] 已提取发现 0 个含有稳定 IPv6 的局域网设备！\n>>> [步骤2] 更新 Ali DDNS 解析记录\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
-        "timestamp": "2026-04-14T18:40:07.997Z"
-      },
       {
         "event": "update",
         "success": true,
@@ -98,9 +44,63 @@
         ],
         "output": "\n--- leecaiy.shop ---\n>>> [步骤1] 扫描并提取局域网设备信息\n>>> [模式: 数组提取] 正在 Ping 测试配置的指定 IPv4 列表，唤醒并刷新其本地 ARP...\n读取局域网 IPv4 和 MAC...\n通过 SSH 连接路由器获取完整 IPv6 表...\n[警告] 未找到 expect 命令。如果您正在 Linux/WSL 下，请使用 'sudo apt install expect' 补充。\n[提示] 将尝试以免密密钥方式直连一次 (如果在路由器配置过 SSH Key)...\n整理对应关系到 .lan_devices.txt ...\n[成功] 已提取发现 0 个含有稳定 IPv6 的局域网设备！\n>>> [步骤2] 更新 Ali DDNS 解析记录\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
         "timestamp": "2026-04-14T19:30:07.275Z"
+      },
+      {
+        "event": "update",
+        "success": true,
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "output": "\n--- leecaiy.shop ---\n>>> [步骤1] 扫描并提取局域网设备信息\n>>> [模式: 数组提取] 正在 Ping 测试配置的指定 IPv4 列表，唤醒并刷新其本地 ARP...\n读取局域网 IPv4 和 MAC...\n通过 SSH 连接路由器获取完整 IPv6 表...\n[警告] 未找到 expect 命令。如果您正在 Linux/WSL 下，请使用 'sudo apt install expect' 补充。\n[提示] 将尝试以免密密钥方式直连一次 (如果在路由器配置过 SSH Key)...\n整理对应关系到 .lan_devices.txt ...\n[成功] 已提取发现 0 个含有稳定 IPv6 的局域网设备！\n>>> [步骤2] 更新 Ali DDNS 解析记录\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
+        "timestamp": "2026-04-14T19:50:08.434Z"
+      },
+      {
+        "event": "update",
+        "success": true,
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "output": "\n--- leecaiy.shop ---\n>>> [步骤1] 扫描并提取局域网设备信息\n>>> [模式: 数组提取] 正在 Ping 测试配置的指定 IPv4 列表，唤醒并刷新其本地 ARP...\n读取局域网 IPv4 和 MAC...\n通过 SSH 连接路由器获取完整 IPv6 表...\n[警告] 未找到 expect 命令。如果您正在 Linux/WSL 下，请使用 'sudo apt install expect' 补充。\n[提示] 将尝试以免密密钥方式直连一次 (如果在路由器配置过 SSH Key)...\n整理对应关系到 .lan_devices.txt ...\n[成功] 已提取发现 0 个含有稳定 IPv6 的局域网设备！\n>>> [步骤2] 更新 Ali DDNS 解析记录\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
+        "timestamp": "2026-04-14T20:00:09.880Z"
+      },
+      {
+        "event": "update",
+        "success": true,
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "output": "\n--- leecaiy.shop ---\n>>> [步骤1] 扫描并提取局域网设备信息\n>>> [模式: 数组提取] 正在 Ping 测试配置的指定 IPv4 列表，唤醒并刷新其本地 ARP...\n读取局域网 IPv4 和 MAC...\n通过 SSH 连接路由器获取完整 IPv6 表...\n[警告] 未找到 expect 命令。如果您正在 Linux/WSL 下，请使用 'sudo apt install expect' 补充。\n[提示] 将尝试以免密密钥方式直连一次 (如果在路由器配置过 SSH Key)...\n整理对应关系到 .lan_devices.txt ...\n[成功] 已提取发现 0 个含有稳定 IPv6 的局域网设备！\n>>> [步骤2] 更新 Ali DDNS 解析记录\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
+        "timestamp": "2026-04-14T20:10:09.178Z"
+      },
+      {
+        "event": "update",
+        "success": true,
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "output": "\n--- leecaiy.shop ---\n>>> [步骤1] 扫描并提取局域网设备信息\n>>> [模式: 数组提取] 正在 Ping 测试配置的指定 IPv4 列表，唤醒并刷新其本地 ARP...\n读取局域网 IPv4 和 MAC...\n通过 SSH 连接路由器获取完整 IPv6 表...\n[警告] 未找到 expect 命令。如果您正在 Linux/WSL 下，请使用 'sudo apt install expect' 补充。\n[提示] 将尝试以免密密钥方式直连一次 (如果在路由器配置过 SSH Key)...\n整理对应关系到 .lan_devices.txt ...\n[成功] 已提取发现 0 个含有稳定 IPv6 的局域网设备！\n>>> [步骤2] 更新 Ali DDNS 解析记录\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
+        "timestamp": "2026-04-14T20:20:12.568Z"
+      },
+      {
+        "event": "update",
+        "success": true,
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "output": "\n--- leecaiy.shop ---\n>>> [步骤1] 扫描并提取局域网设备信息\n>>> [模式: 数组提取] 正在 Ping 测试配置的指定 IPv4 列表，唤醒并刷新其本地 ARP...\n读取局域网 IPv4 和 MAC...\n通过 SSH 连接路由器获取完整 IPv6 表...\n[警告] 未找到 expect 命令。如果您正在 Linux/WSL 下，请使用 'sudo apt install expect' 补充。\n[提示] 将尝试以免密密钥方式直连一次 (如果在路由器配置过 SSH Key)...\n整理对应关系到 .lan_devices.txt ...\n[成功] 已提取发现 0 个含有稳定 IPv6 的局域网设备！\n>>> [步骤2] 更新 Ali DDNS 解析记录\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
+        "timestamp": "2026-04-14T20:30:12.997Z"
+      },
+      {
+        "event": "update",
+        "success": true,
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "output": "\n--- leecaiy.shop ---\n>>> [步骤1] 扫描并提取局域网设备信息\n>>> [模式: 数组提取] 正在 Ping 测试配置的指定 IPv4 列表，唤醒并刷新其本地 ARP...\n读取局域网 IPv4 和 MAC...\n通过 SSH 连接路由器获取完整 IPv6 表...\n[警告] 未找到 expect 命令。如果您正在 Linux/WSL 下，请使用 'sudo apt install expect' 补充。\n[提示] 将尝试以免密密钥方式直连一次 (如果在路由器配置过 SSH Key)...\n整理对应关系到 .lan_devices.txt ...\n[成功] 已提取发现 0 个含有稳定 IPv6 的局域网设备！\n>>> [步骤2] 更新 Ali DDNS 解析记录\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
+        "timestamp": "2026-04-14T20:40:07.787Z"
       }
     ],
-    "lastUpdate": "2026-04-14T19:30:07.275Z",
+    "lastUpdate": "2026-04-14T20:40:07.787Z",
     "lastResult": {
       "success": true,
       "output": "\n--- leecaiy.shop ---\n>>> [步骤1] 扫描并提取局域网设备信息\n>>> [模式: 数组提取] 正在 Ping 测试配置的指定 IPv4 列表，唤醒并刷新其本地 ARP...\n读取局域网 IPv4 和 MAC...\n通过 SSH 连接路由器获取完整 IPv6 表...\n[警告] 未找到 expect 命令。如果您正在 Linux/WSL 下，请使用 'sudo apt install expect' 补充。\n[提示] 将尝试以免密密钥方式直连一次 (如果在路由器配置过 SSH Key)...\n整理对应关系到 .lan_devices.txt ...\n[成功] 已提取发现 0 个含有稳定 IPv6 的局域网设备！\n>>> [步骤2] 更新 Ali DDNS 解析记录\n>>> [步骤4] 生成静态展示页面 index.html\n[成功] 已更新静态页面 index.html\n",
@@ -108,14 +108,14 @@
       "domains": [
         "leecaiy.shop"
       ],
-      "timestamp": "2026-04-14T19:30:07.275Z"
+      "timestamp": "2026-04-14T20:40:07.787Z"
     }
   },
   "lucky": {
     "proxies": [],
     "history": [],
     "syncStatus": {},
-    "lastSync": "2026-04-14T19:30:00.309Z"
+    "lastSync": "2026-04-14T20:45:12.485Z"
   },
   "sunpanel": {
     "cards": [],
@@ -746,19 +746,39 @@
         "groupId": 30,
         "groupOnlyName": "其他",
         "lastSync": "2026-04-14T18:30:00.750Z"
+      },
+      "ha-example-com_0": {
+        "hash": "97c2c0c0a801bdb2bb4840d34f3f8589",
+        "domain": "ha.example.com",
+        "remark": "svc-homeassistant",
+        "target": "http://192.168.3.10:8123",
+        "serviceId": null,
+        "groupId": 30,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-14T19:36:49.056Z"
+      },
+      "jellyfin-example-com_0": {
+        "hash": "85f8579e4a67096a32a1a704cfea93aa",
+        "domain": "jellyfin.example.com",
+        "remark": "svc-jellyfin",
+        "target": "http://192.168.3.2:8096",
+        "serviceId": null,
+        "groupId": 30,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-14T19:36:53.453Z"
       }
     },
-    "lastSync": "2026-04-14T19:30:00.299Z"
+    "lastSync": "2026-04-14T20:45:00.886Z"
   },
   "devices": {
-    "lastUpdate": "2026-04-14T19:30:03.118Z",
+    "lastUpdate": "2026-04-14T20:40:03.860Z",
     "devices": {},
     "ipv6Map": {},
     "totalDevices": 0,
     "ipv6Ready": 0
   },
   "services": {
-    "lastUpdate": "2026-04-04T08:58:12.050Z",
+    "lastUpdate": "2026-04-14T19:36:53.384Z",
     "totalServices": 4,
     "proxiedServices": 4
   },

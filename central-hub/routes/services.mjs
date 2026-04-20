@@ -6,6 +6,157 @@
 
 import express from 'express';
 
+const CONNECTIVITY_PROBE_TIMEOUT_MS = 2500;
+
+function normalizeDomain(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function getDeviceIpv6Domain(modules, deviceId) {
+  const domains = modules?.config?.modules?.ddns?.domains?.ipv6;
+  if (!Array.isArray(domains)) {
+    return null;
+  }
+
+  const prefix = `${deviceId}.v6.`;
+  return domains.find((domain) => normalizeDomain(domain).startsWith(prefix)) || null;
+}
+
+function buildIpv6DomainUrl(service, domain) {
+  if (!domain || !service?.internalPort) {
+    return null;
+  }
+
+  const protocol = service.internalProtocol || 'http';
+  return `${protocol}://${domain}:${service.internalPort}`;
+}
+
+
+function getConnectivityProbeTimeout(modules) {
+  const configured = Number(modules?.routeOptions?.connectivityProbeTimeoutMs);
+  return Number.isFinite(configured) && configured > 0
+    ? configured
+    : CONNECTIVITY_PROBE_TIMEOUT_MS;
+}
+
+async function probeUrl(url, timeoutMs) {
+  if (!url) {
+    return { url: null, ok: false, status: null, latency: null };
+  }
+
+  const startTime = Date.now();
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, {
+      method: 'HEAD',
+      signal: controller.signal,
+      redirect: 'manual'
+    });
+
+    return {
+      url,
+      ok: response.status < 500,
+      status: response.status,
+      latency: Date.now() - startTime
+    };
+  } catch (error) {
+    return {
+      url,
+      ok: false,
+      status: null,
+      latency: Date.now() - startTime,
+      error: error?.name === 'AbortError' ? 'timeout' : error?.message || 'request_failed'
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function buildConnectivityResult(service, modules, ipv6Map, proxyDefaults) {
+  const luckyPort = proxyDefaults?.externalPorts?.lucky || 55000;
+  const ipv4Url = `https://${service.proxyDomain}:${luckyPort}`;
+  const deviceId = String(service.device);
+  const ipv6Domain = getDeviceIpv6Domain(modules, deviceId);
+  const ipv6 = ipv6Map[deviceId] || modules.serviceRegistry.getDeviceById?.(deviceId)?.ipv6 || null;
+  const ipv6DomainUrl = buildIpv6DomainUrl(service, ipv6Domain);
+  const ipv6RawUrl = ipv6 ? modules.serviceRegistry.buildIpv6DirectUrl(service.id, ipv6) : null;
+  const timeoutMs = getConnectivityProbeTimeout(modules);
+
+  const [ipv4Proxy, ipv6FromDomain, ipv6FromRaw] = await Promise.all([
+    probeUrl(ipv4Url, timeoutMs),
+    probeUrl(ipv6DomainUrl, timeoutMs),
+    probeUrl(ipv6RawUrl, timeoutMs)
+  ]);
+
+  let ipv6Direct = ipv6FromDomain;
+  if (!ipv6FromDomain.ok) {
+    ipv6Direct = ipv6FromRaw;
+  }
+
+  ipv6Direct = {
+    ...ipv6Direct,
+    source: ipv6FromDomain.ok ? 'domain' : (ipv6FromRaw.url ? 'ipv6' : null)
+  };
+
+  return {
+    id: service.id,
+    name: service.name,
+    ipv4Proxy,
+    ipv6Direct
+  };
+}
+
+function buildMutationResponse({ successMessage, warningMessage, entityKey, entityValue, sync }) {
+  const syncSuccess = sync?.success ?? true;
+  const response = {
+    success: true,
+    syncSuccess,
+    message: syncSuccess ? successMessage : warningMessage,
+    sync
+  };
+
+  if (!syncSuccess) {
+    response.warning = warningMessage;
+  }
+
+  if (entityKey) {
+    response[entityKey] = entityValue;
+  }
+
+  return response;
+}
+
+async function runSyncStep(label, runner) {
+  try {
+    return await runner();
+  } catch (error) {
+    return {
+      success: false,
+      failed: 1,
+      error: error?.message || String(error),
+      label
+    };
+  }
+}
+
+function isSyncStepSuccessful(result) {
+  if (!result) {
+    return true;
+  }
+  if (typeof result.success === 'boolean') {
+    return result.success;
+  }
+  if (typeof result.failed === 'number') {
+    return result.failed === 0;
+  }
+  if (Array.isArray(result.errors)) {
+    return result.errors.length === 0;
+  }
+  return true;
+}
+
 async function triggerServiceSync(modules, reason) {
   if (!modules.coordinator) {
     return null;
@@ -13,22 +164,44 @@ async function triggerServiceSync(modules, reason) {
 
   const results = {};
 
-  results.lucky = await modules.coordinator.runLuckySync();
-  results.sunpanel = await modules.coordinator.runSunpanelSync();
+  results.lucky = await runSyncStep('lucky', () => modules.coordinator.runLuckySync());
+  results.sunpanel = await runSyncStep('sunpanel', () => modules.coordinator.runSunpanelSync());
 
   if (modules.cloudflareManager) {
-    results.cloudflare = await modules.coordinator.runCloudflareSync();
+    results.cloudflare = await runSyncStep('cloudflare', () => modules.coordinator.runCloudflareSync());
   }
 
-  const luckySuccess = results.lucky?.failed === 0 || !results.lucky;
-  const sunpanelSuccess = results.sunpanel?.failed === 0 || !results.sunpanel;
-  const cloudflareSuccess = results.cloudflare?.failed === 0 || !results.cloudflare;
-
-  const overallSuccess = luckySuccess && sunpanelSuccess && cloudflareSuccess;
+  const overallSuccess = Object.values(results).every(isSyncStepSuccessful);
 
   return {
     success: overallSuccess,
     reason,
+    results,
+    completedAt: new Date().toISOString()
+  };
+}
+
+async function triggerProxyDefaultsSync(modules, proxyDefaults) {
+  const results = {};
+
+  if (modules.coordinator) {
+    results.ddns = await runSyncStep('ddns', () => modules.coordinator.runDDNS());
+  }
+
+  results.services = await triggerServiceSync(modules, 'proxy_defaults_update');
+
+  if (modules.luckyManager?.ensureManagedDomainCertificates) {
+    results.certificates = await runSyncStep(
+      'certificates',
+      () => modules.luckyManager.ensureManagedDomainCertificates(proxyDefaults)
+    );
+  }
+
+  const overallSuccess = Object.values(results).every(isSyncStepSuccessful);
+
+  return {
+    success: overallSuccess,
+    reason: 'proxy_defaults_update',
     results,
     completedAt: new Date().toISOString()
   };
@@ -86,8 +259,13 @@ export function serviceRoutes(modules) {
       }
       const newService = await modules.serviceRegistry.addService(service);
       const sync = await triggerServiceSync(modules, 'service_add');
-      const status = sync && !sync.success ? 502 : 200;
-      res.status(status).json({ success: sync?.success ?? true, service: newService, sync });
+      res.json(buildMutationResponse({
+        successMessage: '服务已添加并完成同步',
+        warningMessage: '服务已添加，但后续同步存在失败项，请查看 sync 结果',
+        entityKey: 'service',
+        entityValue: newService,
+        sync
+      }));
     } catch (error) {
       console.error('[Services] 添加服务失败:', error);
       const status = error.message.includes('已存在') ? 400 : 500;
@@ -124,7 +302,14 @@ export function serviceRoutes(modules) {
         return res.status(503).json({ error: '服务清单模块未初始化' });
       }
       const updated = await modules.serviceRegistry.updateProxyDefaults(req.body);
-      res.json({ success: true, defaults: updated });
+      const sync = await triggerProxyDefaultsSync(modules, updated);
+      res.json(buildMutationResponse({
+        successMessage: '全局反代配置已保存并完成发布',
+        warningMessage: '全局反代配置已保存，但后续发布存在失败项，请查看 sync 结果',
+        entityKey: 'defaults',
+        entityValue: updated,
+        sync
+      }));
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -146,8 +331,13 @@ export function serviceRoutes(modules) {
       }
       const updatedService = await modules.serviceRegistry.updateService(id, updates);
       const sync = await triggerServiceSync(modules, 'service_update');
-      const status = sync && !sync.success ? 502 : 200;
-      res.status(status).json({ success: sync?.success ?? true, service: updatedService, sync });
+      res.json(buildMutationResponse({
+        successMessage: '服务已更新并完成同步',
+        warningMessage: '服务已更新，但后续同步存在失败项，请查看 sync 结果',
+        entityKey: 'service',
+        entityValue: updatedService,
+        sync
+      }));
     } catch (error) {
       console.error('[Services] 更新服务失败:', error);
       const status = error.message.includes('不存在') ? 404 : 500;
@@ -179,8 +369,11 @@ export function serviceRoutes(modules) {
       }
       await modules.serviceRegistry.deleteService(id);
       const sync = await triggerServiceSync(modules, 'service_delete');
-      const status = sync && !sync.success ? 502 : 200;
-      res.status(status).json({ message: '服务删除成功', success: sync?.success ?? true, sync });
+      res.json(buildMutationResponse({
+        successMessage: '服务已删除并完成同步',
+        warningMessage: '服务已删除，但后续同步存在失败项，请查看 sync 结果',
+        sync
+      }));
     } catch (error) {
       console.error('[Services] 删除服务失败:', error);
       res.status(500).json({ error: error.message });
@@ -208,23 +401,30 @@ export function serviceRoutes(modules) {
   /**
    * 从端口扫描快速添加服务
    * POST /api/services/quick-add
-   * Body: { deviceId, port, name, id, group?, description? }
+   * Body: { deviceId, port, id, name?, group?, description? }
    */
   router.post('/quick-add', async (req, res) => {
     try {
       if (!modules.serviceRegistry) {
         return res.status(503).json({ error: '服务清单模块未初始化' });
       }
-      const { deviceId, port, name, id, group, description } = req.body;
-      if (!deviceId || !port || !name || !id) {
-        return res.status(400).json({ error: '缺少必填字段: deviceId, port, name, id' });
+      const { deviceId, port, name, id, group, description, ipv6 } = req.body;
+      const serviceId = String(id || '').trim();
+      if (!deviceId || !port || !serviceId) {
+        return res.status(400).json({ error: '缺少必填字段: deviceId, port, id' });
       }
+      const serviceName = String(name || '').trim() || serviceId;
       const service = await modules.serviceRegistry.quickAddFromScan({
-        deviceId, port: parseInt(port, 10), name, id, group, description
+        deviceId, port: parseInt(port, 10), name: serviceName, id: serviceId, group, description, ipv6
       });
       const sync = await triggerServiceSync(modules, 'service_quick_add');
-      const status = sync && !sync.success ? 502 : 200;
-      res.status(status).json({ success: sync?.success ?? true, service, sync });
+      res.json(buildMutationResponse({
+        successMessage: '服务已注册并完成同步',
+        warningMessage: '服务已注册，但 Lucky / SunPanel / Cloudflare 仍有未同步成功的项目，请查看 sync 结果',
+        entityKey: 'service',
+        entityValue: service,
+        sync
+      }));
     } catch (error) {
       console.error('[Services] 快速添加失败:', error);
       const status = error.message.includes('已存在') ? 400 : 500;
@@ -296,64 +496,9 @@ export function serviceRoutes(modules) {
       const services = modules.serviceRegistry.getAllServices();
       const ipv6Map = modules.deviceMonitor?.getIPv6Map() || {};
       const proxyDefaults = modules.serviceRegistry.getProxyDefaults();
-      const results = [];
-
-      for (const service of services) {
-        const result = {
-          id: service.id,
-          name: service.name,
-          ipv4Proxy: { url: null, ok: false, status: null, latency: null },
-          ipv6Direct: { url: null, ok: false, status: null, latency: null }
-        };
-
-        // IPv4 反向代理 URL
-        const luckyPort = proxyDefaults?.externalPorts?.lucky || 50000;
-        result.ipv4Proxy.url = `https://${service.proxyDomain}:${luckyPort}`;
-
-        try {
-          const startTime = Date.now();
-          const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 8000);
-          const response = await fetch(result.ipv4Proxy.url, {
-            method: 'HEAD',
-            signal: controller.signal,
-            redirect: 'manual'
-          }).catch(() => null);
-          clearTimeout(timeout);
-
-          if (response) {
-            result.ipv4Proxy.ok = response.status < 500;
-            result.ipv4Proxy.status = response.status;
-            result.ipv4Proxy.latency = Date.now() - startTime;
-          }
-        } catch { /* ignore */ }
-
-        // IPv6 直连 URL
-        const ipv6 = ipv6Map[service.device];
-        if (ipv6) {
-          result.ipv6Direct.url = modules.serviceRegistry.buildIpv6DirectUrl(service.id, ipv6);
-
-          try {
-            const startTime = Date.now();
-            const controller = new AbortController();
-            const timeout = setTimeout(() => controller.abort(), 8000);
-            const response = await fetch(result.ipv6Direct.url, {
-              method: 'HEAD',
-              signal: controller.signal,
-              redirect: 'manual'
-            }).catch(() => null);
-            clearTimeout(timeout);
-
-            if (response) {
-              result.ipv6Direct.ok = response.status < 500;
-              result.ipv6Direct.status = response.status;
-              result.ipv6Direct.latency = Date.now() - startTime;
-            }
-          } catch { /* ignore */ }
-        }
-
-        results.push(result);
-      }
+      const results = await Promise.all(
+        services.map((service) => buildConnectivityResult(service, modules, ipv6Map, proxyDefaults))
+      );
 
       res.json({ success: true, services: results, checkedAt: new Date().toISOString() });
     } catch (error) {

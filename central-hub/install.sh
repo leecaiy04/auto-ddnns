@@ -81,7 +81,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     ln -sf "$SCRIPT_DIR/central-hub.service" "$USER_SYSTEMD_DIR/"
 
     systemctl --user daemon-reload
-    systemctl --user enable central-hub.service
+    systemctl --user enable --now central-hub.service
 
     echo ""
     echo "✅ systemd 服务已安装"

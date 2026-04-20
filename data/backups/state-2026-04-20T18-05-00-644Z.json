@@ -1,0 +1,114 @@
+{
+  "version": "1.0.0",
+  "lastUpdate": "2026-04-20T18:05:00.643Z",
+  "uptime": 517874,
+  "startTime": "2026-04-14T18:13:46.546Z",
+  "router": {
+    "history": []
+  },
+  "ddns": {
+    "domains": [],
+    "history": [
+      {
+        "event": "update",
+        "success": false,
+        "error": "Command failed: bash /vol1/1000/code/auto-ddnns/scripts/aliddns_sync.sh all\nrouter output does not contain `display user device` result\n",
+        "timestamp": "2026-04-20T16:30:23.082Z"
+      },
+      {
+        "event": "update",
+        "success": false,
+        "error": "Command failed: bash /vol1/1000/code/auto-ddnns/scripts/aliddns_sync.sh all\nrouter output does not contain `display user device` result\n",
+        "timestamp": "2026-04-20T16:40:22.657Z"
+      },
+      {
+        "event": "update",
+        "success": false,
+        "error": "Command failed: bash /vol1/1000/code/auto-ddnns/scripts/aliddns_sync.sh all\nrouter output does not contain `display user device` result\n",
+        "timestamp": "2026-04-20T16:50:22.290Z"
+      },
+      {
+        "event": "update",
+        "success": false,
+        "error": "Command failed: bash /vol1/1000/code/auto-ddnns/scripts/aliddns_sync.sh all\nrouter output does not contain `display user device` result\n",
+        "timestamp": "2026-04-20T17:00:22.874Z"
+      },
+      {
+        "event": "update",
+        "success": false,
+        "error": "Command failed: bash /vol1/1000/code/auto-ddnns/scripts/aliddns_sync.sh all\nrouter output does not contain `display user device` result\n",
+        "timestamp": "2026-04-20T17:10:22.565Z"
+      },
+      {
+        "event": "update",
+        "success": false,
+        "error": "Command failed: bash /vol1/1000/code/auto-ddnns/scripts/aliddns_sync.sh all\nrouter output does not contain `display user device` result\n",
+        "timestamp": "2026-04-20T17:20:23.173Z"
+      },
+      {
+        "event": "update",
+        "success": false,
+        "error": "Command failed: bash /vol1/1000/code/auto-ddnns/scripts/aliddns_sync.sh all\nrouter output does not contain `display user device` result\n",
+        "timestamp": "2026-04-20T17:30:22.788Z"
+      },
+      {
+        "event": "update",
+        "success": false,
+        "error": "Command failed: bash /vol1/1000/code/auto-ddnns/scripts/aliddns_sync.sh all\nrouter output does not contain `display user device` result\n",
+        "timestamp": "2026-04-20T17:40:22.317Z"
+      },
+      {
+        "event": "update",
+        "success": false,
+        "error": "Command failed: bash /vol1/1000/code/auto-ddnns/scripts/aliddns_sync.sh all\nrouter output does not contain `display user device` result\n",
+        "timestamp": "2026-04-20T17:50:22.963Z"
+      },
+      {
+        "event": "update",
+        "success": false,
+        "error": "Command failed: bash /vol1/1000/code/auto-ddnns/scripts/aliddns_sync.sh all\nrouter output does not contain `display user device` result\n",
+        "timestamp": "2026-04-20T18:00:22.593Z"
+      }
+    ],
+    "lastUpdate": "2026-04-18T18:40:02.186Z",
+    "lastResult": {
+      "success": true,
+      "output": "\n--- leecaiy.shop ---\n{\n  \"config\": \"config/private_ipv6_ddns_targets.json\",\n  \"domain\": \"leecaiy.shop\",\n  \"suffix\": \"v6\",\n  \"ttl\": 600,\n  \"notify\": false,\n  \"ips\": [\n    \"192.168.3.2\",\n    \"192.168.3.10\",\n    \"192.168.3.200\",\n    \"192.168.3.201\"\n  ],\n  \"results\": [\n    {\n      \"ipv4\": \"192.168.3.2\",\n      \"fqdn\": \"2.v6.leecaiy.shop\",\n      \"status\": \"unchanged\",\n      \"best_ipv6\": \"240e:390:9eb:3000:be24:11ff:fe9f:ba81\",\n      \"record_id\": \"2044363190624177152\",\n      \"previous_value\": \"240e:390:9eb:3000:be24:11ff:fe9f:ba81\",\n      \"detail\": null\n    },\n    {\n      \"ipv4\": \"192.168.3.10\",\n      \"fqdn\": \"10.v6.leecaiy.shop\",\n      \"status\": \"unchanged\",\n      \"best_ipv6\": \"240e:391:cd1:b2c0::4\",\n      \"record_id\": \"2044494027520900096\",\n      \"previous_value\": \"240e:391:cd1:b2c0::4\",\n      \"detail\": null\n    },\n    {\n      \"ipv4\": \"192.168.3.200\",\n      \"fqdn\": \"200.v6.leecaiy.shop\",\n      \"status\": \"unchanged\",\n      \"best_ipv6\": \"240e:390:9eb:3000:be24:11ff:fe29:92a4\",\n      \"record_id\": \"2044494030675018752\",\n      \"previous_value\": \"240e:390:9eb:3000:be24:11ff:fe29:92a4\",\n      \"detail\": null\n    },\n    {\n      \"ipv4\": \"192.168.3.201\",\n      \"fqdn\": \"201.v6.leecaiy.shop\",\n      \"status\": \"unchanged\",\n      \"best_ipv6\": \"240e:390:9eb:3000:be24:11ff:feaf:93a1\",\n      \"record_id\": \"2044494033120624640\",\n      \"previous_value\": \"240e:390:9eb:3000:be24:11ff:feaf:93a1\",\n      \"detail\": null\n    }\n  ],\n  \"notification_error\": null\n}\n\nDDNS 最近一次执行域名: leecaiy.shop\n- unchanged   2.v6.leecaiy.shop        240e:390:9eb:3000:be24:11ff:fe9f:ba81 (192.168.3.2)\n- unchanged   10.v6.leecaiy.shop       240e:391:cd1:b2c0::4 (192.168.3.10)\n- unchanged   200.v6.leecaiy.shop      240e:390:9eb:3000:be24:11ff:fe29:92a4 (192.168.3.200)\n- unchanged   201.v6.leecaiy.shop      240e:390:9eb:3000:be24:11ff:feaf:93a1 (192.168.3.201)\n\n--- 222869.xyz ---\n{\n  \"config\": \"config/private_ipv6_ddns_targets.json\",\n  \"domain\": \"222869.xyz\",\n  \"suffix\": \"v6\",\n  \"ttl\": 600,\n  \"notify\": false,\n  \"ips\": [\n    \"192.168.3.2\",\n    \"192.168.3.10\",\n    \"192.168.3.200\",\n    \"192.168.3.201\"\n  ],\n  \"results\": [\n    {\n      \"ipv4\": \"192.168.3.2\",\n      \"fqdn\": \"2.v6.222869.xyz\",\n      \"status\": \"unchanged\",\n      \"best_ipv6\": \"240e:390:9eb:3000:be24:11ff:fe9f:ba81\",\n      \"record_id\": \"2041045902420582400\",\n      \"previous_value\": \"240e:390:9eb:3000:be24:11ff:fe9f:ba81\",\n      \"detail\": null\n    },\n    {\n      \"ipv4\": \"192.168.3.10\",\n      \"fqdn\": \"10.v6.222869.xyz\",\n      \"status\": \"unchanged\",\n      \"best_ipv6\": \"240e:391:cd1:b2c0::4\",\n      \"record_id\": \"2041045925564746752\",\n      \"previous_value\": \"240e:391:cd1:b2c0::4\",\n      \"detail\": null\n    },\n    {\n      \"ipv4\": \"192.168.3.200\",\n      \"fqdn\": \"200.v6.222869.xyz\",\n      \"status\": \"unchanged\",\n      \"best_ipv6\": \"240e:390:9eb:3000:be24:11ff:fe29:92a4\",\n      \"record_id\": \"2041045948948014080\",\n      \"previous_value\": \"240e:390:9eb:3000:be24:11ff:fe29:92a4\",\n      \"detail\": null\n    },\n    {\n      \"ipv4\": \"192.168.3.201\",\n      \"fqdn\": \"201.v6.222869.xyz\",\n      \"status\": \"unchanged\",\n      \"best_ipv6\": \"240e:390:9eb:3000:be24:11ff:feaf:93a1\",\n      \"record_id\": \"2044477385366026240\",\n      \"previous_value\": \"240e:390:9eb:3000:be24:11ff:feaf:93a1\",\n      \"detail\": null\n    }\n  ],\n  \"notification_error\": null\n}\n\nDDNS 最近一次执行域名: 222869.xyz\n- unchanged   2.v6.222869.xyz          240e:390:9eb:3000:be24:11ff:fe9f:ba81 (192.168.3.2)\n- unchanged   10.v6.222869.xyz         240e:391:cd1:b2c0::4 (192.168.3.10)\n- unchanged   200.v6.222869.xyz        240e:390:9eb:3000:be24:11ff:fe29:92a4 (192.168.3.200)\n- unchanged   201.v6.222869.xyz        240e:390:9eb:3000:be24:11ff:feaf:93a1 (192.168.3.201)\n",
+      "error": "",
+      "domains": [
+        "leecaiy.shop",
+        "222869.xyz"
+      ],
+      "timestamp": "2026-04-18T18:40:02.186Z"
+    }
+  },
+  "lucky": {
+    "proxies": [],
+    "history": [],
+    "syncStatus": {},
+    "lastSync": "2026-04-20T18:00:05.320Z"
+  },
+  "sunpanel": {
+    "cards": [],
+    "history": [],
+    "syncStatus": {},
+    "lastSync": "2026-04-20T17:30:06.501Z"
+  },
+  "devices": {
+    "lastUpdate": "2026-04-20T18:00:20.318Z",
+    "devices": {},
+    "ipv6Map": {},
+    "totalDevices": 0,
+    "ipv6Ready": 0
+  },
+  "services": {
+    "lastUpdate": "2026-04-20T17:31:13.408Z",
+    "totalServices": 0,
+    "proxiedServices": 0
+  },
+  "cloudflare": {
+    "lastSync": null,
+    "records": {},
+    "syncStatus": {}
+  }
+}

@@ -14,7 +14,7 @@
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                     Central Hub Service                      │
-│                     (中枢服务 - :3000)                       │
+│                     (中枢服务 - :51000)                       │
 ├─────────────────────────────────────────────────────────────┤
 │                                                               │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
@@ -256,7 +256,7 @@ GET /api/health
 ```json
 {
   "server": {
-    "port": 3000,
+    "port": 51000,
     "host": "0.0.0.0",
     "cors": {
       "enabled": true,
@@ -310,14 +310,13 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/node /home/leecaiy/workspace/auto-dnns/central-hub/server.mjs
-WorkingDirectory=/home/leecaiy/workspace/auto-dnns
+ExecStart=/usr/bin/node /vol1/1000/code/auto-ddnns/central-hub/server.mjs
+WorkingDirectory=/vol1/1000/code/auto-ddnns/central-hub
 Restart=always
-User=leecaiy
 Environment=NODE_ENV=production
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 ```
 
 ### Docker (可选)
@@ -327,7 +326,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
 COPY . .
-EXPOSE 3000
+EXPOSE 51000
 CMD ["node", "server.mjs"]
 ```
 

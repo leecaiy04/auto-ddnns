@@ -98,7 +98,7 @@ CF_API_TOKEN=your-cloudflare-api-token
 CF_ZONE_ID=your-zone-id
 CF_DOMAIN=example.com
 
-HUB_PORT=51100
+HUB_PORT=51000
 HUB_HOST=0.0.0.0
 ```
 
@@ -158,9 +158,9 @@ node cli.mjs monitor
 
 如果 `HUB_PORT` 未覆盖，默认访问：
 
-- Web 面板：`http://localhost:51100/`
-- 健康检查：`http://localhost:51100/api/health`
-- 状态摘要：`http://localhost:51100/api/status`
+- Web 面板：`http://localhost:51000/`
+- 健康检查：`http://localhost:51000/api/health`
+- 状态摘要：`http://localhost:51000/api/status`
 
 对应代码见 `central-hub/server.mjs:275`、`central-hub/server.mjs:347`。
 
@@ -170,19 +170,19 @@ node cli.mjs monitor
 
 ```bash
 # 完整同步
-curl -X POST http://localhost:51100/api/sync/full
+curl -X POST http://localhost:51000/api/sync/full
 
 # Lucky 同步
-curl -X POST http://localhost:51100/api/proxies/sync
+curl -X POST http://localhost:51000/api/proxies/sync
 
 # SunPanel 同步
-curl -X POST http://localhost:51100/api/sunpanel/sync
+curl -X POST http://localhost:51000/api/sunpanel/sync
 
 # Cloudflare 同步
-curl -X POST http://localhost:51100/api/cloudflare/sync
+curl -X POST http://localhost:51000/api/cloudflare/sync
 
 # DDNS 刷新
-curl -X POST http://localhost:51100/api/ddns/refresh
+curl -X POST http://localhost:51000/api/ddns/refresh
 ```
 
 对应代码见 `central-hub/server.mjs:297`、`central-hub/server.mjs:317`、`central-hub/server.mjs:327`、`central-hub/server.mjs:337` 与 `central-hub/routes/ddns.mjs:20`。
@@ -191,19 +191,19 @@ curl -X POST http://localhost:51100/api/ddns/refresh
 
 ```bash
 # 设备列表
-curl http://localhost:51100/api/devices/list
+curl http://localhost:51000/api/devices/list
 
 # 刷新设备状态
-curl -X POST http://localhost:51100/api/devices/refresh
+curl -X POST http://localhost:51000/api/devices/refresh
 
 # 关键机器
-curl http://localhost:51100/api/devices/key-machines
+curl http://localhost:51000/api/devices/key-machines
 
 # 扫描候选端口
-curl http://localhost:51100/api/devices/scan-ports
+curl http://localhost:51000/api/devices/scan-ports
 
 # 扫描指定设备开放端口
-curl -X POST http://localhost:51100/api/devices/200/scan
+curl -X POST http://localhost:51000/api/devices/200/scan
 ```
 
 对应代码见 `central-hub/routes/devices.mjs:14`、`central-hub/routes/devices.mjs:45`、`central-hub/routes/devices.mjs:122`、`central-hub/routes/devices.mjs:197`、`central-hub/routes/devices.mjs:244`。
@@ -212,18 +212,18 @@ curl -X POST http://localhost:51100/api/devices/200/scan
 
 ```bash
 # 所有服务
-curl http://localhost:51100/api/services/list
+curl http://localhost:51000/api/services/list
 
 # 服务状态
-curl http://localhost:51100/api/services/status
+curl http://localhost:51000/api/services/status
 
 # 校验服务配置
-curl -X POST http://localhost:51100/api/services/validate \
+curl -X POST http://localhost:51000/api/services/validate \
   -H "Content-Type: application/json" \
   -d '{"id":"demo","name":"Demo","device":"200","internalPort":8080}'
 
 # 添加服务
-curl -X POST http://localhost:51100/api/services/add \
+curl -X POST http://localhost:51000/api/services/add \
   -H "Content-Type: application/json" \
   -d '{
     "id":"demo",
@@ -235,12 +235,12 @@ curl -X POST http://localhost:51100/api/services/add \
   }'
 
 # 更新服务
-curl -X PUT http://localhost:51100/api/services/demo \
+curl -X PUT http://localhost:51000/api/services/demo \
   -H "Content-Type: application/json" \
   -d '{"enableProxy":false}'
 
 # 删除服务
-curl -X DELETE http://localhost:51100/api/services/demo
+curl -X DELETE http://localhost:51000/api/services/demo
 ```
 
 对应代码见 `central-hub/routes/services.mjs:39`、`central-hub/routes/services.mjs:55`、`central-hub/routes/services.mjs:71`、`central-hub/routes/services.mjs:129`、`central-hub/routes/services.mjs:150`、`central-hub/routes/services.mjs:166`。
@@ -249,19 +249,19 @@ curl -X DELETE http://localhost:51100/api/services/demo
 
 ```bash
 # Lucky 当前代理状态
-curl http://localhost:51100/api/proxies
+curl http://localhost:51000/api/proxies
 
 # 直接通过资源路由触发 Lucky 同步（GET）
-curl http://localhost:51100/api/proxies/sync
+curl http://localhost:51000/api/proxies/sync
 
 # Cloudflare 状态
-curl http://localhost:51100/api/cloudflare/status
+curl http://localhost:51000/api/cloudflare/status
 
 # Cloudflare Token 校验
-curl http://localhost:51100/api/cloudflare/verify-token
+curl http://localhost:51000/api/cloudflare/verify-token
 
 # DDNS 历史
-curl http://localhost:51100/api/ddns/history
+curl http://localhost:51000/api/ddns/history
 ```
 
 对应代码见 `central-hub/routes/proxy.mjs:10`、`central-hub/routes/proxy.mjs:23`、`central-hub/routes/cloudflare.mjs:11`、`central-hub/routes/cloudflare.mjs:39`、`central-hub/routes/cloudflare.mjs:53`、`central-hub/routes/ddns.mjs:30`。

@@ -59,8 +59,8 @@ function denormalizeServiceDomains(service) {
 }
 
 function inferInternalProtocol(port) {
-  const securePorts = [443, 5001, 8006, 8443, 9443];
-  return securePorts.includes(port) ? 'https' : 'http';
+  // 所有的后端端口默认 http 而不是 https
+  return 'http';
 }
 
 function buildDefaultLanUrl(service) {
@@ -73,7 +73,12 @@ function formatTargetHost(targetHost) {
 }
 
 function isManagedDomain(domain) {
-  return domain === MANAGED_DOMAIN || domain.endsWith(`.${MANAGED_DOMAIN}`);
+  // 支持多个托管域名：ALIYUN_DOMAIN + proxy-defaults.json 中的所有域名
+  if (domain === MANAGED_DOMAIN || domain.endsWith(`.${MANAGED_DOMAIN}`)) return true;
+  // 从 proxy-defaults 加载的额外域名在 ServiceRegistry 实例中检查
+  // 这里做一个宽松检查：任何已导入的域名（非 example.com 占位符）都视为合法
+  if (domain.includes('example.com')) return false;
+  return true;
 }
 
 function sanitizeId(id) {
@@ -115,7 +120,7 @@ export class ServiceRegistry {
     this.proxyDefaults = loadJSON(PROXY_DEFAULTS_PATH) || {
       protocol: 'https',
       domains: [MANAGED_DOMAIN],
-      externalPorts: { lucky: 50000 },
+      externalPorts: { lucky: 55000 },
       dns: { wildcardDomains: [`*.${MANAGED_DOMAIN}`], sslCertDomains: [MANAGED_DOMAIN, `*.${MANAGED_DOMAIN}`] },
       defaultProxyTemplate: 'https://{serviceId}.{domain}:{port}',
       defaultIpv6Template: '{lanProtocol}://[{ipv6}]:{lanPort}'
@@ -222,8 +227,10 @@ export class ServiceRegistry {
    * @param {string} [params.description] - 描述
    */
   async quickAddFromScan(params) {
-    const { deviceId, port, name, id, group, description } = params;
+    const { deviceId, port, name, id, group, description, ipv6 } = params;
     const serviceId = sanitizeId(id || name);
+    const serviceName = String(name || '').trim() || serviceId;
+    const serviceIpv6 = String(ipv6 || '').trim() || null;
     const device = this.getDeviceById(deviceId);
 
     if (!device) {
@@ -236,22 +243,23 @@ export class ServiceRegistry {
     const internalProtocol = inferInternalProtocol(port);
     const primaryDomain = this.proxyDefaults?.domains?.[0] || MANAGED_DOMAIN;
     const proxyDomain = `${serviceId}.${primaryDomain}`;
-    const luckyPort = this.proxyDefaults?.externalPorts?.lucky || 50000;
+    const luckyPort = this.proxyDefaults?.externalPorts?.lucky || 55000;
 
     const service = {
       id: serviceId,
-      name: name,
+      name: serviceName,
       device: deviceId,
+      ipv6: serviceIpv6,
       internalPort: port,
       internalProtocol: internalProtocol,
       enableProxy: true,
       proxyType: 'reverseproxy',
       enableTLS: internalProtocol === 'https',
       proxyDomain: proxyDomain,
-      description: description || `${name} on ${device.name}`,
+      description: description || `${serviceName} on ${device.name}`,
       lucky: {
         port: luckyPort,
-        remark: name,
+        remark: serviceName,
         advancedConfig: ''
       },
       sunpanel: {
@@ -265,8 +273,8 @@ export class ServiceRegistry {
     await this.saveRegistry();
     await this.updateState();
 
-    this.changelog?.append('add_service', serviceId, `从端口扫描快速添加: ${name} (${device.name}:${port})`, { service });
-    console.log(`[ServiceRegistry] ✅ 快速添加服务: ${name} (${serviceId})`);
+    this.changelog?.append('add_service', serviceId, `从端口扫描快速添加: ${serviceName} (${device.name}:${port})`, { service });
+    console.log(`[ServiceRegistry] ✅ 快速添加服务: ${serviceName} (${serviceId})`);
     return service;
   }
 
@@ -296,7 +304,7 @@ export class ServiceRegistry {
     };
 
     const primaryDomain = this.proxyDefaults?.domains?.[0] || MANAGED_DOMAIN;
-    const luckyPort = this.proxyDefaults?.externalPorts?.lucky || 50000;
+    const luckyPort = this.proxyDefaults?.externalPorts?.lucky || 55000;
 
     const newService = {
       enableProxy: true,

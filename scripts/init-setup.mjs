@@ -97,7 +97,7 @@ async function showNextSteps() {
   console.log('3. 启动服务:');
   console.log('   npm start\n');
   console.log('4. 访问监控界面:');
-  console.log('   http://localhost:3000/\n');
+  console.log('   http://localhost:51000/\n');
 }
 
 async function main() {

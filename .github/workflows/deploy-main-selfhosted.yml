@@ -48,7 +48,7 @@ jobs:
 
           DEPLOY_DIR="${DEPLOY_DIR:-/vol1/1000/code/deplay/auto-dnns}"
           SERVICE_NAME="${SERVICE_NAME:-auto-dnns}"
-          HEALTH_URL="${HEALTH_URL:-http://127.0.0.1:51100/api/health}"
+          HEALTH_URL="${HEALTH_URL:-http://127.0.0.1:51000/api/health}"
           SYSTEMD_SCOPE="${SYSTEMD_SCOPE:-system}"
 
           if [[ "${SYSTEMD_SCOPE}" == "user" ]]; then

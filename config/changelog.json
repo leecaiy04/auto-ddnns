@@ -1671,6 +1671,1582 @@
           }
         }
       }
+    },
+    {
+      "timestamp": "2026-04-14T19:34:31.671Z",
+      "action": "scan_device",
+      "target": "1",
+      "detail": "扫描设备 1 (192.168.3.1), 发现 2 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-14T19:34:32.188Z",
+      "action": "scan_device",
+      "target": "2",
+      "detail": "扫描设备 2 (192.168.3.2), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-14T19:34:32.700Z",
+      "action": "scan_device",
+      "target": "10",
+      "detail": "扫描设备 10 (192.168.3.10), 发现 3 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-14T19:34:33.210Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 17 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-14T19:36:48.973Z",
+      "action": "delete_service",
+      "target": "svc-homeassistant",
+      "detail": "删除服务: svc-homeassistant",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "svc-homeassistant",
+          "name": "svc-homeassistant",
+          "device": "10",
+          "internalPort": 8123,
+          "proxyDomain": "ha.example.com",
+          "lucky": {
+            "port": 55000,
+            "remark": "svc-homeassistant",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "internalProtocol": "http",
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://ha.example.com/favicon.ico",
+            "lanUrl": "http://192.168.3.10:8123"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-14T19:36:53.389Z",
+      "action": "delete_service",
+      "target": "svc-jellyfin",
+      "detail": "删除服务: svc-jellyfin",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "svc-jellyfin",
+          "name": "svc-jellyfin",
+          "device": "2",
+          "internalPort": 8096,
+          "proxyDomain": "jellyfin.example.com",
+          "lucky": {
+            "port": 55000,
+            "remark": "svc-jellyfin",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "internalProtocol": "http",
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://jellyfin.example.com/favicon.ico",
+            "lanUrl": "http://192.168.3.2:8096"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-14T19:52:27.312Z",
+      "action": "update_proxy_defaults",
+      "target": "proxy-defaults",
+      "detail": "更新全局反代配置",
+      "user": "admin",
+      "data": {
+        "protocol": "https",
+        "domains": [
+          "222869.xyz"
+        ],
+        "externalPorts": {
+          "lucky": 55000
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-16T00:51:37.325Z",
+      "action": "add_service",
+      "target": "hub-final-verify",
+      "detail": "从端口扫描快速添加: Hub Final Verify (NAS / Nextcloud 服务器:51000)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "hub-final-verify",
+          "name": "Hub Final Verify",
+          "device": "200",
+          "internalPort": 51000,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "hub-final-verify.222869.xyz",
+          "description": "Hub Final Verify on NAS / Nextcloud 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Hub Final Verify",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://hub-final-verify.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.200:51000"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-16T00:53:51.375Z",
+      "action": "add_service",
+      "target": "hub-final-verify-2",
+      "detail": "从端口扫描快速添加: Hub Final Verify 2 (NAS / Nextcloud 服务器:51000)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "hub-final-verify-2",
+          "name": "Hub Final Verify 2",
+          "device": "200",
+          "internalPort": 51000,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "hub-final-verify-2.222869.xyz",
+          "description": "Hub Final Verify 2 on NAS / Nextcloud 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Hub Final Verify 2",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://hub-final-verify-2.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.200:51000"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-16T11:23:46.710Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 7 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-16T12:03:05.363Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 7 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-16T12:03:18.265Z",
+      "action": "add_service",
+      "target": "hermes-night-verify",
+      "detail": "从端口扫描快速添加: Hermes Night Verify (NAS / Nextcloud 服务器:5666)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "hermes-night-verify",
+          "name": "Hermes Night Verify",
+          "device": "200",
+          "internalPort": 5666,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "hermes-night-verify.222869.xyz",
+          "description": "Hermes 临时验证服务",
+          "lucky": {
+            "port": 55000,
+            "remark": "Hermes Night Verify",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://hermes-night-verify.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.200:5666"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-16T12:05:17.413Z",
+      "action": "add_service",
+      "target": "hermes-night-verify-2",
+      "detail": "从端口扫描快速添加: Hermes Night Verify 2 (NAS / Nextcloud 服务器:5122)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "hermes-night-verify-2",
+          "name": "Hermes Night Verify 2",
+          "device": "200",
+          "internalPort": 5122,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "hermes-night-verify-2.222869.xyz",
+          "description": "Hermes 临时验证服务 2",
+          "lucky": {
+            "port": 55000,
+            "remark": "Hermes Night Verify 2",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://hermes-night-verify-2.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.200:5122"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-16T12:15:05.979Z",
+      "action": "add_service",
+      "target": "hermes-night-verify-3",
+      "detail": "从端口扫描快速添加: Hermes Night Verify 3 (NAS / Nextcloud 服务器:5123)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "hermes-night-verify-3",
+          "name": "Hermes Night Verify 3",
+          "device": "200",
+          "internalPort": 5123,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "hermes-night-verify-3.222869.xyz",
+          "description": "Hermes 临时验证服务 3",
+          "lucky": {
+            "port": 55000,
+            "remark": "Hermes Night Verify 3",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://hermes-night-verify-3.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.200:5123"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-16T12:15:26.546Z",
+      "action": "delete_service",
+      "target": "hermes-night-verify-3",
+      "detail": "删除服务: Hermes Night Verify 3",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "hermes-night-verify-3",
+          "name": "Hermes Night Verify 3",
+          "device": "200",
+          "internalPort": 5123,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "hermes-night-verify-3.222869.xyz",
+          "description": "Hermes 临时验证服务 3",
+          "lucky": {
+            "port": 55000,
+            "remark": "Hermes Night Verify 3",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://hermes-night-verify-3.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.200:5123"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-16T12:15:28.534Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 8 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-16T12:22:10.487Z",
+      "action": "add_service",
+      "target": "hermes-manual-ui-verify",
+      "detail": "手动添加服务: Hermes Manual UI Verify",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "id": "hermes-manual-ui-verify",
+          "name": "Hermes Manual UI Verify",
+          "device": "200",
+          "internalPort": 5124,
+          "internalProtocol": "http",
+          "description": "Hermes 浏览器手动添加验证",
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://hermes-manual-ui-verify.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.200:5124"
+          },
+          "proxyDomain": "hermes-manual-ui-verify.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "Hermes Manual UI Verify",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-16T12:22:31.800Z",
+      "action": "delete_service",
+      "target": "hermes-manual-ui-verify",
+      "detail": "删除服务: Hermes Manual UI Verify",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "id": "hermes-manual-ui-verify",
+          "name": "Hermes Manual UI Verify",
+          "device": "200",
+          "internalPort": 5124,
+          "internalProtocol": "http",
+          "description": "Hermes 浏览器手动添加验证",
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://hermes-manual-ui-verify.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.200:5124"
+          },
+          "proxyDomain": "hermes-manual-ui-verify.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "Hermes Manual UI Verify",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T13:30:01.709Z",
+      "action": "delete_service",
+      "target": "hermes-night-verify-2",
+      "detail": "删除服务: Hermes Night Verify 2",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "hermes-night-verify-2",
+          "name": "Hermes Night Verify 2",
+          "device": "200",
+          "internalPort": 5122,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "hermes-night-verify-2.222869.xyz",
+          "description": "Hermes 临时验证服务 2",
+          "lucky": {
+            "port": 55000,
+            "remark": "Hermes Night Verify 2",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://hermes-night-verify-2.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.200:5122"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T13:35:39.456Z",
+      "action": "delete_service",
+      "target": "hub-final-verify",
+      "detail": "删除服务: Hub Final Verify",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "hub-final-verify",
+          "name": "Hub Final Verify",
+          "device": "200",
+          "internalPort": 51000,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "hub-final-verify.222869.xyz",
+          "description": "Hub Final Verify on NAS / Nextcloud 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Hub Final Verify",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://hub-final-verify.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.200:51000"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T13:42:18.765Z",
+      "action": "delete_service",
+      "target": "cc-live-verify",
+      "detail": "删除服务: CC Live Verify",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "cc-live-verify",
+          "name": "CC Live Verify",
+          "device": "10",
+          "internalPort": 18789,
+          "proxyDomain": "cc-live-verify-1775675411674.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "CC Live Verify",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "internalProtocol": "http",
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://cc-live-verify-1775675411674.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.10:18789"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T13:45:42.397Z",
+      "action": "delete_service",
+      "target": "cc-live-add-verify",
+      "detail": "删除服务: CC Live Add Verify",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "cc-live-add-verify",
+          "name": "CC Live Add Verify",
+          "device": "10",
+          "internalPort": 18789,
+          "proxyDomain": "cc-live-add-1775675459436.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "CC Live Add Verify",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "internalProtocol": "http",
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://cc-live-add-1775675459436.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.10:18789"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T13:47:47.063Z",
+      "action": "delete_service",
+      "target": "hermes-night-verify",
+      "detail": "删除服务: Hermes Night Verify",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "hermes-night-verify",
+          "name": "Hermes Night Verify",
+          "device": "200",
+          "internalPort": 5666,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "hermes-night-verify.222869.xyz",
+          "description": "Hermes 临时验证服务",
+          "lucky": {
+            "port": 55000,
+            "remark": "Hermes Night Verify",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://hermes-night-verify.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.200:5666"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T13:49:01.573Z",
+      "action": "delete_service",
+      "target": "hub-final-verify-2",
+      "detail": "删除服务: Hub Final Verify 2",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "hub-final-verify-2",
+          "name": "Hub Final Verify 2",
+          "device": "200",
+          "internalPort": 51000,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "hub-final-verify-2.222869.xyz",
+          "description": "Hub Final Verify 2 on NAS / Nextcloud 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Hub Final Verify 2",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://hub-final-verify-2.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.200:51000"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T13:55:48.569Z",
+      "action": "delete_service",
+      "target": "nextcloud",
+      "detail": "删除服务: nextcloud",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "nextcloud",
+          "name": "nextcloud",
+          "device": "200",
+          "internalPort": 58841,
+          "proxyDomain": "nextcloud.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "nextcloud",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "internalProtocol": "http",
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://nextcloud.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.200:58841"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T14:21:51.015Z",
+      "action": "add_service",
+      "target": "test-delete",
+      "detail": "手动添加服务: 测试删除服务",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "test-delete",
+          "name": "测试删除服务",
+          "device": "10",
+          "internalPort": 8888,
+          "internalProtocol": "http",
+          "proxyDomain": "test-delete.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "测试删除服务",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "",
+            "lanUrl": "http://192.168.3.10:8888"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T14:22:00.778Z",
+      "action": "delete_service",
+      "target": "test-delete",
+      "detail": "删除服务: 测试删除服务",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "test-delete",
+          "name": "测试删除服务",
+          "device": "10",
+          "internalPort": 8888,
+          "internalProtocol": "http",
+          "proxyDomain": "test-delete.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "测试删除服务",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "",
+            "lanUrl": "http://192.168.3.10:8888"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T14:23:12.343Z",
+      "action": "add_service",
+      "target": "test-delete-2",
+      "detail": "手动添加服务: 测试删除服务2",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "test-delete-2",
+          "name": "测试删除服务2",
+          "device": "10",
+          "internalPort": 9999,
+          "internalProtocol": "http",
+          "proxyDomain": "test-delete-2.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "测试删除服务2",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "",
+            "lanUrl": "http://192.168.3.10:9999"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T14:23:21.287Z",
+      "action": "delete_service",
+      "target": "test-delete-2",
+      "detail": "删除服务: 测试删除服务2",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "test-delete-2",
+          "name": "测试删除服务2",
+          "device": "10",
+          "internalPort": 9999,
+          "internalProtocol": "http",
+          "proxyDomain": "test-delete-2.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "测试删除服务2",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "",
+            "lanUrl": "http://192.168.3.10:9999"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T14:26:42.569Z",
+      "action": "add_service",
+      "target": "test-final",
+      "detail": "手动添加服务: 最终测试",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "test-final",
+          "name": "最终测试",
+          "device": "10",
+          "internalPort": 7777,
+          "internalProtocol": "http",
+          "proxyDomain": "test-final.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "最终测试",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "",
+            "lanUrl": "http://192.168.3.10:7777"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T14:26:56.146Z",
+      "action": "delete_service",
+      "target": "test-final",
+      "detail": "删除服务: 最终测试",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "test-final",
+          "name": "最终测试",
+          "device": "10",
+          "internalPort": 7777,
+          "internalProtocol": "http",
+          "proxyDomain": "test-final.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "最终测试",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "",
+            "lanUrl": "http://192.168.3.10:7777"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T14:31:47.475Z",
+      "action": "add_service",
+      "target": "test-with-log",
+      "detail": "手动添加服务: 带日志测试",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "test-with-log",
+          "name": "带日志测试",
+          "device": "10",
+          "internalPort": 6666,
+          "internalProtocol": "http",
+          "proxyDomain": "test-with-log.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "带日志测试",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "",
+            "lanUrl": "http://192.168.3.10:6666"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T14:33:00.549Z",
+      "action": "delete_service",
+      "target": "test-with-log",
+      "detail": "删除服务: 带日志测试",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "test-with-log",
+          "name": "带日志测试",
+          "device": "10",
+          "internalPort": 6666,
+          "internalProtocol": "http",
+          "proxyDomain": "test-with-log.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "带日志测试",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "",
+            "lanUrl": "http://192.168.3.10:6666"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T14:40:57.460Z",
+      "action": "add_service",
+      "target": "test-detailed-log",
+      "detail": "手动添加服务: 详细日志测试",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "test-detailed-log",
+          "name": "详细日志测试",
+          "device": "10",
+          "internalPort": 5555,
+          "internalProtocol": "http",
+          "proxyDomain": "test-detailed-log.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "详细日志测试",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "",
+            "lanUrl": "http://192.168.3.10:5555"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T14:42:14.807Z",
+      "action": "delete_service",
+      "target": "test-detailed-log",
+      "detail": "删除服务: 详细日志测试",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "test-detailed-log",
+          "name": "详细日志测试",
+          "device": "10",
+          "internalPort": 5555,
+          "internalProtocol": "http",
+          "proxyDomain": "test-detailed-log.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "详细日志测试",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "",
+            "lanUrl": "http://192.168.3.10:5555"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T15:50:54.572Z",
+      "action": "delete_service",
+      "target": "debian",
+      "detail": "删除服务: debian小龙虾",
+      "user": "admin",
+      "data": {
+        "service": {
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": true,
+          "id": "debian",
+          "name": "debian小龙虾",
+          "device": "10",
+          "internalPort": 18789,
+          "proxyDomain": "openclaw.222869.xyz",
+          "lucky": {
+            "port": 55000,
+            "remark": "debian小龙虾",
+            "advancedConfig": ""
+          },
+          "advanced": {
+            "waf": false,
+            "ignoreTlsVerify": true,
+            "autoRedirect": true,
+            "useTargetHost": true,
+            "accessLog": true,
+            "securityPresets": true,
+            "authentication": {
+              "enabled": false,
+              "type": "web"
+            }
+          },
+          "internalProtocol": "http",
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://openclaw.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.10:18789"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T15:51:00.382Z",
+      "action": "scan_device",
+      "target": "201",
+      "detail": "扫描设备 201 (192.168.3.201), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-18T15:51:18.407Z",
+      "action": "add_service",
+      "target": "synology",
+      "detail": "从端口扫描快速添加: synology (局域网设备-201:5000)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "synology",
+          "name": "synology",
+          "device": "201",
+          "internalPort": 5000,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "synology.222869.xyz",
+          "description": "synology on 局域网设备-201",
+          "lucky": {
+            "port": 55000,
+            "remark": "synology",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://synology.222869.xyz/favicon.ico",
+            "lanUrl": "http://192.168.3.201:5000"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T19:25:28.769Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 1 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-18T19:25:28.770Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": true,
+          "totalDeleted": 1,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.3.2:16601/666",
+              "deleted": 1,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "已删除 1 个 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 22,
+          "cleared": 22,
+          "message": "已清空本地同步状态（22 个卡片）。注意：SunPanel API 没有删除接口，远端卡片需要手动删除",
+          "cards": [
+            {
+              "onlyName": "debian",
+              "title": "debian小龙虾",
+              "domain": "openclaw.222869.xyz",
+              "serviceId": "debian"
+            },
+            {
+              "onlyName": "nextcloud",
+              "title": "nextcloud",
+              "domain": "nextcloud.222869.xyz",
+              "serviceId": "nextcloud"
+            },
+            {
+              "onlyName": "cc-live-verify",
+              "title": "CC Live Verify",
+              "domain": "cc-live-verify-1775675411674.222869.xyz",
+              "serviceId": "cc-live-verify"
+            },
+            {
+              "onlyName": "cc-live-add-verify",
+              "title": "CC Live Add Verify",
+              "domain": "cc-live-add-1775675459436.222869.xyz",
+              "serviceId": "cc-live-add-verify"
+            },
+            {
+              "onlyName": "svc-jellyfin",
+              "title": "svc-jellyfin",
+              "domain": "jellyfin.example.com",
+              "serviceId": "svc-jellyfin"
+            },
+            {
+              "onlyName": "svc-homeassistant",
+              "title": "svc-homeassistant",
+              "domain": "ha.example.com",
+              "serviceId": "svc-homeassistant"
+            },
+            {
+              "onlyName": "unknown",
+              "title": "lucky2",
+              "domain": "lucky2.222869.xyz",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "测试同步服务",
+              "domain": "test-sync.222869.xyz",
+              "serviceId": null
+            },
+            {
+              "onlyName": "hub-final-verify",
+              "title": "Hub Final Verify",
+              "domain": "hub-final-verify.222869.xyz",
+              "serviceId": "hub-final-verify"
+            },
+            {
+              "onlyName": "hub-final-verify-2",
+              "title": "Hub Final Verify 2",
+              "domain": "hub-final-verify-2.222869.xyz",
+              "serviceId": "hub-final-verify-2"
+            },
+            {
+              "onlyName": "hermes-night-verify",
+              "title": "Hermes Night Verify",
+              "domain": "hermes-night-verify.222869.xyz",
+              "serviceId": "hermes-night-verify"
+            },
+            {
+              "onlyName": "unknown",
+              "title": "Smoke Verify",
+              "domain": "smoke-verify-1776369474.222869.xyz",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "Hub Final Verify",
+              "domain": "hub-final-verify.222869.xyz",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "测试服务",
+              "domain": "test.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "CC Live Verify",
+              "domain": "cc-live-verify-1775675411674.222869.xyz",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "CC Live Add Verify",
+              "domain": "cc-live-add-1775675459436.222869.xyz",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "Hermes Night Verify",
+              "domain": "hermes-night-verify.222869.xyz",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "Hub Final Verify 2",
+              "domain": "hub-final-verify-2.222869.xyz",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "nextcloud",
+              "domain": "nextcloud.222869.xyz",
+              "serviceId": null
+            },
+            {
+              "onlyName": "synology",
+              "title": "synology",
+              "domain": "synology.222869.xyz",
+              "serviceId": "synology"
+            },
+            {
+              "onlyName": "unknown",
+              "title": "test",
+              "domain": "test.222869.xyz",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "Test Manual",
+              "domain": "test-manual.222869.xyz",
+              "serviceId": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T19:25:32.862Z",
+      "action": "update_proxy_defaults",
+      "target": "proxy-defaults",
+      "detail": "更新全局反代配置",
+      "user": "admin",
+      "data": {
+        "protocol": "https",
+        "domains": [
+          "222869.xyz"
+        ],
+        "externalPorts": {
+          "lucky": 55000
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-18T19:25:38.527Z",
+      "action": "scan_device",
+      "target": "2",
+      "detail": "扫描设备 2 (192.168.3.2), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-19T15:35:42.970Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-19T15:35:42.971Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.3.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-19T15:36:03.711Z",
+      "action": "update_proxy_defaults",
+      "target": "proxy-defaults",
+      "detail": "更新全局反代配置",
+      "user": "admin",
+      "data": {
+        "protocol": "https",
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "externalPorts": {
+          "lucky": 55000
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-19T15:36:30.734Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 8 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-19T15:45:39.786Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 8 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-19T15:45:44.624Z",
+      "action": "add_service",
+      "target": "sun",
+      "detail": "从端口扫描快速添加: sun (NAS / Nextcloud 服务器:20000)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "sun",
+          "name": "sun",
+          "device": "200",
+          "internalPort": 20000,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "sun.leecaiy.shop",
+          "description": "sun on NAS / Nextcloud 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "sun",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://sun.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:20000"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-19T16:17:49.551Z",
+      "action": "delete_service",
+      "target": "sun",
+      "detail": "删除服务: sun",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "sun",
+          "name": "sun",
+          "device": "200",
+          "internalPort": 20000,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "sun.leecaiy.shop",
+          "description": "sun on NAS / Nextcloud 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "sun",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://sun.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:20000"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-19T16:17:52.058Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.3.200), 发现 8 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-04-19T16:18:04.164Z",
+      "action": "add_service",
+      "target": "sunpanel",
+      "detail": "从端口扫描快速添加: sunpanel (NAS / Nextcloud 服务器:50000)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "sunpanel",
+          "name": "sunpanel",
+          "device": "200",
+          "internalPort": 50000,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "sunpanel.leecaiy.shop",
+          "description": "sunpanel on NAS / Nextcloud 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "sunpanel",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://sunpanel.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:50000"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-19T19:01:31.985Z",
+      "action": "update_proxy_defaults",
+      "target": "proxy-defaults",
+      "detail": "更新全局反代配置",
+      "user": "admin",
+      "data": {
+        "protocol": "https",
+        "domains": [
+          "leecaiy.shop"
+        ],
+        "externalPorts": {
+          "lucky": 55000
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-20T17:31:13.410Z",
+      "action": "delete_service",
+      "target": "sunpanel",
+      "detail": "删除服务: sunpanel",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "sunpanel",
+          "name": "sunpanel",
+          "device": "200",
+          "internalPort": 50000,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "sunpanel.leecaiy.shop",
+          "description": "sunpanel on NAS / Nextcloud 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "sunpanel",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://sunpanel.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:50000"
+          }
+        }
+      }
     }
   ]
 }

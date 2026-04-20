@@ -148,7 +148,7 @@ jobs:
         run: |
           set -euo pipefail
           sleep 3
-          curl -fsS http://127.0.0.1:51100/api/health
+          curl -fsS http://127.0.0.1:51000/api/health
 
       - name: Show deployed revision
         shell: bash

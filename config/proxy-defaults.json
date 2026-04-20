@@ -1,10 +1,10 @@
 {
   "protocol": "https",
   "domains": [
-    "222869.xyz"
+    "leecaiy.shop"
   ],
   "externalPorts": {
-    "lucky": 50000
+    "lucky": 55000
   },
   "dns": {
     "wildcardDomains": [

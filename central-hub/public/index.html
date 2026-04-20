@@ -304,13 +304,23 @@
                         <span class="text-muted">路由 DDNS</span>
                         <span class="badge success" id="status-ddns">检测中</span>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-muted">Lucky 反代</span>
-                        <span class="badge success" id="status-lucky">检测中</span>
+                    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div class="flex justify-between items-center">
+                            <span class="text-muted">Lucky 反代</span>
+                            <span class="badge success" id="status-lucky">检测中</span>
+                        </div>
+                        <a href="http://192.168.3.2:16601/666" target="_blank" style="color:#60a5fa; text-decoration:none; font-size:12px; margin-top:8px; display:inline-flex; align-items:center; gap:4px;">
+                            🔗 打开管理界面
+                        </a>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-muted">SunPanel 面板</span>
-                        <span class="badge success" id="status-sunpanel">检测中</span>
+                    <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div class="flex justify-between items-center">
+                            <span class="text-muted">SunPanel 面板</span>
+                            <span class="badge success" id="status-sunpanel">检测中</span>
+                        </div>
+                        <a href="http://192.168.3.10:20001" target="_blank" style="color:#60a5fa; text-decoration:none; font-size:12px; margin-top:8px; display:inline-flex; align-items:center; gap:4px;">
+                            🔗 打开管理界面
+                        </a>
                     </div>
                 </div>
             </div>
@@ -332,7 +342,7 @@
                     </div>
                     <div>
                         <label class="form-label">Lucky 暴露端口</label>
-                        <input class="form-control" id="pd-port-lucky" type="number" value="50000">
+                        <input class="form-control" id="pd-port-lucky" type="number" value="55000">
                     </div>
                     <div style="grid-column: 1 / -1; display:flex; justify-content:flex-end;">
                         <button type="submit" class="btn btn-primary btn-sm">保存设置</button>
@@ -419,6 +429,52 @@
     </div>
 
     <!-- Modals -->
+    <!-- Manual Add Modal -->
+    <div class="modal-backdrop" id="addServiceModal">
+        <div class="modal">
+            <h2 class="mb-4">🧩 手动添加服务</h2>
+            <form onsubmit="submitAddService(event)">
+                <div class="grid-2" style="gap: 16px;">
+                    <div class="form-group">
+                        <label class="form-label">服务标识 (英文ID)</label>
+                        <input class="form-control" id="add-id" placeholder="如: nas-web" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">服务展示名称</label>
+                        <input class="form-control" id="add-name" placeholder="如: 群晖控制台" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">设备 ID</label>
+                        <input class="form-control" id="add-device" placeholder="如: 200" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">内部端口</label>
+                        <input class="form-control" id="add-port" type="number" placeholder="如: 5001" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">内部协议</label>
+                        <select class="form-control" id="add-protocol">
+                            <option value="http">http</option>
+                            <option value="https">https</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">SunPanel 分组</label>
+                        <input class="form-control" id="add-group" placeholder="默认: 其他">
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label class="form-label">说明</label>
+                        <input class="form-control" id="add-description" placeholder="选填">
+                    </div>
+                </div>
+                <div class="flex justify-between mt-4">
+                    <button type="button" class="btn" onclick="closeModal('addServiceModal')">取消</button>
+                    <button type="submit" class="btn btn-primary">添加并同步</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Quick Add Modal -->
     <div class="modal-backdrop" id="quickAddModal">
         <div class="modal">
@@ -426,6 +482,7 @@
             <form onsubmit="submitQuickAdd(event)">
                 <input type="hidden" id="qa-deviceId">
                 <input type="hidden" id="qa-port">
+                <input type="hidden" id="qa-ipv6">
                 
                 <div class="form-group">
                     <label class="form-label">机器与端口</label>
@@ -438,8 +495,8 @@
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">服务展示名称</label>
-                    <input class="form-control" id="qa-name" placeholder="如: 群晖控制台" required>
+                    <label class="form-label">服务展示名称（留空则同标识符）</label>
+                    <input class="form-control" id="qa-name" placeholder="如: 群晖控制台">
                 </div>
                 
                 <div class="flex justify-between mt-4">
@@ -455,8 +512,9 @@
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
+            const iconMap = { success: '✅', warning: '⚠️', error: '❌' };
             toast.innerHTML = `<div class="flex items-center gap-2">
-                <span>${type === 'success' ? '✅' : '❌'}</span>
+                <span>${iconMap[type] || 'ℹ️'}</span>
                 <span>${message}</span>
             </div>`;
             document.getElementById('toast-container').appendChild(toast);
@@ -475,15 +533,17 @@
             try {
                 const options = { method, headers: { 'Content-Type': 'application/json' } };
                 if (body) options.body = JSON.stringify(body);
-                
+
                 const res = await fetch(endpoint, options);
                 let data = {};
                 try { data = await res.json(); } catch(e){}
-                
+
                 if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
-                
+
                 if (['POST', 'PUT', 'DELETE'].includes(method) && actionName) {
-                    showToast(`${actionName} 成功`);
+                    const toastType = data.warning || data.syncSuccess === false ? 'warning' : 'success';
+                    const toastMessage = data.warning || data.message || `${actionName} 成功`;
+                    showToast(toastMessage, toastType);
                     refreshAll();
                 }
                 return data;
@@ -496,6 +556,35 @@
 
         function closeModal(id) { document.getElementById(id).classList.remove('show'); }
         function openModal(id) { document.getElementById(id).classList.add('show'); }
+
+        function openAddServiceModal() {
+            document.getElementById('add-id').value = '';
+            document.getElementById('add-name').value = '';
+            document.getElementById('add-device').value = '';
+            document.getElementById('add-port').value = '';
+            document.getElementById('add-protocol').value = 'http';
+            document.getElementById('add-group').value = '其他';
+            document.getElementById('add-description').value = '';
+            openModal('addServiceModal');
+            document.getElementById('add-id').focus();
+        }
+
+        async function submitAddService(e) {
+            e.preventDefault();
+            const payload = {
+                id: document.getElementById('add-id').value.trim(),
+                name: document.getElementById('add-name').value.trim(),
+                device: document.getElementById('add-device').value.trim(),
+                internalPort: parseInt(document.getElementById('add-port').value, 10),
+                internalProtocol: document.getElementById('add-protocol').value,
+                description: document.getElementById('add-description').value.trim(),
+                sunpanel: {
+                    group: document.getElementById('add-group').value.trim() || '其他'
+                }
+            };
+            await apiCall('/api/services/add', 'POST', '手动添加服务', payload);
+            closeModal('addServiceModal');
+        }
 
         // Data Fetching
         async function fetchSystemStatus() {
@@ -518,7 +607,7 @@
             if(data) {
                 document.getElementById('pd-protocol').value = data.protocol || 'https';
                 document.getElementById('pd-domains').value = (data.domains || []).join(', ');
-                document.getElementById('pd-port-lucky').value = data.externalPorts?.lucky || 50000;
+                document.getElementById('pd-port-lucky').value = data.externalPorts?.lucky || 55000;
             }
         }
 
@@ -529,7 +618,7 @@
                 protocol: document.getElementById('pd-protocol').value,
                 domains,
                 externalPorts: {
-                    lucky: parseInt(document.getElementById('pd-port-lucky').value) || 50000
+                    lucky: parseInt(document.getElementById('pd-port-lucky').value) || 55000
                 }
             };
             await apiCall('/api/services/proxy-defaults', 'PUT', '保存代理默认配置', payload);
@@ -567,7 +656,14 @@
                     if(p.isRegistered) {
                          return `<span class="port-tag registered" title="服务已注册: ${p.registeredService}">:${p.port} ✓</span>`;
                     } else {
-                         return `<div class="port-tag" style="cursor:pointer" onclick="prepareQuickAdd('${deviceId}', ${p.port}, '${data.deviceName}', '${data.ipv4}')" title="点击一键注册">${p.protocol} :${p.port} <span style="font-weight:bold;margin-left:4px">+</span></div>`;
+                         const quickPayload = encodeURIComponent(JSON.stringify({
+                             deviceId,
+                             port: p.port,
+                             deviceName: data.deviceName,
+                             ipv4: data.ipv4,
+                             ipv6: data.ipv6 || null
+                         }));
+                         return `<div class="port-tag" style="cursor:pointer" data-quick-add="${quickPayload}" onclick="prepareQuickAddFromElement(this)" title="点击一键注册">${p.protocol} :${p.port} <span style="font-weight:bold;margin-left:4px">+</span></div>`;
                     }
                 }).join('');
             } catch(e) {
@@ -586,10 +682,24 @@
             } catch(e){}
         }
 
-        function prepareQuickAdd(deviceId, port, deviceName, ipv4) {
+        function prepareQuickAddFromElement(element) {
+            const encoded = element?.dataset?.quickAdd;
+            if (!encoded) return;
+            try {
+                const data = JSON.parse(decodeURIComponent(encoded));
+                prepareQuickAdd(data.deviceId, data.port, data.deviceName, data.ipv4, data.ipv6);
+            } catch (error) {
+                console.error('解析快速注册参数失败:', error);
+            }
+        }
+
+        function prepareQuickAdd(deviceId, port, deviceName, ipv4, ipv6 = null) {
             document.getElementById('qa-deviceId').value = deviceId;
             document.getElementById('qa-port').value = port;
-            document.getElementById('qa-target-display').textContent = `${deviceName} (${ipv4}:${port})`;
+            document.getElementById('qa-ipv6').value = ipv6 || '';
+            const endpoints = [`${ipv4}:${port}`];
+            if (ipv6) endpoints.push(`[${ipv6}]:${port}`);
+            document.getElementById('qa-target-display').textContent = `${deviceName} (${endpoints.join(' / ')})`;
             document.getElementById('qa-id').value = '';
             document.getElementById('qa-name').value = '';
             openModal('quickAddModal');
@@ -598,11 +708,14 @@
 
         async function submitQuickAdd(e) {
             e.preventDefault();
+            const serviceId = document.getElementById('qa-id').value.trim();
+            const serviceName = document.getElementById('qa-name').value.trim() || serviceId;
             const payload = {
                 deviceId: document.getElementById('qa-deviceId').value,
                 port: document.getElementById('qa-port').value,
-                id: document.getElementById('qa-id').value,
-                name: document.getElementById('qa-name').value
+                ipv6: document.getElementById('qa-ipv6').value.trim() || undefined,
+                id: serviceId,
+                name: serviceName
             };
             await apiCall('/api/services/quick-add', 'POST', '快速注册服务', payload);
             closeModal('quickAddModal');
@@ -618,13 +731,18 @@
             }
             
             tbody.innerHTML = services.map(s => {
-                const ipv4Url = `https://${s.proxyDomain}:50000`; // Will be mapped by defaults
-                
+                const ipv4Url = `https://${s.proxyDomain}:55000`; // Will be mapped by defaults
+                const protocol = s.internalProtocol || 'http';
+                const lanUrl = s.sunpanel?.lanUrl || `${protocol}://192.168.3.${s.device}:${s.internalPort}`;
+                const deviceEndpoint = `${s.device}:${s.internalPort}`;
+
                 return `
                 <tr>
                     <td><span class="badge ${s.enableProxy ? 'success' : 'warning'}"></span></td>
                     <td style="font-family:monospace; color:#93c5fd">${s.id}</td>
-                    <td class="text-sm text-muted">${s.device}:${s.internalPort}</td>
+                    <td class="text-sm text-muted">
+                        <a href="${lanUrl}" target="_blank" style="color:#60a5fa; text-decoration:none;" title="打开局域网入口">${deviceEndpoint}</a>
+                    </td>
                     <td>
                         <a href="${ipv4Url}" target="_blank" style="color:#a78bfa; text-decoration:none; display:block; font-size:13px;" id="link-v4-${s.id}">${s.proxyDomain}</a>
                         <div class="text-muted" style="font-size:11px;" id="latency-v4-${s.id}">-</div>
@@ -667,7 +785,8 @@
                 if(v6Span && v6Link && sc.ipv6Direct.url) {
                     v6Link.style.display = 'block';
                     v6Link.href = sc.ipv6Direct.url;
-                    
+                    v6Link.textContent = sc.ipv6Direct.source === 'domain' ? 'IPv6 直连通道（DDNS）' : 'IPv6 直连通道';
+
                     if(sc.ipv6Direct.ok) {
                         v6Link.style.color = '#34d399';
                         v6Span.innerHTML = `<span style="color:#10b981">${sc.ipv6Direct.latency}ms (HTTP ${sc.ipv6Direct.status})</span>`;
