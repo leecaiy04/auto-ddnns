@@ -4,7 +4,7 @@ import test from 'node:test';
 test('lucky-api falls back to LUCKY_OPEN_TOKEN', async () => {
   const previousAdminToken = process.env.LUCKY_ADMIN_TOKEN;
   const previousOpenToken = process.env.LUCKY_OPEN_TOKEN;
-  const luckyApi = await import('../lib/api-clients/lucky-api.mjs');
+  const luckyApi = await import('../modules/lucky-manager/lucky-api.mjs');
 
   try {
     delete process.env.LUCKY_ADMIN_TOKEN;

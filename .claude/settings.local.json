@@ -23,7 +23,10 @@
       "mcp__chrome-devtools__list_console_messages",
       "mcp__chrome-devtools__evaluate_script",
       "Bash(git add:*)",
-      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: 更新中枢服务编排与配置同步\n\n整合中枢服务、配置、前端页面与测试调整，纳入当前仓库中的全部变更状态。\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n\\)\")"
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: 更新中枢服务编排与配置同步\n\n整合中枢服务、配置、前端页面与测试调整，纳入当前仓库中的全部变更状态。\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git:*)",
+      "Bash(timeout 10 node central-hub/server.mjs)",
+      "Bash(node --test test/lucky-api.test.mjs)"
     ]
   }
 }

@@ -6,7 +6,7 @@ import {
   verifyToken,
   listDnsRecords,
   upsertDnsRecord
-} from '../lib/api-clients/cloudflare-api.mjs';
+} from '../modules/cloudflare-manager/cloudflare-api.mjs';
 
 function snapshotEnv(keys) {
   return Object.fromEntries(keys.map((key) => [key, process.env[key]]));

@@ -9,8 +9,8 @@ export default function createSunpanelRoutes(modules) {
 
   router.get('/', async (req, res) => {
     try {
-      const state = modules.sunpanel?.getState() || {};
-      res.json(state);
+      const status = modules.sunpanelManager?.getStatus() || {};
+      res.json(status);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -18,7 +18,10 @@ export default function createSunpanelRoutes(modules) {
 
   router.post('/sync', async (req, res) => {
     try {
-      const result = await modules.sunpanel?.sync();
+      const services = modules.serviceRegistry?.getProxiedServices() || [];
+      const luckyProxies = modules.luckyManager?.getLuckyProxies() || [];
+      const luckyLanHost = modules.luckyManager?.getLanHost() || null;
+      const result = await modules.sunpanelManager?.syncToSunPanel(services, luckyProxies, luckyLanHost);
       await modules.stateManager?.save();
       res.json(result);
     } catch (error) {
@@ -28,7 +31,8 @@ export default function createSunpanelRoutes(modules) {
 
   router.get('/cards', async (req, res) => {
     try {
-      const cards = modules.sunpanel?.getCards() || [];
+      const syncStatus = modules.stateManager?.state?.sunpanel?.syncStatus || {};
+      const cards = Object.values(syncStatus);
       res.json({ cards });
     } catch (error) {
       res.status(500).json({ error: error.message });

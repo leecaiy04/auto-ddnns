@@ -1,4 +1,15 @@
 {
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "70b9276e960446c0aa73ffd4fa1d304f.Oop33QAK0IeVFyap",
+    "ANTHROPIC_BASE_URL": "https://open.bigmodel.cn/api/anthropic",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "GLM-5-Turbo",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "GLM-5-Turbo",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "GLM-5-Turbo",
+    "ANTHROPIC_MODEL": "GLM-5-Turbo",
+    "ANTHROPIC_REASONING_MODEL": "GLM-5-Turbo",
+    "API_TIMEOUT_MS": "3000000",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+  },
   "skipDangerousModePermissionPrompt": true,
   "permissions": {
     "allow": [

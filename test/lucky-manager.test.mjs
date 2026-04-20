@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { LuckyManager } from '../central-hub/modules/lucky-manager.mjs';
+import { LuckyManager } from '../modules/lucky-manager/index.mjs';
 
 test('LuckyManager defaults lucky apiBase to /666 endpoint', () => {
   const previous = process.env.LUCKY_API_BASE;

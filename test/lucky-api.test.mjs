@@ -6,13 +6,13 @@ import {
   getLuckyAuthConfig,
   openTokenFetch,
   adminTokenFetch
-} from '../lib/api-clients/lucky-api.mjs';
+} from '../modules/lucky-manager/lucky-api.mjs';
 import {
   getReverseProxyRules,
   getAllReverseProxies,
   createPort,
   deleteRule
-} from '../lib/api-clients/lucky-reverseproxy.mjs';
+} from '../modules/lucky-manager/lucky-reverseproxy.mjs';
 
 // ── helpers ──
 

@@ -7,7 +7,7 @@ import {
   getItemInfo,
   updateItem,
   createItem
-} from '../lib/api-clients/sunpanel-api.mjs';
+} from '../modules/sunpanel-manager/sunpanel-api.mjs';
 
 // Track fetch calls
 let fetchCalls = [];

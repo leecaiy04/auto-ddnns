@@ -4,7 +4,7 @@ import path from 'node:path';
 import test from 'node:test';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 
-import { loadConfigWithEnv } from '../central-hub/modules/config-loader.mjs';
+import { loadConfigWithEnv } from '../shared/config-loader.mjs';
 
 test('loadConfigWithEnv lets env values override json config and returns server module shape', async () => {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), 'auto-dnns-config-'));

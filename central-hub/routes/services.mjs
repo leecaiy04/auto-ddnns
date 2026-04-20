@@ -454,10 +454,10 @@ export function serviceRoutes(modules) {
         }
       }
 
-      // 清空 SunPanel 卡片（通过 LuckyManager 的 purgeSunPanel 方法）
-      if (modules.luckyManager) {
+      // 清空 SunPanel 卡片（通过 SunPanelManager 的 purgeSunPanel 方法）
+      if (modules.sunpanelManager) {
         try {
-          const sunpanelResult = await modules.luckyManager.purgeSunPanel();
+          const sunpanelResult = await modules.sunpanelManager.purgeSunPanel();
           results.sunpanel = sunpanelResult;
           console.log('[Services] ✅ SunPanel 本地同步状态已清空:', sunpanelResult);
         } catch (error) {

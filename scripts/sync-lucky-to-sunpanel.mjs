@@ -18,7 +18,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { loadEnvFile as loadSharedEnvFile } from '../lib/utils/env-loader.mjs';
+import { loadEnvFile as loadSharedEnvFile } from '../shared/env-loader.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, '..');

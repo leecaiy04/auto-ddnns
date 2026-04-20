@@ -8,7 +8,7 @@ import {
   loadEnvFile,
   loadEnvFileAsync,
   parseEnvContent
-} from '../lib/utils/env-loader.mjs';
+} from '../shared/env-loader.mjs';
 
 function snapshotEnv(keys) {
   return Object.fromEntries(keys.map((key) => [key, process.env[key]]));

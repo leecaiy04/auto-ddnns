@@ -1,7 +1,5 @@
 # Dependencies
 node_modules/
-**/node_modules/
-package-lock.json
 
 # Environment variables
 .env
@@ -11,30 +9,22 @@ package-lock.json
 # Logs
 *.log
 logs/
-**/logs/
-*.pid
 
 # Temporary files
 *.tmp
 *.bak
 *.backup.*
+.lan_devices.txt
 
 # Data files
 devices.json
-.arp_table.tmp
-.lan_devices.txt
-.router_v6.tmp
-result*.txt
 data/*.json
 
 # IDE
 .vscode/
 .idea/
+.claude/worktrees/
 
 # OS
 .DS_Store
 Thumbs.db
-
-# Build artifacts
-dist/
-build/

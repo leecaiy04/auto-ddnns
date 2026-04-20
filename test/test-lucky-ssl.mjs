@@ -4,7 +4,7 @@
  * 测试证书列表获取、证书信息查看等功能
  */
 
-import { getSSLList } from '../lib/api-clients/lucky-ssl.mjs';
+import { getSSLList } from '../modules/lucky-manager/lucky-ssl.mjs';
 
 const config = {
   apiBase: process.env.LUCKY_API_BASE || 'http://192.168.3.2:16601/666',

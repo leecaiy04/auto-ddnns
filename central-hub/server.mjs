@@ -16,8 +16,8 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { loadEnvFileAsync, getEnv } from '../lib/utils/env-loader.mjs';
-import { loadConfigWithEnv } from './modules/config-loader.mjs';
+import { loadEnvFileAsync, getEnv } from '../shared/env-loader.mjs';
+import { loadConfigWithEnv } from '../shared/config-loader.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_DOMAIN = 'leecaiy.shop';
@@ -127,14 +127,15 @@ async function loadEnvFile() {
 }
 
 // 导入新模块
-import { DeviceMonitor } from './modules/device-monitor.mjs';
-import { ServiceRegistry } from './modules/service-registry.mjs';
-import { LuckyManager } from './modules/lucky-manager.mjs';
-import { CloudflareManager } from './modules/cloudflare-manager.mjs';
-import { Coordinator } from './modules/coordinator.mjs';
-import { StateManager } from './modules/state-manager.mjs';
-import { DDNSController } from './modules/ddns-controller.mjs';
-import { ChangelogManager } from './modules/changelog-manager.mjs';
+import { DeviceMonitor } from '../modules/device-monitor/index.mjs';
+import { ServiceRegistry } from '../modules/service-registry/index.mjs';
+import { LuckyManager } from '../modules/lucky-manager/index.mjs';
+import { SunPanelManager } from '../modules/sunpanel-manager/index.mjs';
+import { CloudflareManager } from '../modules/cloudflare-manager/index.mjs';
+import { Coordinator } from './coordinator.mjs';
+import { StateManager } from '../shared/state-manager.mjs';
+import { DDNSController } from '../modules/device-monitor/ddns-controller.mjs';
+import { ChangelogManager } from '../shared/changelog-manager.mjs';
 
 // 导入路由
 import { dashboardRoutes } from './routes/dashboard.mjs';
@@ -230,8 +231,7 @@ class CentralHub {
     if (this.config.modules.lucky?.enabled) {
       this.modules.luckyManager = new LuckyManager(
         this.config.modules.lucky,
-        this.stateManager,
-        this.config.modules.sunpanel || null
+        this.stateManager
       );
       // 用于兼容旧的接口
       this.modules.lucky = this.modules.luckyManager;
@@ -245,10 +245,12 @@ class CentralHub {
       );
     }
 
-    // SunPanel 管理（集成在 LuckyManager 中）
+    // SunPanel 管理模块（独立）
     if (this.config.modules.sunpanel?.enabled) {
-      this.modules.sunpanelManager = this.modules.luckyManager;
-      this.modules.sunpanel = this.modules.luckyManager;
+      this.modules.sunpanelManager = new SunPanelManager(
+        this.config.modules.sunpanel,
+        this.stateManager
+      );
     }
 
     // 初始化所有模块（避免别名指向同一实例时重复初始化）
@@ -355,7 +357,7 @@ class CentralHub {
             coordinator: this.coordinator.isRunning ? 'ok' : 'stopped',
             deviceMonitor: this.modules.deviceMonitor?.getStatus()?.enabled ? 'ok' : 'disabled',
             ddns: this.modules.ddnsController?.getStatus()?.enabled ? 'ok' : 'disabled',
-            lucky: this.modules.luckyManager?.getStatus()?.lucky?.enabled ? 'ok' : 'disabled',
+            lucky: this.modules.luckyManager?.getStatus()?.enabled ? 'ok' : 'disabled',
             sunpanel: this.modules.sunpanelManager?.config?.enabled ? 'ok' : 'disabled',
             cloudflare: this.modules.cloudflareManager?.getStatus()?.enabled ? 'ok' : 'disabled'
           }
