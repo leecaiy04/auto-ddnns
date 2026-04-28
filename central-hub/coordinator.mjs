@@ -366,7 +366,7 @@ export class Coordinator {
         taskCount: (status.ddns?.ddnsTasks || []).length
       },
       proxies: {
-        lucky: status.lucky?.lucky?.proxyCount || 0
+        lucky: status.lucky?.proxyCount || 0
       },
       sunpanel: {
         lastSync: status.sunpanel?.lastSync || null,

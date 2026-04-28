@@ -82,12 +82,7 @@ SUNPANEL_BACKUP_API_BASE=http://192.168.10.2:20001/openapi/v1
 
 ```bash
 npm start
-```
-
-或：
-
-```bash
-node cli.mjs sync-all
+curl -X POST http://your-hub:51000/api/sync/full
 ```
 
 ### 5. 验证
@@ -101,8 +96,8 @@ curl http://your-hub:51000/api/devices/list
 curl -X POST http://your-hub:51000/api/ddns/refresh
 
 # Lucky 与 SunPanel
-curl -X POST http://your-hub:51000/api/proxies/sync
-curl -X POST http://your-hub:51000/api/sunpanel/sync
+curl http://your-hub:51000/api/proxies/sync
+curl -X POST http://your-hub:51000/api/sync/sunpanel
 
 # Cloudflare
 curl http://your-hub:51000/api/cloudflare/status
@@ -118,7 +113,7 @@ curl http://your-hub:51000/api/services/connectivity
 - [ ] `/api/devices/list` 能返回设备
 - [ ] `/api/ddns/refresh` 可以执行
 - [ ] `/api/proxies/sync` 可以执行
-- [ ] `/api/sunpanel/sync` 可以执行
+- [ ] `/api/sync/sunpanel` 可以执行
 - [ ] `/api/cloudflare/status` 显示符合预期
 - [ ] `/api/services/connectivity` 中的目标地址已更新
 
@@ -149,6 +144,6 @@ curl http://your-hub:51000/api/services/connectivity
 
 ## 额外建议
 
-- IP 迁移完成后，执行一次 `sync-all`
+- IP 迁移完成后，执行一次 `/api/sync/full`
 - 如果公网域名也发生变化，同时检查 `ALIYUN_DOMAIN` 与 Cloudflare 对应域名配置
 - 如果 Lucky 对外 HTTPS 入口也变化，请同时参考 `port-change.md`

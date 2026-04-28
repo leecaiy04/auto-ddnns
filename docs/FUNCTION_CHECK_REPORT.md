@@ -50,7 +50,7 @@
 - **更新状态**: 所有记录都是最新的 (unchanged)
 
 ### 3. Lucky 反向代理同步 ✅
-- **测试**: `POST /api/proxies/sync`
+- **测试**: `GET /api/proxies/sync`
 - **结果**: 成功同步 1 个服务
 - **同步详情**:
   - synology.222869.xyz → http://192.168.3.201:5000
@@ -58,7 +58,7 @@
   - 端口: 55000
 
 ### 4. SunPanel 卡片同步 ✅
-- **测试**: `POST /api/sunpanel/sync`
+- **测试**: `POST /api/sync/sunpanel`
 - **结果**: 卡片未变化，跳过更新
 - **状态**: hash_unchanged (正常)
 
@@ -100,13 +100,14 @@
 
 ### 健康检查
 - `GET /api/health` - 服务健康状态
-- `GET /api/status` - 系统状态摘要
+- `GET /api/dashboard/status` - 系统状态摘要
+- `GET /api/dashboard/overview` - 仪表盘概览
 
 ### 同步控制
 - `POST /api/sync/full` - 完整同步
 - `POST /api/devices/refresh` - 刷新设备列表
-- `POST /api/proxies/sync` - Lucky 同步
-- `POST /api/sunpanel/sync` - SunPanel 同步
+- `GET /api/proxies/sync` - Lucky 同步
+- `POST /api/sync/sunpanel` - SunPanel 同步
 - `POST /api/cloudflare/sync` - Cloudflare 同步
 - `POST /api/ddns/refresh` - DDNS 刷新
 
@@ -127,17 +128,19 @@
 - `GET /api/services/connectivity` - 连通性检测
 
 ### DDNS
-- `GET /api/ddns/` - DDNS 状态
+- `GET /api/ddns` - DDNS 状态
 - `GET /api/ddns/history` - DDNS 历史
+- `GET /api/ddns/logs` - DDNS 日志
 
 ### Cloudflare
-- `GET /api/cloudflare/` - Cloudflare 状态
+- `GET /api/cloudflare` - Cloudflare 状态与记录
+- `GET /api/cloudflare/status` - Cloudflare 状态摘要
 - `GET /api/cloudflare/verify-token` - 验证 Token
 - `DELETE /api/cloudflare/record` - 删除记录
 
 ### SunPanel
-- `GET /api/sunpanel/` - SunPanel 状态
-- `GET /api/sunpanel/cards` - 卡片列表
+- `GET /api/dashboard/status` - 查看 SunPanel 同步状态
+- `POST /api/sync/sunpanel` - 触发 SunPanel 同步
 
 ## 配置文件
 

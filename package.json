@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cd central-hub && node server.mjs",
     "dev": "cd central-hub && node --watch server.mjs",
-    "test": "node --test test/*.test.mjs",
+    "test": "node --test --test-concurrency=1 test/*.test.mjs",
     "init": "node scripts/init-setup.mjs"
   },
   "keywords": [

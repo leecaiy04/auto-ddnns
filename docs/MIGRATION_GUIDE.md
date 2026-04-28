@@ -34,7 +34,7 @@
 
 ```bash
 curl http://your-hub:51000/api/health
-curl http://your-hub:51000/api/status
+curl http://your-hub:51000/api/dashboard/status
 curl http://your-hub:51000/api/services/list
 curl http://your-hub:51000/api/cloudflare/status
 ```
@@ -71,12 +71,7 @@ central-hub/data/hub-state.json
 
 ```bash
 npm start
-```
-
-或：
-
-```bash
-node cli.mjs sync-all
+curl -X POST http://your-hub:51000/api/sync/full
 ```
 
 ### 5. 验证关键功能
@@ -89,10 +84,10 @@ curl http://your-hub:51000/api/health
 curl -X POST http://your-hub:51000/api/ddns/refresh
 
 # Lucky
-curl -X POST http://your-hub:51000/api/proxies/sync
+curl http://your-hub:51000/api/proxies/sync
 
 # SunPanel
-curl -X POST http://your-hub:51000/api/sunpanel/sync
+curl -X POST http://your-hub:51000/api/sync/sunpanel
 
 # Cloudflare
 curl -X POST http://your-hub:51000/api/cloudflare/sync
@@ -137,12 +132,12 @@ curl http://your-hub:51000/api/services/connectivity
 迁移完成后，至少确认以下项目：
 
 - [ ] `/api/health` 返回 `status: ok`
-- [ ] `/api/status` 中模块状态符合预期
+- [ ] `/api/dashboard/status` 中模块状态符合预期
 - [ ] `/api/devices/list` 能返回设备数据
 - [ ] `/api/ddns/history` 可读取历史
 - [ ] `/api/services/list` 能返回服务清单
 - [ ] `/api/proxies/sync` 可以成功触发 Lucky 同步
-- [ ] `/api/sunpanel/sync` 可以成功触发 SunPanel 同步
+- [ ] `/api/sync/sunpanel` 可以成功触发 SunPanel 同步
 - [ ] `/api/cloudflare/status` 与 `/api/cloudflare/sync` 行为正常
 
 ## 故障排查
@@ -172,7 +167,7 @@ CLI 默认读取前者，Web 服务默认读取后者。
 ## 相关文件
 
 - `README.md`
-- `cli.mjs`
+- `central-hub/hub-cli.mjs`
 - `central-hub/server.mjs`
 - `config/hub.json`
 - `central-hub/config/hub.json`

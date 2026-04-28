@@ -56,6 +56,7 @@ PUT    /api/services/proxy-defaults  # 更新全局代理默认配置
 ```bash
 GET  /api/ddns              # DDNS 任务状态
 POST /api/ddns/reconcile    # 调和 DDNS 任务
+POST /api/ddns/refresh      # 兼容旧入口，等同 reconcile
 POST /api/ddns/sync/:key    # 触发单个任务同步
 GET  /api/ddns/logs         # DDNS 日志
 ```
@@ -88,7 +89,7 @@ GET    /api/health           # 健康检查
 
 ## 配置
 
-环境变量（`.env`）优先级高于 `config/hub.json`。参见 `.env.template`。
+环境变量（`.env`）优先级高于 `central-hub/config/hub.json`。参见 `.env.template`。
 
 ### 主要配置项
 

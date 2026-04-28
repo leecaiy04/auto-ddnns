@@ -132,10 +132,10 @@ curl http://localhost:51000/api/health
 curl -X POST http://localhost:51000/api/sync/full
 
 # Lucky 同步
-curl -X POST http://localhost:51000/api/proxies/sync
+curl http://localhost:51000/api/proxies/sync
 
 # SunPanel 同步
-curl -X POST http://localhost:51000/api/sunpanel/sync
+curl -X POST http://localhost:51000/api/sync/sunpanel
 
 # Cloudflare 状态
 curl http://localhost:51000/api/cloudflare/status

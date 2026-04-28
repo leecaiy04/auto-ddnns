@@ -13,7 +13,7 @@ Cloudflare 通过远程 API 工作，不涉及本地监听端口。
 | 服务 | 默认值 | 说明 |
 |---|---|---|
 | Central Hub | `51000` | `central-hub/config/hub.json` 中默认端口 |
-| Lucky HTTPS | `50000` | 外部代理入口 |
+| Lucky HTTPS | `55000` | 外部代理入口 |
 | Lucky API | `16601` | 由 `LUCKY_API_BASE` 决定 |
 | SunPanel API | `20001` | 通常体现在 `SUNPANEL_API_BASE` |
 
@@ -52,7 +52,7 @@ HUB_PORT=52000
 
 ```bash
 curl http://localhost:52000/api/health
-curl http://localhost:52000/api/status
+curl http://localhost:52000/api/dashboard/status
 ```
 
 ## 场景 2：修改 Lucky HTTPS 入口端口
@@ -75,7 +75,7 @@ LUCKY_HTTPS_PORT=55000
 ### 验证
 
 ```bash
-curl -X POST http://localhost:51000/api/proxies/sync
+curl http://localhost:51000/api/proxies/sync
 curl http://localhost:51000/api/services/connectivity
 ```
 
@@ -96,8 +96,8 @@ LUCKY_BACKUP_API_BASE=http://192.168.3.2:17001
 ### 验证
 
 ```bash
-curl -X POST http://localhost:51000/api/proxies/sync
-curl http://localhost:51000/api/status
+curl http://localhost:51000/api/proxies/sync
+curl http://localhost:51000/api/dashboard/status
 ```
 
 ## 场景 4：修改 SunPanel API 端口
@@ -112,8 +112,8 @@ SUNPANEL_BACKUP_API_BASE=http://192.168.3.2:21001/openapi/v1
 ### 验证
 
 ```bash
-curl -X POST http://localhost:51000/api/sunpanel/sync
-curl http://localhost:51000/api/status
+curl -X POST http://localhost:51000/api/sync/sunpanel
+curl http://localhost:51000/api/dashboard/status
 ```
 
 ## 应用变更
