@@ -79,9 +79,10 @@ cp .env.template .env
 至少检查并填写这些变量：
 
 ```env
-ROUTER_HOST=192.168.3.1
-ROUTER_USERNAME=root
-ROUTER_PASSWORD=your-router-password
+ROUTER_HOST=192.168.9.1
+ROUTER_USERNAME=router_query_ro
+ROUTER_PASSWORD=your-r...word
+ROUTER_SSL_VERIFY=0
 
 ALIYUN_AK=your-aliyun-access-key-id
 ALIYUN_SK=your-aliyun-access-key-secret

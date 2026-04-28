@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+
+import base64
+import hashlib
 import ipaddress
 import json
 import os
@@ -9,7 +12,10 @@ import select
 import subprocess
 import sys
 import time
+import requests
+import urllib3
 from pathlib import Path
+from typing import Any
 
 BASE_DIR = Path(__file__).resolve().parent
 ENV_PATH = Path(os.environ.get('ENV_FILE') or (BASE_DIR.parent / '.env'))
@@ -32,12 +38,37 @@ def load_env(path: Path) -> dict[str, str]:
     return env
 
 
-def run_router_command(env: dict[str, str], command: str) -> str:
-    host = env['ROUTER_HOST']
-    user = env.get('ROUTER_USERNAME') or env.get('ROUTER_USER') or 'root'
-    password = env.get('ROUTER_PASSWORD') or env.get('ROUTER_PASS')
+def normalize_router_base_url(env: dict[str, str]) -> str:
+    backend = (env.get('ROUTER_BACKEND') or env.get('ROUTER_TYPE') or '').strip().lower()
+    base_url = (
+        env.get('ROUTER_BASE_URL')
+        or env.get('ROUTER_URL')
+        or env.get('IKUAI_BASE_URL')
+        or env.get('IKUAI_URL')
+        or env.get('ROUTER_HOST')
+        or ''
+    ).strip()
+    if not base_url:
+        raise SystemExit('ROUTER_HOST missing in .env')
+    if '://' not in base_url:
+        scheme = 'https' if backend == 'ikuai' else 'http'
+        base_url = f'{scheme}://{base_url}'
+    return base_url.rstrip('/')
+
+
+def get_router_auth(env: dict[str, str]) -> tuple[str, str]:
+    user = env.get('ROUTER_USERNAME') or env.get('ROUTER_USER') or ''
+    password = env.get('ROUTER_PASSWORD') or env.get('ROUTER_PASS') or ''
+    if not user:
+        raise SystemExit('ROUTER_USERNAME/ROUTER_USER missing in .env')
     if not password:
         raise SystemExit('ROUTER_PASSWORD/ROUTER_PASS missing in .env')
+    return user, password
+
+
+def run_router_command(env: dict[str, str], command: str) -> str:
+    host = env['ROUTER_HOST']
+    user, password = get_router_auth(env)
 
     ssh_cmd = [
         'sshpass', '-p', password,
@@ -163,6 +194,128 @@ def parse_rows(table: str) -> list[dict[str, str]]:
     return rows
 
 
+def router_ssl_verify(env: dict[str, str]) -> bool:
+    verify = (env.get('ROUTER_SSL_VERIFY') or '').strip().lower()
+    enabled = verify in {'1', 'true', 'yes', 'on'}
+    if not enabled:
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    return enabled
+
+
+def ikuai_login(base_url: str, username: str, password: str, *, ssl_verify: bool) -> requests.Session:
+    session = requests.Session()
+    payload = {
+        'username': username,
+        'passwd': hashlib.md5(password.encode()).hexdigest(),
+        'pass': base64.b64encode(password.encode()).decode(),
+        'remember_password': '',
+    }
+    resp = session.post(
+        f'{base_url}/Action/login',
+        json=payload,
+        headers={'Content-Type': 'application/json'},
+        timeout=15,
+        verify=ssl_verify,
+    )
+    resp.raise_for_status()
+    data = resp.json()
+    if data.get('Result') != 10000:
+        raise RuntimeError(f"iKuai login failed: {data.get('ErrMsg') or data}")
+    return session
+
+
+def ikuai_call(session: requests.Session, base_url: str, func_name: str, action: str, param: dict[str, Any], *, ssl_verify: bool) -> dict[str, Any]:
+    payload = {
+        'func_name': func_name,
+        'action': action,
+        'param': param,
+    }
+    resp = session.post(
+        f'{base_url}/Action/call',
+        json=payload,
+        headers={'Content-Type': 'application/json;charset=UTF-8'},
+        timeout=15,
+        verify=ssl_verify,
+    )
+    resp.raise_for_status()
+    data = resp.json()
+    if data.get('Result') != 30000:
+        raise RuntimeError(f"iKuai call failed for {func_name}.{action}: {data.get('ErrMsg') or data}")
+    return data.get('Data') or {}
+
+
+def normalize_ikuai_rows(data: list[dict[str, Any]]) -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
+    for item in data:
+        ip = str(item.get('ip_addr') or '').strip()
+        mac = str(item.get('mac') or '').strip().lower()
+        if not ip or not mac:
+            continue
+        intf = str(item.get('link_addr') or item.get('apname') or item.get('ssid') or '').strip()
+        rows.append({
+            'ip': ip,
+            'mac': mac,
+            'intf': intf,
+            'raw': json.dumps(item, ensure_ascii=False, sort_keys=True),
+        })
+    return rows
+
+
+def collect_ikuai_rows(env: dict[str, str]) -> list[dict[str, str]]:
+    base_url = normalize_router_base_url(env)
+    username, password = get_router_auth(env)
+    ssl_verify = router_ssl_verify(env)
+    session = ikuai_login(base_url, username, password, ssl_verify=ssl_verify)
+    ipv4_data = ikuai_call(
+        session,
+        base_url,
+        'monitor_lanip',
+        'show',
+        {'TYPE': 'data,total', 'ORDER_BY': 'ip_addr_int', 'orderType': 'IP', 'limit': '0,200', 'ORDER': ''},
+        ssl_verify=ssl_verify,
+    )
+    ipv6_data = ikuai_call(
+        session,
+        base_url,
+        'monitor_lanipv6',
+        'show',
+        {'TYPE': 'data,total', 'ORDER_BY': 'ip_addr', 'orderType': 'IP', 'limit': '0,200', 'ORDER': ''},
+        ssl_verify=ssl_verify,
+    )
+    rows = normalize_ikuai_rows(ipv4_data.get('data') or [])
+    rows.extend(normalize_ikuai_rows(ipv6_data.get('data') or []))
+    if not rows:
+        raise RuntimeError('iKuai returned no monitor rows')
+    return rows
+
+
+def collect_legacy_rows(env: dict[str, str]) -> list[dict[str, str]]:
+    raw = run_router_command(env, 'display user device')
+    table = extract_display_table(raw)
+    return parse_rows(table)
+
+
+def collect_router_rows(env: dict[str, str]) -> tuple[list[dict[str, str]], str]:
+    backend = (env.get('ROUTER_BACKEND') or env.get('ROUTER_TYPE') or '').strip().lower()
+    errors: list[str] = []
+
+    should_try_ikuai = backend not in {'legacy', 'legacy_ssh', 'ssh'}
+    if should_try_ikuai:
+        try:
+            return collect_ikuai_rows(env), 'ikuai_api'
+        except Exception as exc:
+            errors.append(f'iKuai API: {exc}')
+            if backend == 'ikuai':
+                raise SystemExit(errors[-1])
+
+    try:
+        return collect_legacy_rows(env), 'legacy_ssh'
+    except Exception as exc:
+        errors.append(f'legacy SSH: {exc}')
+
+    raise SystemExit('router query failed; ' + '; '.join(errors))
+
+
 def mac_to_eui64_suffix(mac: str) -> str:
     parts = [int(part, 16) for part in mac.split(':')]
     parts[0] ^= 0x02
@@ -207,32 +360,52 @@ def choose_best_ipv6(v6s: list[str], *, mac: str | None = None, ipv6_usage: dict
     return sorted(globals_, key=score)[0]
 
 
+def collect_router_snapshot(env: dict[str, str]) -> tuple[dict[str, dict[str, Any]], str]:
+    rows, source = collect_router_rows(env)
+    by_ip = {row['ip']: row for row in rows if '.' in row['ip']}
+    by_mac_ipv6: dict[str, list[str]] = {}
+    ipv6_usage = build_ipv6_usage(rows)
+    for row in rows:
+        ip = row['ip']
+        if ':' not in ip:
+            continue
+        by_mac_ipv6.setdefault(row['mac'], []).append(ip)
+
+    snapshot: dict[str, dict[str, Any]] = {}
+    for ipv4, row in by_ip.items():
+        v6s = sorted(
+            set(by_mac_ipv6.get(row['mac'], [])),
+            key=lambda x: (x.lower().startswith('fe80:'), len(x), x),
+        )
+        snapshot[ipv4] = {
+            'mac': row['mac'],
+            'interface': row['intf'],
+            'all_ipv6': v6s,
+            'best_ipv6': choose_best_ipv6(v6s, mac=row['mac'], ipv6_usage=ipv6_usage),
+        }
+    return snapshot, source
+
+
 def main() -> int:
     if len(sys.argv) != 2:
         print('Usage: python3 query_device_v6.py <IPv4>')
         return 1
     target_ipv4 = sys.argv[1].strip()
     env = load_env(ENV_PATH)
-    raw = run_router_command(env, 'display user device')
-    table = extract_display_table(raw)
-    rows = parse_rows(table)
-
-    by_ip = {row['ip']: row for row in rows if '.' in row['ip']}
-    ipv6_usage = build_ipv6_usage(rows)
-    hit = by_ip.get(target_ipv4)
+    snapshot, source = collect_router_snapshot(env)
+    hit = snapshot.get(target_ipv4)
     if not hit:
-        print(json.dumps({'query_ipv4': target_ipv4, 'found': False}, ensure_ascii=False, indent=2))
+        print(json.dumps({'query_ipv4': target_ipv4, 'found': False, 'router_source': source}, ensure_ascii=False, indent=2))
         return 2
 
-    mac = hit['mac']
-    ipv6_list = sorted({row['ip'] for row in rows if row['mac'] == mac and ':' in row['ip']}, key=lambda x: (x.lower().startswith('fe80:'), len(x), x))
     result = {
         'query_ipv4': target_ipv4,
         'found': True,
-        'mac': mac,
-        'interface': hit['intf'],
-        'best_ipv6': choose_best_ipv6(ipv6_list, mac=mac, ipv6_usage=ipv6_usage),
-        'all_ipv6': ipv6_list,
+        'router_source': source,
+        'mac': hit['mac'],
+        'interface': hit['interface'],
+        'best_ipv6': hit['best_ipv6'],
+        'all_ipv6': hit['all_ipv6'],
     }
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0

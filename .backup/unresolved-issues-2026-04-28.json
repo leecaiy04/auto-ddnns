@@ -1,0 +1,21 @@
+{
+  "generatedAt": "2026-04-28T17:34:25Z",
+  "unresolved": [
+    {
+      "title": "Docs still mention stale endpoints",
+      "details": [
+        "README.md and central-hub/README.md still reference /api/status and /api/sunpanel/sync as primary entry points.",
+        "docs/FUNCTION_CHECK_REPORT.md and docs/central-hub-architecture.md also list older routes like /api/ip and /api/sunpanel/cards that are not wired in server.mjs."
+      ],
+      "impact": "Can mislead operators reading the docs, but does not block runtime startup or tests."
+    },
+    {
+      "title": "Migration docs are partially outdated",
+      "details": [
+        "docs/MIGRATION_GUIDE.md and docs/migration/*.md still show legacy checks and examples for routes that have been simplified or removed.",
+        "These files should be refreshed together in a doc-only pass."
+      ],
+      "impact": "No code breakage; documentation drift only."
+    }
+  ]
+}

@@ -44,13 +44,13 @@ export class Coordinator {
       console.log(`[Coordinator] ✅ 设备监控任务已调度: ${cronExpression}`);
     }
 
-    // DDNS任务（由DDNS模块处理）
-    if (this.modules.ddnsController) {
-      const cronExpression = schedule.ddns || '*/10 * * * *';
+    // DDNS 任务调和（通过 Lucky 内置 DDNS）
+    if (this.modules.luckyManager?.config?.ddnsConfig?.enabled) {
+      const cronExpression = schedule.ddns || '0 * * * *';
       this.scheduleTask('ddns', cronExpression, async () => {
-        await this.runDDNS();
+        await this.runDDNSReconcile();
       });
-      console.log(`[Coordinator] ✅ DDNS任务已调度: ${cronExpression}`);
+      console.log(`[Coordinator] ✅ DDNS 调和任务已调度: ${cronExpression}`);
     }
 
     // Lucky同步任务
@@ -87,6 +87,18 @@ export class Coordinator {
 
     this.isRunning = true;
     console.log('[Coordinator] 🎉 总协调器启动完成');
+
+    // 启动后立即执行一次 DDNS 调和
+    if (this.modules.luckyManager?.config?.ddnsConfig?.enabled) {
+      setImmediate(async () => {
+        try {
+          console.log('[Coordinator] 🔄 执行初始 DDNS 任务调和...');
+          await this.runDDNSReconcile();
+        } catch (error) {
+          console.error('[Coordinator] ❌ 初始 DDNS 调和失败:', error.message);
+        }
+      });
+    }
   }
 
   /**
@@ -152,12 +164,24 @@ export class Coordinator {
   }
 
   /**
-   * 运行DDNS更新
+   * 运行 DDNS 任务调和（通过 Lucky 内置 DDNS）
    */
-  async runDDNS() {
-    if (!this.modules.ddnsController) return;
+  async runDDNSReconcile() {
+    if (!this.modules.luckyManager) return;
 
-    return await this.modules.ddnsController.update();
+    console.log('[Coordinator] 🔄 DDNS 任务调和...');
+    const result = await this.modules.luckyManager.reconcileDDNSTasks();
+
+    this.stateManager.addHistory?.('ddns', {
+      event: 'reconcile',
+      success: result.errors.length === 0,
+      created: result.created,
+      removed: result.removed,
+      unchanged: result.unchanged,
+      errors: result.errors
+    });
+
+    return result;
   }
 
   /**
@@ -250,8 +274,8 @@ export class Coordinator {
       await runStep('deviceMonitor', '📡', () => this.runDeviceMonitor());
     }
 
-    if (this.modules.ddnsController) {
-      await runStep('ddns', '🌐', () => this.runDDNS());
+    if (this.modules.luckyManager?.config?.ddnsConfig?.enabled) {
+      await runStep('ddns', '🌐', () => this.runDDNSReconcile());
     }
 
     if (this.modules.luckyManager) {
@@ -295,12 +319,14 @@ export class Coordinator {
       status.serviceRegistry = this.modules.serviceRegistry.getStatus();
     }
 
-    if (this.modules.ddnsController) {
-      status.ddns = this.modules.ddnsController.getStatus();
-    }
-
     if (this.modules.luckyManager) {
       status.lucky = this.modules.luckyManager.getStatus();
+
+      status.ddns = {
+        enabled: this.modules.luckyManager.config.ddnsConfig?.enabled || false,
+        ddnsTasks: status.lucky.ddnsTasks || [],
+        ddnsLastReconcile: status.lucky.ddnsLastReconcile || null
+      };
     }
 
     if (this.modules.sunpanelManager) {
@@ -335,8 +361,9 @@ export class Coordinator {
         proxied: status.serviceRegistry?.proxiedServices || 0
       },
       ddns: {
-        lastUpdate: status.ddns?.lastUpdate || null,
-        enabled: status.ddns?.enabled || false
+        lastReconcile: status.ddns?.ddnsLastReconcile || null,
+        enabled: status.ddns?.enabled || false,
+        taskCount: (status.ddns?.ddnsTasks || []).length
       },
       proxies: {
         lucky: status.lucky?.lucky?.proxyCount || 0

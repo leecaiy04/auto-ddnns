@@ -1,38 +1,33 @@
 #!/usr/bin/env node
 /**
  * 配置路由
+ * 提供脱敏后的配置查看
  */
 import express from 'express';
-import fs from 'fs/promises';
 
-export default function createConfigRoutes(config) {
+const SENSITIVE_KEYS = ['openToken', 'apiToken', 'password', 'apiSecret', 'secret', 'token',
+  'CF_API_TOKEN', 'ALIYUN_AK', 'ALIYUN_SK', 'username'];
+
+function stripSecrets(obj) {
+  if (!obj || typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) return obj.map(stripSecrets);
+
+  const clean = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (SENSITIVE_KEYS.some(s => s.toLowerCase() === key.toLowerCase())) continue;
+    clean[key] = typeof value === 'object' && value !== null ? stripSecrets(value) : value;
+  }
+  return clean;
+}
+
+export function configRoutes(modules) {
   const router = express.Router();
 
-  router.get('/', async (req, res) => {
+  // GET /api/config - 返回脱敏后的配置
+  router.get('/', (req, res) => {
     try {
-      // 移除敏感信息
-      const safeConfig = { ...config };
-      if (safeConfig.lucky) delete safeConfig.lucky.openToken;
-      if (safeConfig.sunpanel) delete safeConfig.sunpanel.apiToken;
+      const safeConfig = stripSecrets(modules.config || {});
       res.json(safeConfig);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  });
-
-  router.put('/', async (req, res) => {
-    try {
-      // TODO: 实现配置更新
-      res.json({ message: '配置更新功能待实现' });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  });
-
-  router.post('/reload', async (req, res) => {
-    try {
-      // TODO: 实现配置重载
-      res.json({ message: '配置重载功能待实现' });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

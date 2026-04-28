@@ -212,16 +212,25 @@ export async function getIPv6Neighbors(options = {}) {
     for (const line of lines) {
       if (!line.trim()) continue;
 
-      // 同时支持 Linux 格式和华为表格格式
-      const ipv6Match = line.match(/([0-9a-f:]{10,40})/i);
-      const macMatch = line.match(/([0-9a-f]{2}[:][0-9a-f]{2}[:][0-9a-f]{2}[:][0-9a-f]{2}[:][0-9a-f]{2}[:][0-9a-f]{2}|[0-9a-f]{4}[-][0-9a-f]{4}[-][0-9a-f]{4}|[0-9a-f]{2}[-][0-9a-f]{2}[-][0-9a-f]{2}[-][0-9a-f]{2}[-][0-9a-f]{2}[-][0-9a-f]{2})/i);
-      
-      if (!ipv6Match || !macMatch) continue;
+      const tokens = line.trim().split(/\s+/u);
+      const ipv6 = tokens.find((token) => {
+        if (!/^[0-9a-f:]+$/iu.test(token) || !token.includes(':')) {
+          return false;
+        }
 
-      const ipv6 = ipv6Match[1];
+        const normalized = token.toLowerCase();
+        if (normalized.startsWith('fe80:')) {
+          return false;
+        }
+
+        return normalized.includes('::') || normalized.split(':').length > 6;
+      });
+      const macMatch = line.match(/([0-9a-f]{2}[:][0-9a-f]{2}[:][0-9a-f]{2}[:][0-9a-f]{2}[:][0-9a-f]{2}[:][0-9a-f]{2}|[0-9a-f]{4}[-][0-9a-f]{4}[-][0-9a-f]{4}|[0-9a-f]{2}[-][0-9a-f]{2}[-][0-9a-f]{2}[-][0-9a-f]{2}[-][0-9a-f]{2}[-][0-9a-f]{2})/i);
+
+      if (!ipv6 || !macMatch) continue;
+
       const mac = normalizeMAC(macMatch[1]);
 
-      if (!ipv6.includes(':') || ipv6.startsWith('fe80:')) continue;
       if (line.includes('FAILED')) continue;
 
       neighbors.push({

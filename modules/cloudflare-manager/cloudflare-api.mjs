@@ -106,7 +106,6 @@ export async function listDnsRecords(zoneId = null, params = {}, config = null) 
   const queryParts = [];
   if (params.type) queryParts.push(`type=${encodeURIComponent(params.type)}`);
   if (params.name) queryParts.push(`name=${encodeURIComponent(params.name)}`);
-  if (params.per_page) queryParts.push(`per_page=${params.per_page}`);
   queryParts.push(`per_page=${params.per_page || 100}`);
 
   const queryString = queryParts.length > 0 ? `?${queryParts.join('&')}` : '';

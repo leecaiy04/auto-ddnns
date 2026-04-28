@@ -42,7 +42,12 @@ HUB_HOST=0.0.0.0
 DDNS_SCRIPT_PATH=/home/leecaiy/ddns_work/update_all_ddns.sh
 
 # ========== 路由器 ==========
-ROUTER_HOST=192.168.3.1
+# iKuai Web 子账号（推荐只开放“状态监控 -> 终端监控”）
+ROUTER_HOST=192.168.9.1
+ROUTER_USERNAME=router_query_ro
+ROUTER_PASSWORD=your-r...word
+ROUTER_TYPE=ikuai
+ROUTER_SSL_VERIFY=0
 ```
 
 ### 3. 设置权限

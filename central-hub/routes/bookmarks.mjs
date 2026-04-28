@@ -7,6 +7,14 @@ import { Router } from 'express';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  getGroupList,
+  createGroup,
+  createItem,
+  updateItem,
+  getItemInfo
+} from '../../modules/sunpanel-manager/sunpanel-api.mjs';
+import { getEnv } from '../../shared/env-loader.mjs';
 
 const MODULE_DIR = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(MODULE_DIR, '..', '..');
@@ -23,6 +31,24 @@ function loadBookmarks() {
 
 function saveBookmarks(bookmarks) {
   fs.writeFileSync(BOOKMARKS_PATH, JSON.stringify({ bookmarks }, null, 2) + '\n', 'utf8');
+}
+
+function getSunPanelInstances(modules) {
+  const configuredInstances = modules.sunpanelManager?.sunpanelConfig?.instances
+    || modules.config?.modules?.sunpanel?.instances;
+
+  if (Array.isArray(configuredInstances) && configuredInstances.length > 0) {
+    return configuredInstances;
+  }
+
+  const apiBase = modules.sunpanelManager?.sunpanelConfig?.apiBase
+    || modules.config?.modules?.sunpanel?.apiBase
+    || getEnv('SUNPANEL_API_BASE', 'http://192.168.3.2:20001/openapi/v1');
+  const apiToken = modules.sunpanelManager?.sunpanelConfig?.apiToken
+    || modules.config?.modules?.sunpanel?.apiToken
+    || getEnv('SUNPANEL_API_TOKEN', '');
+
+  return [{ apiBase, apiToken }];
 }
 
 export default function bookmarkRoutes(modules) {
@@ -83,21 +109,13 @@ export default function bookmarkRoutes(modules) {
   router.post('/sync', async (req, res) => {
     try {
       const bookmarks = loadBookmarks();
-      const luckyManager = modules.luckyManager || modules.sunpanelManager;
+      const sunpanelEnabled = modules.sunpanelManager || modules.config?.modules?.sunpanel?.enabled !== false;
 
-      if (!luckyManager) {
+      if (!sunpanelEnabled) {
         return res.status(503).json({ error: 'SunPanel 模块未启用' });
       }
 
-      // 将收藏转换为 SunPanel 同步格式
-      const { getGroupList, createGroup, createItem, updateItem, getItemInfo } = await import('../../lib/api-clients/sunpanel-api.mjs');
-      const { getEnv } = await import('../../lib/utils/env-loader.mjs');
-
-      // 从 luckyManager 的配置中读取 SunPanel 实例列表，或者回退到环境变量单实例
-      const sunInstances = luckyManager.sunpanelConfig?.instances || [{
-        apiBase: getEnv('SUNPANEL_API_BASE', 'http://192.168.3.2:20001/openapi/v1'),
-        apiToken: getEnv('SUNPANEL_API_TOKEN', '')
-      }];
+      const sunInstances = getSunPanelInstances(modules);
 
       let synced = 0;
 

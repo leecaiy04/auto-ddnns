@@ -41,6 +41,8 @@ function captureRequests() {
       on: (event, handler) => {
         if (event === 'error') { /* no-op */ }
       },
+      setTimeout: () => {},
+      destroy: () => {},
       write: () => {},
       end: () => setImmediate(() => cb(res))
     };
@@ -105,7 +107,7 @@ describe('lucky-api fetch with explicit config', () => {
           if (event === 'end') setImmediate(() => handler());
         }
       };
-      const req = { on: () => {}, write: () => {}, end: () => setImmediate(() => cb(res)) };
+      const req = { on: () => {}, setTimeout: () => {}, destroy: () => {}, write: () => {}, end: () => setImmediate(() => cb(res)) };
       return req;
     };
 
@@ -132,7 +134,7 @@ describe('lucky-api fetch with explicit config', () => {
           if (event === 'end') setImmediate(() => handler());
         }
       };
-      const req = { on: () => {}, write: () => {}, end: () => setImmediate(() => cb(res)) };
+      const req = { on: () => {}, setTimeout: () => {}, destroy: () => {}, write: () => {}, end: () => setImmediate(() => cb(res)) };
       return req;
     };
 
@@ -160,7 +162,7 @@ describe('lucky-reverseproxy with config', () => {
           if (event === 'end') setImmediate(() => handler());
         }
       };
-      const req = { on: () => {}, write: () => {}, end: () => setImmediate(() => cb(res)) };
+      const req = { on: () => {}, setTimeout: () => {}, destroy: () => {}, write: () => {}, end: () => setImmediate(() => cb(res)) };
       return req;
     };
   });

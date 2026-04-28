@@ -24,6 +24,9 @@ function mockFetch(responses) {
     callIndex++;
 
     return {
+      status: 200,
+      headers: { get: () => 'application/json' },
+      text: async () => JSON.stringify(entry),
       json: async () => entry
     };
   };

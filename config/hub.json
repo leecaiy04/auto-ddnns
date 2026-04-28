@@ -38,34 +38,13 @@
     },
     "ddns": {
       "enabled": true,
-      "scriptPath": "./scripts/aliddns_sync.sh",
-      "updateInterval": 600,
-      "domains": {
-        "ipv4": [
-          "leecaiy.shop",
-          "*.leecaiy.shop"
-        ],
-        "ipv6": [
-          "10.v6.leecaiy.shop",
-          "200.v6.leecaiy.shop",
-          "201.v6.leecaiy.shop",
-          "254.v6.leecaiy.shop"
-        ]
-      },
-      "extraDomains": [
-        {
-          "domain": "222869.xyz",
-          "ipv4": [
-            "222869.xyz",
-            "*.222869.xyz"
-          ],
-          "ipv6": [
-            "10.v6.222869.xyz",
-            "200.v6.222869.xyz",
-            "201.v6.222869.xyz"
-          ]
-        }
-      ]
+      "luckyDdns": {
+        "enabled": true,
+        "devices": ["2", "10", "200", "201", "254"],
+        "domains": ["leecaiy.shop", "222869.xyz"],
+        "intervals": 36,
+        "forceInterval": 3600
+      }
     },
     "lucky": {
       "enabled": true,

@@ -1,278 +1,140 @@
-# 🎯 Central Hub - 中枢服务
+# Central Hub - 中枢服务
 
-统一的网络基础设施管理服务，自动协调 DDNS、Lucky、SunPanel 等服务。
+统一的网络基础设施管理服务，通过 Coordinator 编排各功能模块。
 
-## 📋 功能特性
+## 功能
 
-### 核心功能
-- ✅ **路由器监控**: 自动检测公网 IP 变更
-- ✅ **DDNS 控制**: 触发 DDNS 自动更新
-- ✅ **Lucky 同步**: 获取反向代理配置
-- ✅ **SunPanel 管理**: 自动管理图标卡片
-- ✅ **状态持久化**: JSON 格式保存状态
-- ✅ **局域网 API**: RESTful API 接口
-- ✅ **定时任务**: 自动化执行各项任务
+- **设备监控** — 通过 SSH 扫描路由器 IPv6 邻居表，发现局域网设备
+- **DDNS 管理** — 通过 Lucky 内置 DDNS 自动调和 DNS 任务
+- **反向代理** — 同步服务清单到 Lucky 反向代理规则
+- **仪表盘卡片** — 同步 Lucky 代理到 SunPanel 仪表盘
+- **DNS 记录** — 同步服务到 Cloudflare DNS（A/AAAA 记录）
+- **服务清单** — 白名单模式管理需要代理的内部服务
+- **Web 仪表盘** — 单页前端，端口扫描、服务管理、连接性检测
 
-### API 接口
+## API 接口
 
-```bash
-# 健康检查
-GET /api/health
-
-# 整体状态
-GET /api/status
-
-# IP 信息
-GET /api/ip
-
-# DDNS 控制
-GET  /api/ddns          # 获取 DDNS 状态
-POST /api/ddns/refresh  # 触发 DDNS 更新
-
-# 代理管理
-GET /api/proxies        # 获取代理列表
-
-# SunPanel 管理
-GET  /api/sunpanel      # 获取 SunPanel 状态
-POST /api/sunpanel/sync # 触发同步
-
-# 配置管理
-GET  /api/config        # 获取配置
-PUT  /api/config        # 更新配置
-```
-
-## 🚀 快速开始
-
-### 1. 安装依赖
+### 同步控制
 
 ```bash
-cd central-hub
-npm install
+POST /api/sync/full          # 完整同步（设备 → DDNS → Lucky → SunPanel → CF）
+POST /api/sync/sunpanel      # 单独触发 SunPanel 同步
 ```
 
-### 2. 配置文件
+### 仪表盘
 
 ```bash
-# 复制配置模板
-cp config/central-hub.json.template config/central-hub.json
-
-# 编辑配置
-vim config/central-hub.json
+GET  /api/dashboard/overview  # 概览信息
+GET  /api/dashboard/status    # 全部模块状态
 ```
 
-### 3. 启动服务
+### 设备
 
 ```bash
-# 开发模式（带自动重载）
-npm run dev
-
-# 生产模式
-npm start
+GET  /api/devices/list        # 已发现设备列表
+POST /api/devices/refresh     # 刷新设备发现
+GET  /api/devices/scan-ports  # 扫描所有设备端口
+POST /api/devices/:id/scan    # 深度扫描单个设备
+GET  /api/devices/key-machines  # 关键设备列表
 ```
 
-### 4. 测试 API
+### 服务
 
 ```bash
-# 健康检查
-curl http://localhost:51000/api/health
-
-# 获取状态
-curl http://localhost:51000/api/status
-
-# 获取 IP
-curl http://localhost:51000/api/ip
-
-# 触发 DDNS 更新
-curl -X POST http://localhost:51000/api/ddns/refresh
+GET    /api/services/list          # 服务清单
+POST   /api/services/add           # 添加服务
+PUT    /api/services/:id           # 更新服务
+DELETE /api/services/:id           # 删除服务
+POST   /api/services/quick-add     # 从端口扫描快速添加
+GET    /api/services/connectivity  # IPv4/IPv6 连通性检测
+GET    /api/services/proxy-defaults  # 全局代理默认配置
+PUT    /api/services/proxy-defaults  # 更新全局代理默认配置
 ```
 
-## ⚙️ 配置说明
-
-```json
-{
-  "server": {
-    "port": 51000,          // 服务端口
-    "host": "0.0.0.0",     // 监听地址
-    "cors": {
-      "enabled": true,
-      "origin": "*"        // CORS 允许的来源
-    }
-  },
-  "router": {
-    "gateway": "192.168.3.1",
-    "checkInterval": 300,  // IP 检查间隔（秒）
-    "timeout": 10000       // 超时时间
-  },
-  "ddns": {
-    "enabled": true,
-    "scriptPath": "/home/leecaiy/ddns_work/update_all_ddns.sh",
-    "domains": ["leecaiy.xyz"]
-  },
-  "lucky": {
-    "enabled": true,
-    "apiBase": "http://192.168.3.200:16601",
-    "openToken": "your-token"
-  },
-  "sunpanel": {
-    "enabled": true,
-    "apiBase": "http://192.168.3.200:20001/openapi/v1",
-    "apiToken": "your-token"
-  }
-}
-```
-
-## 🤖 自动化部署
-
-### systemd 服务
+### DDNS
 
 ```bash
-# 安装服务
-mkdir -p ~/.config/systemd/user
-ln -sf /vol1/1000/code/auto-ddnns/central-hub/central-hub.service ~/.config/systemd/user/
-systemctl --user daemon-reload
-systemctl --user enable --now central-hub.service
-
-# 查看状态
-sudo systemctl status central-hub
-
-# 查看日志
-sudo journalctl -u central-hub -f
+GET  /api/ddns              # DDNS 任务状态
+POST /api/ddns/reconcile    # 调和 DDNS 任务
+POST /api/ddns/sync/:key    # 触发单个任务同步
+GET  /api/ddns/logs         # DDNS 日志
 ```
 
-### Docker (可选)
+### 代理
 
 ```bash
-# 构建镜像
-docker build -t central-hub .
-
-# 运行容器
-docker run -d \
-  --name central-hub \
-  --network host \
-  -v /vol1/1000/code/auto-ddnns/config:/app/config \
-  -v /vol1/1000/code/auto-ddnns/data:/app/data \
-  central-hub
+GET /api/proxies            # Lucky 代理状态
+GET /api/proxies/sync       # 触发 Lucky 同步
 ```
 
-## 📊 状态数据
-
-状态保存在 `data/central-hub-state.json`:
-
-```json
-{
-  "version": "1.0.0",
-  "lastUpdate": "2026-03-23T16:00:00Z",
-  "router": {
-    "ipv4": "240e:xxx",
-    "ipv6": "240e:xxx",
-    "lastCheck": "2026-03-23T16:00:00Z"
-  },
-  "ddns": {
-    "lastUpdate": "2026-03-23T16:00:00Z",
-    "history": []
-  },
-  "lucky": {
-    "lastSync": "2026-03-23T16:00:00Z",
-    "proxies": []
-  },
-  "sunpanel": {
-    "lastSync": "2026-03-23T16:00:00Z",
-    "cards": []
-  }
-}
-```
-
-## 🔧 使用示例
-
-### 局域网内其他服务查询 IP
+### Cloudflare
 
 ```bash
-# 简单查询
-curl http://192.168.3.x:51000/api/ip
-
-# 获取 JSON 并解析
-curl -s http://192.168.3.x:51000/api/ip | jq '.ipv4'
+GET    /api/cloudflare           # DNS 记录列表 + 状态
+POST   /api/cloudflare/sync      # 触发 DNS 同步
+DELETE /api/cloudflare/record    # 删除指定记录
+GET    /api/cloudflare/verify-token  # 验证 API Token
 ```
 
-### Shell 脚本中使用
+### 其他
 
 ```bash
-#!/bin/bash
-HUB_API="http://192.168.3.x:51000/api"
-
-# 获取当前公网 IP
-IPV4=$(curl -s "$HUB_API/ip" | jq -r '.ipv4')
-echo "当前 IPv4: $IPV4"
-
-# 触发 DDNS 更新
-curl -X POST "$HUB_API/ddns/refresh"
-
-# 获取 Lucky 代理列表
-curl -s "$HUB_API/proxies" | jq '.'
+GET    /api/config           # 脱敏后的配置
+GET    /api/bookmarks/list   # 外部书签
+POST   /api/bookmarks/add    # 添加书签
+GET    /api/changelog        # 变更日志
+GET    /api/health           # 健康检查
 ```
 
-### Python 中使用
+## 配置
 
-```python
-import requests
+环境变量（`.env`）优先级高于 `config/hub.json`。参见 `.env.template`。
 
-hub_api = "http://192.168.3.x:51000/api"
+### 主要配置项
 
-# 获取状态
-status = requests.get(f"{hub_api}/status").json()
+| 配置 | 说明 | 默认值 |
+|------|------|--------|
+| `HUB_PORT` | 服务端口 | 51000 |
+| `LUCKY_API_BASE` | Lucky API 地址 | - |
+| `LUCKY_OPEN_TOKEN` | Lucky OpenToken | - |
+| `SUNPANEL_API_BASE` | SunPanel API 地址 | - |
+| `SUNPANEL_API_TOKEN` | SunPanel API Token | - |
+| `CF_API_TOKEN` | Cloudflare API Token | - |
+| `ROUTER_HOST` | 路由器地址 | 192.168.3.1 |
 
-# 获取 IP
-ip_info = requests.get(f"{hub_api}/ip").json()
-print(f"IPv4: {ip_info['ipv4']}")
+### 定时调度
 
-# 触发 DDNS
-response = requests.post(f"{hub_api}/ddns/refresh")
+| 任务 | 默认间隔 | 说明 |
+|------|----------|------|
+| deviceMonitor | 每 10 分钟 | 扫描局域网设备 |
+| ddns | 每小时 | 调和 DDNS 任务 |
+| luckySync | 每 15 分钟 | 同步反向代理规则 |
+| sunpanelSync | 每 15 分钟 | 同步 SunPanel 卡片 |
+| cloudflareSync | 每 15 分钟 | 同步 Cloudflare DNS |
+| saveState | 每分钟 | 持久化状态 |
+
+## 部署
+
+### PM2（推荐）
+
+```bash
+# 通过 ecosystem.config.cjs
+pm2 start ecosystem.config.cjs
+pm2 logs auto-ddnns
 ```
 
-## 📁 项目结构
+### systemd
 
-```
-central-hub/
-├── server.mjs              # 主服务器
-├── package.json            # 依赖配置
-├── config/
-│   └── central-hub.json    # 配置文件
-├── modules/
-│   ├── state-manager.mjs   # 状态管理
-│   ├── router-monitor.mjs  # 路由器监控
-│   ├── ddns-controller.mjs # DDNS 控制
-│   ├── lucky-sync.mjs      # Lucky 同步
-│   └── sunpanel-manager.mjs # SunPanel 管理
-├── routes/
-│   ├── status.mjs          # 状态路由
-│   ├── ip.mjs              # IP 路由
-│   ├── ddns.mjs            # DDNS 路由
-│   ├── proxy.mjs           # 代理路由
-│   ├── sunpanel.mjs        # SunPanel 路由
-│   └── config.mjs          # 配置路由
-├── data/
-│   ├── central-hub-state.json  # 状态文件
-│   └── backups/                # 备份目录
-└── logs/
-    └── central-hub.log          # 日志文件
+```bash
+sudo ln -sf /vol1/1000/code/auto-ddnns/central-hub/central-hub.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now central-hub
 ```
 
-## 🔐 安全建议
+### Docker
 
-1. **防火墙**: 仅允许局域网访问
-2. **认证**: 生产环境添加 API Token
-3. **HTTPS**: 使用反向代理启用 HTTPS
-4. **日志**: 定期检查日志文件
+参见 `docs/migration/docker-compose.md`。
 
-## 📝 开发计划
+## 状态数据
 
-- [ ] WebSocket 实时推送
-- [ ] Web 管理界面
-- [ ] 告警通知（邮件/Telegram）
-- [ ] 更多监控指标
-- [ ] 配置热重载
-- [ ] API 认证
-
-## 📄 许可证
-
-MIT
+保存在 `data/hub-state.json`，包含各模块的同步状态和历史记录。自动备份到 `data/backups/`。

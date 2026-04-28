@@ -14,7 +14,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, '..');
 
 async function loadEnv(envPath = null) {
-  return loadEnvFileAsync({
+  const fileEnv = await loadEnvFileAsync({
     envPath,
     searchPaths: envPath
       ? []
@@ -24,6 +24,17 @@ async function loadEnv(envPath = null) {
         ],
     mutateProcessEnv: false
   });
+
+  if (envPath) {
+    return fileEnv;
+  }
+
+  return {
+    ...fileEnv,
+    ...Object.fromEntries(
+      Object.entries(process.env).filter(([, value]) => value !== undefined)
+    )
+  };
 }
 
 function getConfig(env, configKeys, configValue, defaultValue = null) {
@@ -153,11 +164,13 @@ export async function loadConfigWithEnv(configPath, envPath = null) {
     ddns: {
       ...ddnsConfig,
       enabled: toBool(getConfig(env, 'DDNS_ENABLED', ddnsConfig.enabled, true), true),
-      scriptPath: getConfig(env, 'DDNS_SCRIPT_PATH', ddnsConfig.scriptPath, './scripts/aliddns_sync.sh'),
-      updateInterval: toInt(
-        getConfig(env, 'DDNS_UPDATE_INTERVAL', ddnsConfig.updateInterval, 600),
-        600
-      )
+      luckyDdns: {
+        enabled: toBool(ddnsConfig.luckyDdns?.enabled, true),
+        devices: ddnsConfig.luckyDdns?.devices || [],
+        domains: ddnsConfig.luckyDdns?.domains || [],
+        intervals: toInt(ddnsConfig.luckyDdns?.intervals, 36),
+        forceInterval: toInt(ddnsConfig.luckyDdns?.forceInterval, 3600)
+      }
     },
     lucky: {
       ...luckyConfig,
@@ -170,7 +183,14 @@ export async function loadConfigWithEnv(configPath, envPath = null) {
       autoCreateProxy: toBool(
         getConfig(env, 'LUCKY_AUTO_CREATE_PROXY', luckyConfig.autoCreateProxy, true),
         true
-      )
+      ),
+      ddnsConfig: {
+        enabled: toBool(ddnsConfig.luckyDdns?.enabled, true),
+        devices: ddnsConfig.luckyDdns?.devices || [],
+        domains: ddnsConfig.luckyDdns?.domains || [],
+        intervals: toInt(ddnsConfig.luckyDdns?.intervals, 36),
+        forceInterval: toInt(ddnsConfig.luckyDdns?.forceInterval, 3600)
+      }
     },
     sunpanel: {
       ...sunpanelConfig,

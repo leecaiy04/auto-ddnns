@@ -17,6 +17,15 @@ import {
   getSSLList,
   applyACMECert
 } from './lucky-ssl.mjs';
+import {
+  getDDNSTaskList,
+  createDDNSTask,
+  deleteDDNSTask,
+  manualSyncDDNS,
+  getDDNSLogs,
+  buildAliyunDNSCredentials,
+  buildRecord
+} from './lucky-ddns.mjs';
 import { getEnv } from '../../shared/env-loader.mjs';
 
 function formatTargetHost(targetHost) {
@@ -109,7 +118,8 @@ export class LuckyManager {
     this.luckyConfig = {
       apiBase: config.apiBase || getEnv('LUCKY_API_BASE', 'http://192.168.3.2:16601/666'),
       openToken: config.openToken || getEnv('LUCKY_OPEN_TOKEN', ''),
-      httpsPort: parseInt(`${config.httpsPort || getEnv('LUCKY_HTTPS_PORT', '55000')}`, 10)
+      httpsPort: parseInt(`${config.httpsPort || getEnv('LUCKY_HTTPS_PORT', '55000')}`, 10),
+      instances: Array.isArray(config.instances) ? config.instances : undefined
     };
     this.luckyLanHost = this.resolveLuckyLanHost();
     this.sslApi = {
@@ -128,10 +138,17 @@ export class LuckyManager {
       this.stateManager.state.lucky = {
         lastSync: null,
         proxies: {},
-        syncStatus: {}
+        syncStatus: {},
+        ddnsTasks: [],
+        ddnsLastReconcile: null
       };
     } else if (!this.stateManager.state.lucky.syncStatus) {
       this.stateManager.state.lucky.syncStatus = {};
+    }
+
+    // 初始化 DDNS 相关状态
+    if (!this.stateManager.state.lucky.ddnsTasks) {
+      this.stateManager.state.lucky.ddnsTasks = [];
     }
 
     console.log('[LuckyManager] ✅ Lucky管理模块初始化完成');
@@ -406,6 +423,169 @@ export class LuckyManager {
     }
   }
 
+  // ── Lucky DDNS 管理 ──
+
+  /**
+   * 获取用于调用 lucky-ddns 函数的 config 对象
+   */
+  getLuckyDDNSConfig() {
+    return {
+      apiBase: this.luckyConfig.apiBase,
+      openToken: this.luckyConfig.openToken
+    };
+  }
+
+  /**
+   * 根据配置生成期望的 DDNS 任务列表
+   * @returns {Array<{taskName: string, domain: string, deviceId: string, fullDomainName: string}>}
+   */
+  buildDesiredDDNSTasks() {
+    const ddnsConfig = this.config.ddnsConfig || {};
+    const devices = ddnsConfig.devices || [];
+    const domains = ddnsConfig.domains || [getEnv('ALIYUN_DOMAIN', 'leecaiy.shop')];
+
+    const tasks = [];
+    for (const deviceId of devices) {
+      for (const domain of domains) {
+        tasks.push({
+          taskName: `ddns-${deviceId}-v6-${domain}`,
+          domain,
+          deviceId,
+          fullDomainName: `${deviceId}.v6.${domain}`
+        });
+      }
+    }
+    return tasks;
+  }
+
+  /**
+   * 调和 DDNS 任务：创建缺失的，删除孤立的
+   * @returns {Promise<{created: number, removed: number, unchanged: number, errors: string[]}>}
+   */
+  async reconcileDDNSTasks() {
+    const desired = this.buildDesiredDDNSTasks();
+    const config = this.getLuckyDDNSConfig();
+    const dns = buildAliyunDNSCredentials();
+    const intervals = this.config.ddnsConfig?.intervals || 36;
+
+    console.log(`[LuckyManager] 🔄 DDNS 任务调和: ${desired.length} 个期望任务`);
+
+    // 获取 Lucky 中现有的 DDNS 任务
+    let existingTasks = [];
+    try {
+      const existingResult = await getDDNSTaskList(config);
+      if (existingResult.ret !== 0) {
+        throw new Error(existingResult.msg || '获取 DDNS 任务列表失败');
+      }
+      existingTasks = existingResult.data || existingResult.list || [];
+    } catch (error) {
+      console.error(`[LuckyManager] ❌ 获取 DDNS 任务列表失败: ${error.message}`);
+      return { created: 0, removed: 0, unchanged: 0, errors: [error.message] };
+    }
+
+    const existingNames = new Map();
+    for (const t of existingTasks) {
+      existingNames.set(t.TaskName, t);
+    }
+    const desiredNames = new Set(desired.map(d => d.taskName));
+
+    const results = { created: 0, removed: 0, unchanged: 0, errors: [] };
+
+    // 创建缺失的任务
+    for (const task of desired) {
+      if (!existingNames.has(task.taskName)) {
+        try {
+          await createDDNSTask({
+            taskName: task.taskName,
+            taskType: 'IPv6',
+            dns,
+            records: [buildRecord(task.fullDomainName, 'AAAA')],
+            intervals
+          }, config);
+          results.created++;
+          console.log(`[LuckyManager] ✅ 创建 DDNS 任务: ${task.taskName}`);
+        } catch (err) {
+          results.errors.push(`创建 ${task.taskName}: ${err.message}`);
+          console.error(`[LuckyManager] ❌ 创建 DDNS 任务失败: ${task.taskName} - ${err.message}`);
+        }
+      } else {
+        results.unchanged++;
+      }
+    }
+
+    // 删除孤立的（仅删除 ddns- 前缀且不再期望的任务）
+    for (const [name, existing] of existingNames) {
+      if (name.startsWith('ddns-') && !desiredNames.has(name)) {
+        try {
+          await deleteDDNSTask(existing.TaskKey, config);
+          results.removed++;
+          console.log(`[LuckyManager] 🗑️  删除孤立 DDNS 任务: ${name}`);
+        } catch (err) {
+          results.errors.push(`删除 ${name}: ${err.message}`);
+          console.error(`[LuckyManager] ❌ 删除 DDNS 任务失败: ${name} - ${err.message}`);
+        }
+      }
+    }
+
+    // 更新状态
+    this.stateManager.state.lucky.ddnsTasks = desired.map(d => d.taskName);
+    this.stateManager.state.lucky.ddnsLastReconcile = new Date().toISOString();
+    await this.stateManager.save();
+
+    console.log(`[LuckyManager] 🎉 DDNS 调和完成 (创建: ${results.created}, 删除: ${results.removed}, 未变: ${results.unchanged})`);
+    return results;
+  }
+
+  /**
+   * 获取所有 DDNS 任务状态
+   */
+  async getDDNSTaskStatus() {
+    const config = this.getLuckyDDNSConfig();
+    try {
+      const result = await getDDNSTaskList(config);
+      if (result.ret !== 0) {
+        return { success: false, error: result.msg, tasks: [] };
+      }
+      return {
+        success: true,
+        total: (result.data || result.list || []).length,
+        tasks: (result.data || result.list || []).map(t => ({
+          taskKey: t.TaskKey,
+          taskName: t.TaskName,
+          enabled: t.Enable,
+          type: t.TaskType,
+          intervals: t.Intervals,
+          ipv6Addr: t.Ipv6Addr || null,
+          lastSync: t.LastSyncTime || null,
+          nextSync: t.NextSyncTime || null,
+          querying: t.QueryingIPv6Addr || false,
+          records: (t.Records || []).map(r =>
+            r.SyncRecordData?.fullDomainName
+              || (r.SubDomain && r.DomainName ? `${r.SubDomain}.${r.DomainName}` : null)
+          )
+        }))
+      };
+    } catch (error) {
+      return { success: false, error: error.message, tasks: [] };
+    }
+  }
+
+  /**
+   * 手动触发指定 DDNS 任务同步
+   */
+  async syncDDNSTask(taskKey) {
+    const config = this.getLuckyDDNSConfig();
+    return await manualSyncDDNS(taskKey, config);
+  }
+
+  /**
+   * 获取 Lucky DDNS 日志
+   */
+  async getDDNSLogList(page = 1, pageSize = 20) {
+    const config = this.getLuckyDDNSConfig();
+    return await getDDNSLogs(page, pageSize, config);
+  }
+
   /**
    * 获取状态摘要
    */
@@ -414,7 +594,9 @@ export class LuckyManager {
       lastSync: this.stateManager.state.lucky?.lastSync || null,
       enabled: this.config.enabled,
       port: this.luckyConfig.httpsPort,
-      proxyCount: Object.keys(this.stateManager.state.lucky?.syncStatus || {}).length
+      proxyCount: Object.keys(this.stateManager.state.lucky?.syncStatus || {}).length,
+      ddnsTasks: this.stateManager.state.lucky?.ddnsTasks || [],
+      ddnsLastReconcile: this.stateManager.state.lucky?.ddnsLastReconcile || null
     };
   }
 

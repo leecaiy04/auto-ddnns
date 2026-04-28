@@ -65,16 +65,6 @@ async function isHubAlreadyRunning(host, port) {
 function applyRuntimeConfigOverrides(config) {
   const managedDomain = getManagedDomain();
 
-  if (config?.modules?.ddns?.domains) {
-    config.modules.ddns.domains = {
-      ipv4: [managedDomain, `*.${managedDomain}`],
-      ipv6: ['2', '10', '200', '201'].map(device => `${device}.v6.${managedDomain}`)
-    };
-
-    // 保持 extraDomains 配置（用于 222869.xyz 等额外域名）
-    // extraDomains 在 hub.json 中静态配置，不做覆盖
-  }
-
   if (config?.modules?.lucky) {
     const luckyInstances = [];
     if (process.env.LUCKY_API_BASE) {
@@ -134,7 +124,6 @@ import { SunPanelManager } from '../modules/sunpanel-manager/index.mjs';
 import { CloudflareManager } from '../modules/cloudflare-manager/index.mjs';
 import { Coordinator } from './coordinator.mjs';
 import { StateManager } from '../shared/state-manager.mjs';
-import { DDNSController } from '../modules/device-monitor/ddns-controller.mjs';
 import { ChangelogManager } from '../shared/changelog-manager.mjs';
 
 // 导入路由
@@ -146,6 +135,8 @@ import proxyRoutes from './routes/proxy.mjs';
 import cloudflareRoutes from './routes/cloudflare.mjs';
 import bookmarkRoutes from './routes/bookmarks.mjs';
 import changelogRoutes from './routes/changelog.mjs';
+import { syncRoutes } from './routes/sync.mjs';
+import { configRoutes } from './routes/config.mjs';
 
 class CentralHub {
   constructor(configPath) {
@@ -218,16 +209,7 @@ class CentralHub {
       );
     }
 
-    // DDNS 控制器
-    if (this.config.modules.ddns?.enabled) {
-      this.modules.ddnsController = new DDNSController(
-        this.config.modules.ddns,
-        this.stateManager
-      );
-      this.modules.ddns = this.modules.ddnsController;
-    }
-
-    // Lucky 管理模块
+    // Lucky 管理模块（含 DDNS 功能）
     if (this.config.modules.lucky?.enabled) {
       this.modules.luckyManager = new LuckyManager(
         this.config.modules.lucky,
@@ -235,6 +217,8 @@ class CentralHub {
       );
       // 用于兼容旧的接口
       this.modules.lucky = this.modules.luckyManager;
+      // DDNS 通过 LuckyManager 管理
+      this.modules.ddns = this.modules.luckyManager;
     }
 
     // Cloudflare DNS 管理模块
@@ -285,7 +269,7 @@ class CentralHub {
       });
     });
 
-    // 挂载新路由
+    // 挂载路由
     this.app.use('/api/dashboard', dashboardRoutes(this.modules));
     this.app.use('/api/devices', deviceRoutes(this.modules));
     this.app.use('/api/services', serviceRoutes(this.modules));
@@ -294,79 +278,8 @@ class CentralHub {
     this.app.use('/api/cloudflare', cloudflareRoutes(this.modules));
     this.app.use('/api/bookmarks', bookmarkRoutes(this.modules));
     this.app.use('/api/changelog', changelogRoutes(this.modules));
-
-    // 同步控制路由
-    this.app.post('/api/sync/full', async (req, res) => {
-      try {
-        const result = await this.coordinator.runFullSync();
-        res.json({ success: true, result });
-      } catch (error) {
-        console.error('[Sync] 完整同步失败:', error);
-        res.status(500).json({ error: error.message });
-      }
-    });
-
-    this.app.post('/api/devices/refresh', async (req, res) => {
-      try {
-        const result = await this.coordinator.runDeviceMonitor();
-        res.json(result);
-      } catch (error) {
-        console.error('[Devices] 刷新失败:', error);
-        res.status(500).json({ error: error.message });
-      }
-    });
-
-    this.app.post('/api/proxies/sync', async (req, res) => {
-      try {
-        const result = await this.coordinator.runLuckySync();
-        res.json(result);
-      } catch (error) {
-        console.error('[Proxies] Lucky同步失败:', error);
-        res.status(500).json({ error: error.message });
-      }
-    });
-
-    this.app.post('/api/sunpanel/sync', async (req, res) => {
-      try {
-        const result = await this.coordinator.runSunpanelSync();
-        res.json(result);
-      } catch (error) {
-        console.error('[SunPanel] SunPanel同步失败:', error);
-        res.status(500).json({ error: error.message });
-      }
-    });
-
-    this.app.post('/api/cloudflare/sync', async (req, res) => {
-      try {
-        const result = await this.coordinator.runCloudflareSync();
-        res.json(result);
-      } catch (error) {
-        console.error('[Cloudflare] Cloudflare同步失败:', error);
-        res.status(500).json({ error: error.message });
-      }
-    });
-
-    // 兼容旧的状态路由
-    this.app.get('/api/status', (req, res) => {
-      try {
-        res.json({
-          status: this.coordinator.isRunning ? 'healthy' : 'stopped',
-          uptime: Math.floor((Date.now() - this.startTime) / 1000),
-          lastUpdate: new Date().toISOString(),
-          modules: {
-            coordinator: this.coordinator.isRunning ? 'ok' : 'stopped',
-            deviceMonitor: this.modules.deviceMonitor?.getStatus()?.enabled ? 'ok' : 'disabled',
-            ddns: this.modules.ddnsController?.getStatus()?.enabled ? 'ok' : 'disabled',
-            lucky: this.modules.luckyManager?.getStatus()?.enabled ? 'ok' : 'disabled',
-            sunpanel: this.modules.sunpanelManager?.config?.enabled ? 'ok' : 'disabled',
-            cloudflare: this.modules.cloudflareManager?.getStatus()?.enabled ? 'ok' : 'disabled'
-          }
-        });
-      } catch (error) {
-        console.error('[Status] 获取状态失败:', error);
-        res.status(500).json({ error: error.message });
-      }
-    });
+    this.app.use('/api/sync', syncRoutes(this.modules));
+    this.app.use('/api/config', configRoutes(this.modules));
 
     // 404
     this.app.use((req, res) => {
