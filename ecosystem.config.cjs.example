@@ -1,0 +1,17 @@
+module.exports = {
+  apps: [{
+    name: 'auto-ddnns',
+    script: './central-hub/server.mjs',
+    cwd: '/vol1/1000/code/auto-ddnns',
+    instances: 1,
+    autorestart: true,
+    watch: false,
+    max_memory_restart: '500M',
+    env: {
+      NODE_ENV: 'production',
+      // 从环境变量或 .env 文件读取敏感信息
+      // SUNPANEL_API_BASE: 从 .env 读取
+      // SUNPANEL_API_TOKEN: 从 .env 读取
+    }
+  }]
+};

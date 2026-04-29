@@ -45,13 +45,13 @@ shared/                        # 共享基础设施
   config-loader.mjs            # 配置加载器（.env + hub.json 合并）
 
 modules/                       # 独立功能模块
-  device-monitor/              # 设备发现 + DDNS
+  device-monitor/              # 设备发现
     index.mjs                  # DeviceMonitor 类
     ssh-client.mjs             # 路由器 SSH2 封装
-    ddns-controller.mjs        # 阿里云 DDNS 控制器
-  lucky-manager/               # Lucky 反向代理 + SSL
+  lucky-manager/               # Lucky 反向代理 + DDNS + SSL
     index.mjs                  # LuckyManager 类
     lucky-api.mjs              # HTTP 传输层
+    lucky-ddns.mjs             # Lucky 内置 DDNS 管理
     lucky-port-manager.mjs     # 端口管理
     lucky-reverseproxy.mjs     # 反向代理规则
     lucky-ssl.mjs              # SSL 证书管理
@@ -65,20 +65,32 @@ modules/                       # 独立功能模块
     index.mjs                  # ServiceRegistry 类
 
 central-hub/                   # 编排层（Express 入口）
-  server.mjs                   # Express 服务、模块组装
-  coordinator.mjs              # cron 调度器
+  server.mjs                   # Express 服务、模块组装、路由挂载
+  coordinator.mjs              # cron 调度器（模块间唯一编排点）
   routes/                      # API 路由
-  public/                      # 前端仪表盘
+    dashboard.mjs              # 仪表盘概览 + 状态
+    devices.mjs                # 设备发现 + 端口扫描
+    services.mjs               # 服务清单 CRUD
+    ddns.mjs                   # DDNS 任务管理
+    proxy.mjs                  # Lucky 代理状态 + 同步
+    cloudflare.mjs             # Cloudflare DNS 管理
+    bookmarks.mjs              # 外部书签
+    changelog.mjs              # 变更日志查询
+    sync.mjs                   # 同步控制（full / sunpanel）
+    config.mjs                 # 配置查看（脱敏）
+  public/                      # 前端仪表盘（单页应用）
 ```
 
 **入口文件**: `central-hub/server.mjs` — 导入各模块、组装、挂载路由。
 
 **模块间数据流**: 通过方法参数传递，不直接引用其他模块。Coordinator 负责编排：
-1. `DeviceMonitor.getIPv6Map()` → `ipv6Map`
-2. `LuckyManager.syncServicesToLucky(services, ipv6Map)` → 反向代理规则
-3. `LuckyManager.getLuckyProxies()` → `luckyProxies`
-4. `SunPanelManager.syncToSunPanel(services, luckyProxies, luckyLanHost)` → 仪表盘卡片
-5. `CloudflareManager.syncServicesToCF(services, ipv6Map)` → DNS 记录
+1. `DeviceMonitor.checkDevices()` → 设备发现 + IPv6 邻居表
+2. `DeviceMonitor.getIPv6Map()` → `ipv6Map`
+3. `LuckyManager.reconcileDDNSTasks()` → DDNS 任务调和（创建/清理）
+4. `LuckyManager.syncServicesToLucky(services, ipv6Map)` → 反向代理规则
+5. `LuckyManager.getLuckyProxies()` + `getLanHost()` → `luckyProxies`, `luckyLanHost`
+6. `SunPanelManager.syncToSunPanel(services, luckyProxies, luckyLanHost)` → 仪表盘卡片
+7. `CloudflareManager.syncServicesToCF(services, ipv6Map)` → DNS A/AAAA 记录
 
 ## 关键设计决策
 

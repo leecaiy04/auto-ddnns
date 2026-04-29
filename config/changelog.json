@@ -3247,6 +3247,70 @@
           }
         }
       }
+    },
+    {
+      "timestamp": "2026-04-23T16:26:52.521Z",
+      "action": "add_service",
+      "target": "hub",
+      "detail": "从端口扫描快速添加: Central Hub (NAS / Nextcloud 服务器:51000)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "hub",
+          "name": "Central Hub",
+          "device": "200",
+          "ipv6": "240e:390:9e3:d060:d432:f732:2eaf:1100",
+          "internalPort": 51000,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "hub.leecaiy.shop",
+          "description": "网络基础设施中枢仪表盘",
+          "lucky": {
+            "port": 55000,
+            "remark": "Central Hub",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://hub.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.200:51000"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-04-23T16:27:00.824Z",
+      "action": "add_service",
+      "target": "lucky-admin",
+      "detail": "从端口扫描快速添加: Lucky 管理 (Lucky / SunPanel 服务器:16601)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "lucky-admin",
+          "name": "Lucky 管理",
+          "device": "2",
+          "ipv6": "240e:390:9e3:d060:be24:11ff:fe9f:ba81",
+          "internalPort": 16601,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "lucky-admin.leecaiy.shop",
+          "description": "Lucky 反向代理管理界面",
+          "lucky": {
+            "port": 55000,
+            "remark": "Lucky 管理",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://lucky-admin.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.3.2:16601"
+          }
+        }
+      }
     }
   ]
 }

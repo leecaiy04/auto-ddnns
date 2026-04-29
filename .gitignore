@@ -20,6 +20,11 @@ logs/
 devices.json
 data/*.json
 
+# Configuration files with sensitive data
+ecosystem.config.cjs
+central-hub/config/hub.json
+config/hub.json
+
 # IDE
 .vscode/
 .idea/

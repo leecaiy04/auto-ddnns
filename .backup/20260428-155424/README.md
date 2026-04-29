@@ -15,52 +15,48 @@
 ## 当前架构
 
 ```text
-路由器 (SSH)
-    |
-DeviceMonitor ──── 扫描 IPv6 邻居表
-    |
-ServiceRegistry ── 服务清单 (JSON 文件)
-       |              |
-  LuckyManager    SunPanelManager    CloudflareManager
-  (反向代理+DDNS)   (仪表盘卡片)      (DNS A/AAAA 记录)
-       \              |              /
-    Coordinator ── node-cron 定时调度
-          |
-    Express API + Dashboard (:51000)
+设备监控 / 路由器 SSH
+          ↓
+     DDNSController
+          ↓
+    ServiceRegistry
+      ↙    ↓    ↘
+ Lucky   SunPanel  Cloudflare
+          ↓
+     Central Hub API + Dashboard
 ```
 
 ## 目录概览
 
 ```text
 auto-dnns/
-├── central-hub/                 # Express 服务、路由、前端仪表盘与本地 HTTP CLI
+├── central-hub/                 # Web 服务、API、状态与调度
 │   ├── server.mjs               # Central Hub 入口
-│   ├── coordinator.mjs          # 模块编排与定时调度
+│   ├── modules/                 # 设备、DDNS、Lucky、Cloudflare 等模块
 │   ├── routes/                  # REST API
-│   ├── public/                  # 前端面板
-│   └── hub-cli.mjs              # 基于 HTTP API 的命令行客户端
-├── modules/                     # 独立功能模块
-│   ├── device-monitor/
-│   ├── lucky-manager/
-│   ├── sunpanel-manager/
-│   ├── cloudflare-manager/
-│   └── service-registry/
-├── shared/                      # 配置/状态等共享基础设施
-├── config/                      # 服务清单等共享 JSON 数据
-├── scripts/                     # 辅助脚本
+│   └── public/                  # 前端面板
+├── config/                      # CLI 默认读取的配置
+├── central-hub/config/          # Web 服务默认读取的配置
+├── scripts/                     # DDNS 等脚本
 ├── test/                        # Node.js 测试
+├── cli.mjs                      # 本地 CLI 入口
 └── .env.template                # 环境变量模板
 ```
 
 ## 配置来源
 
-当前服务运行时配置优先级为：
+运行时配置优先级为：
 
 ```text
-.env > central-hub/config/hub.json > 默认值
+.env > JSON 配置 > 默认值
 ```
 
-`npm start` 与 `npm run dev` 都会按上述优先级启动 Central Hub。
+当前仓库存在两份 Hub JSON 配置：
+
+- `central-hub/config/hub.json`：`npm start` / `npm run dev` 启动 Web 服务时默认读取
+- `config/hub.json`：`node cli.mjs ...` 执行 CLI 任务时默认读取
+
+如果你使用了 Cloudflare 或其他新增模块，建议保持这两份配置一致。
 
 ## 快速开始
 
@@ -83,10 +79,9 @@ cp .env.template .env
 至少检查并填写这些变量：
 
 ```env
-ROUTER_HOST=192.168.9.1
-ROUTER_USERNAME=router_query_ro
-ROUTER_PASSWORD=your-r...word
-ROUTER_SSL_VERIFY=0
+ROUTER_HOST=192.168.3.1
+ROUTER_USERNAME=root
+ROUTER_PASSWORD=your-router-password
 
 ALIYUN_AK=your-aliyun-access-key-id
 ALIYUN_SK=your-aliyun-access-key-secret
@@ -94,7 +89,7 @@ ALIYUN_DOMAIN=example.com
 
 LUCKY_API_BASE=http://192.168.3.200:16601
 LUCKY_OPEN_TOKEN=your-lucky-open-token
-LUCKY_HTTPS_PORT=55000
+LUCKY_HTTPS_PORT=50000
 
 SUNPANEL_API_BASE=http://192.168.3.200:20001/openapi/v1
 SUNPANEL_API_TOKEN=your-sunpanel-api-token
@@ -133,26 +128,19 @@ npm test
 
 ## 常用 CLI
 
-当前仓库提供一个基于 HTTP API 的本地客户端：`central-hub/hub-cli.mjs`。
+`cli.mjs` 当前支持这些任务：
 
 ```bash
-# 默认访问 http://localhost:51000
-node central-hub/hub-cli.mjs health
-node central-hub/hub-cli.mjs overview
-node central-hub/hub-cli.mjs status
-node central-hub/hub-cli.mjs ip
-node central-hub/hub-cli.mjs ddns
-node central-hub/hub-cli.mjs ddns:refresh
-node central-hub/hub-cli.mjs proxies
-node central-hub/hub-cli.mjs sunpanel
-node central-hub/hub-cli.mjs sunpanel:sync
+node cli.mjs sync-all
+node cli.mjs sync-ddns
+node cli.mjs sync-lucky
+node cli.mjs sync-cloudflare
+node cli.mjs sync-sunpanel
+node cli.mjs import-lucky
+node cli.mjs monitor
 ```
 
-如果 Hub 不在本机，先覆盖 `HUB_URL`：
-
-```bash
-HUB_URL=http://192.168.3.200:51000 node central-hub/hub-cli.mjs status
-```
+对应实现见 `cli.mjs:42`、`cli.mjs:165`。
 
 ## 默认端口
 
@@ -160,8 +148,8 @@ HUB_URL=http://192.168.3.200:51000 node central-hub/hub-cli.mjs status
 
 | 服务 | 默认端口 / 地址 | 说明 |
 |---|---|---|
-| Central Hub | `51000` | Web 面板与 API |
-| Lucky HTTPS | `55000` | 外部代理入口 |
+| Central Hub | `51100` | Web 面板与 API，见 `central-hub/config/hub.json:3` |
+| Lucky HTTPS | `50000` | 外部代理入口，见 `config/hub.json:52` |
 | Lucky API | `16601` | 常用于 API 管理地址 |
 | SunPanel | `20001` | OpenAPI 常见入口端口 |
 | Cloudflare | 无本地端口 | 通过远程 API 同步 |
@@ -172,8 +160,9 @@ HUB_URL=http://192.168.3.200:51000 node central-hub/hub-cli.mjs status
 
 - Web 面板：`http://localhost:51000/`
 - 健康检查：`http://localhost:51000/api/health`
-- 状态摘要：`http://localhost:51000/api/dashboard/status`
-- 概览信息：`http://localhost:51000/api/dashboard/overview`
+- 状态摘要：`http://localhost:51000/api/status`
+
+对应代码见 `central-hub/server.mjs:275`、`central-hub/server.mjs:347`。
 
 ## 核心 API
 
@@ -184,17 +173,19 @@ HUB_URL=http://192.168.3.200:51000 node central-hub/hub-cli.mjs status
 curl -X POST http://localhost:51000/api/sync/full
 
 # Lucky 同步
-curl http://localhost:51000/api/proxies/sync
+curl -X POST http://localhost:51000/api/proxies/sync
 
 # SunPanel 同步
-curl -X POST http://localhost:51000/api/sync/sunpanel
+curl -X POST http://localhost:51000/api/sunpanel/sync
 
 # Cloudflare 同步
 curl -X POST http://localhost:51000/api/cloudflare/sync
 
-# DDNS 调和
+# DDNS 刷新
 curl -X POST http://localhost:51000/api/ddns/refresh
 ```
+
+对应代码见 `central-hub/server.mjs:297`、`central-hub/server.mjs:317`、`central-hub/server.mjs:327`、`central-hub/server.mjs:337` 与 `central-hub/routes/ddns.mjs:20`。
 
 ### 设备相关
 
@@ -214,6 +205,8 @@ curl http://localhost:51000/api/devices/scan-ports
 # 扫描指定设备开放端口
 curl -X POST http://localhost:51000/api/devices/200/scan
 ```
+
+对应代码见 `central-hub/routes/devices.mjs:14`、`central-hub/routes/devices.mjs:45`、`central-hub/routes/devices.mjs:122`、`central-hub/routes/devices.mjs:197`、`central-hub/routes/devices.mjs:244`。
 
 ### 服务清单
 
@@ -250,6 +243,8 @@ curl -X PUT http://localhost:51000/api/services/demo \
 curl -X DELETE http://localhost:51000/api/services/demo
 ```
 
+对应代码见 `central-hub/routes/services.mjs:39`、`central-hub/routes/services.mjs:55`、`central-hub/routes/services.mjs:71`、`central-hub/routes/services.mjs:129`、`central-hub/routes/services.mjs:150`、`central-hub/routes/services.mjs:166`。
+
 ### 其他常用服务 API
 
 ```bash
@@ -269,6 +264,8 @@ curl http://localhost:51000/api/cloudflare/verify-token
 curl http://localhost:51000/api/ddns/history
 ```
 
+对应代码见 `central-hub/routes/proxy.mjs:10`、`central-hub/routes/proxy.mjs:23`、`central-hub/routes/cloudflare.mjs:11`、`central-hub/routes/cloudflare.mjs:39`、`central-hub/routes/cloudflare.mjs:53`、`central-hub/routes/ddns.mjs:30`。
+
 ## 服务清单变更后的自动同步
 
 当前 `services` 路由在以下操作后会自动触发同步：
@@ -286,22 +283,6 @@ curl http://localhost:51000/api/ddns/history
 - `docs/migration/ip-address-change.md`
 - `docs/migration/port-change.md`
 - `docs/migration/docker-compose.md`
-
-## 文档
-
-- [CLAUDE.md](CLAUDE.md) - Claude Code 项目指引
-- [SECURITY.md](SECURITY.md) - 安全指南和最佳实践
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - 系统架构文档
-- [docs/IMPROVEMENTS.md](docs/IMPROVEMENTS.md) - 改进建议和待办事项
-- [docs/PROJECT_REVIEW.md](docs/PROJECT_REVIEW.md) - 项目检查报告
-- [docs/MIGRATION_GUIDE.md](docs/MIGRATION_GUIDE.md) - 迁移指南
-
-## 项目质量
-
-- ✅ **测试覆盖**：110 个测试用例，100% 通过
-- ✅ **代码质量**：模块化设计，职责清晰
-- ✅ **文档完善**：包含架构、安全、改进建议等文档
-- ⚠️ **安全性**：建议添加 API 认证，详见 [SECURITY.md](SECURITY.md)
 
 ## 当前已不再包含的内容
 

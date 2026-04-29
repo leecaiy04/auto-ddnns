@@ -1,0 +1,83 @@
+{
+  "server": {
+    "port": 51000,
+    "host": "0.0.0.0",
+    "cors": {
+      "enabled": true,
+      "origin": ["http://localhost:51000", "http://192.168.3.200:51000"]
+    }
+  },
+  "modules": {
+    "coordinator": {
+      "enabled": true,
+      "schedule": {
+        "deviceMonitor": "*/10 * * * *",
+        "ddns": "*/10 * * * *",
+        "services": "0 */2 * * *",
+        "luckySync": "*/15 * * * *",
+        "sunpanelSync": "*/15 * * * *",
+        "cloudflareSync": "*/15 * * * *"
+      }
+    },
+    "deviceMonitor": {
+      "enabled": true,
+      "checkInterval": 600,
+      "devices": [
+        "2",
+        "10",
+        "200",
+        "201",
+        "254"
+      ],
+      "router": {
+        "host": "192.168.3.1",
+        "username": "root",
+        "password": "${ROUTER_PASSWORD}",
+        "timeout": 10000
+      }
+    },
+    "ddns": {
+      "enabled": true,
+      "luckyDdns": {
+        "enabled": true,
+        "devices": ["2", "10", "200", "201", "254"],
+        "domains": ["example.com"],
+        "intervals": 36,
+        "forceInterval": 3600
+      }
+    },
+    "lucky": {
+      "enabled": true,
+      "apiBase": "http://192.168.3.2:16601/666",
+      "httpsPort": 55000,
+      "autoSync": true,
+      "autoCreateProxy": true
+    },
+    "sunpanel": {
+      "enabled": true,
+      "apiBase": "http://192.168.3.2:20001/openapi/v1",
+      "apiToken": "${SUNPANEL_API_TOKEN}",
+      "autoSync": true,
+      "autoCreateGroups": true
+    },
+    "cloudflare": {
+      "enabled": false,
+      "zoneId": "${CF_ZONE_ID}",
+      "domain": "${CF_DOMAIN}",
+      "proxied": true,
+      "autoSync": true
+    }
+  },
+  "state": {
+    "path": "data/hub-state.json",
+    "backupPath": "data/backups/",
+    "keepHistory": 10,
+    "backupKeepHistory": 1
+  },
+  "logging": {
+    "level": "info",
+    "file": "logs/hub.log",
+    "maxSize": "10M",
+    "maxFiles": 5
+  }
+}

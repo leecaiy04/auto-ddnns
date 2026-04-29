@@ -1,0 +1,192 @@
+{
+  "version": "1.0.0",
+  "lastUpdate": "2026-04-28T17:32:09.534Z",
+  "uptime": 1207102,
+  "startTime": "2026-04-14T18:13:46.546Z",
+  "router": {
+    "history": []
+  },
+  "ddns": {
+    "domains": [],
+    "history": [
+      {
+        "event": "reconcile",
+        "success": true,
+        "created": 0,
+        "removed": 0,
+        "unchanged": 10,
+        "errors": [],
+        "timestamp": "2026-04-25T00:00:01.003Z"
+      },
+      {
+        "event": "reconcile",
+        "success": true,
+        "created": 0,
+        "removed": 0,
+        "unchanged": 10,
+        "errors": [],
+        "timestamp": "2026-04-25T01:00:00.681Z"
+      },
+      {
+        "event": "reconcile",
+        "success": true,
+        "created": 0,
+        "removed": 0,
+        "unchanged": 10,
+        "errors": [],
+        "timestamp": "2026-04-25T02:00:00.297Z"
+      },
+      {
+        "event": "reconcile",
+        "success": true,
+        "created": 0,
+        "removed": 0,
+        "unchanged": 10,
+        "errors": [],
+        "timestamp": "2026-04-25T03:00:00.973Z"
+      },
+      {
+        "event": "reconcile",
+        "success": true,
+        "created": 0,
+        "removed": 0,
+        "unchanged": 10,
+        "errors": [],
+        "timestamp": "2026-04-25T04:00:00.695Z"
+      },
+      {
+        "event": "reconcile",
+        "success": true,
+        "created": 0,
+        "removed": 0,
+        "unchanged": 10,
+        "errors": [],
+        "timestamp": "2026-04-25T05:00:00.386Z"
+      },
+      {
+        "event": "reconcile",
+        "success": true,
+        "created": 0,
+        "removed": 0,
+        "unchanged": 10,
+        "errors": [],
+        "timestamp": "2026-04-25T06:00:00.015Z"
+      },
+      {
+        "event": "reconcile",
+        "success": false,
+        "created": 0,
+        "removed": 0,
+        "unchanged": 0,
+        "errors": [
+          "Lucky API 请求超时 (20000ms)"
+        ],
+        "timestamp": "2026-04-25T07:00:05.704Z"
+      },
+      {
+        "event": "reconcile",
+        "success": true,
+        "created": 0,
+        "removed": 0,
+        "unchanged": 10,
+        "errors": [],
+        "timestamp": "2026-04-25T08:00:00.341Z"
+      },
+      {
+        "event": "reconcile",
+        "success": false,
+        "created": 0,
+        "removed": 0,
+        "unchanged": 0,
+        "errors": [
+          "connect EHOSTUNREACH 192.168.3.2:16601"
+        ],
+        "timestamp": "2026-04-25T09:00:01.020Z"
+      }
+    ],
+    "lastUpdate": "2026-04-18T18:40:02.186Z",
+    "lastResult": {
+      "success": true,
+      "output": "\n--- leecaiy.shop ---\n{\n  \"config\": \"config/private_ipv6_ddns_targets.json\",\n  \"domain\": \"leecaiy.shop\",\n  \"suffix\": \"v6\",\n  \"ttl\": 600,\n  \"notify\": false,\n  \"ips\": [\n    \"192.168.3.2\",\n    \"192.168.3.10\",\n    \"192.168.3.200\",\n    \"192.168.3.201\"\n  ],\n  \"results\": [\n    {\n      \"ipv4\": \"192.168.3.2\",\n      \"fqdn\": \"2.v6.leecaiy.shop\",\n      \"status\": \"unchanged\",\n      \"best_ipv6\": \"240e:390:9eb:3000:be24:11ff:fe9f:ba81\",\n      \"record_id\": \"2044363190624177152\",\n      \"previous_value\": \"240e:390:9eb:3000:be24:11ff:fe9f:ba81\",\n      \"detail\": null\n    },\n    {\n      \"ipv4\": \"192.168.3.10\",\n      \"fqdn\": \"10.v6.leecaiy.shop\",\n      \"status\": \"unchanged\",\n      \"best_ipv6\": \"240e:391:cd1:b2c0::4\",\n      \"record_id\": \"2044494027520900096\",\n      \"previous_value\": \"240e:391:cd1:b2c0::4\",\n      \"detail\": null\n    },\n    {\n      \"ipv4\": \"192.168.3.200\",\n      \"fqdn\": \"200.v6.leecaiy.shop\",\n      \"status\": \"unchanged\",\n      \"best_ipv6\": \"240e:390:9eb:3000:be24:11ff:fe29:92a4\",\n      \"record_id\": \"2044494030675018752\",\n      \"previous_value\": \"240e:390:9eb:3000:be24:11ff:fe29:92a4\",\n      \"detail\": null\n    },\n    {\n      \"ipv4\": \"192.168.3.201\",\n      \"fqdn\": \"201.v6.leecaiy.shop\",\n      \"status\": \"unchanged\",\n      \"best_ipv6\": \"240e:390:9eb:3000:be24:11ff:feaf:93a1\",\n      \"record_id\": \"2044494033120624640\",\n      \"previous_value\": \"240e:390:9eb:3000:be24:11ff:feaf:93a1\",\n      \"detail\": null\n    }\n  ],\n  \"notification_error\": null\n}\n\nDDNS 最近一次执行域名: leecaiy.shop\n- unchanged   2.v6.leecaiy.shop        240e:390:9eb:3000:be24:11ff:fe9f:ba81 (192.168.3.2)\n- unchanged   10.v6.leecaiy.shop       240e:391:cd1:b2c0::4 (192.168.3.10)\n- unchanged   200.v6.leecaiy.shop      240e:390:9eb:3000:be24:11ff:fe29:92a4 (192.168.3.200)\n- unchanged   201.v6.leecaiy.shop      240e:390:9eb:3000:be24:11ff:feaf:93a1 (192.168.3.201)\n\n--- 222869.xyz ---\n{\n  \"config\": \"config/private_ipv6_ddns_targets.json\",\n  \"domain\": \"222869.xyz\",\n  \"suffix\": \"v6\",\n  \"ttl\": 600,\n  \"notify\": false,\n  \"ips\": [\n    \"192.168.3.2\",\n    \"192.168.3.10\",\n    \"192.168.3.200\",\n    \"192.168.3.201\"\n  ],\n  \"results\": [\n    {\n      \"ipv4\": \"192.168.3.2\",\n      \"fqdn\": \"2.v6.222869.xyz\",\n      \"status\": \"unchanged\",\n      \"best_ipv6\": \"240e:390:9eb:3000:be24:11ff:fe9f:ba81\",\n      \"record_id\": \"2041045902420582400\",\n      \"previous_value\": \"240e:390:9eb:3000:be24:11ff:fe9f:ba81\",\n      \"detail\": null\n    },\n    {\n      \"ipv4\": \"192.168.3.10\",\n      \"fqdn\": \"10.v6.222869.xyz\",\n      \"status\": \"unchanged\",\n      \"best_ipv6\": \"240e:391:cd1:b2c0::4\",\n      \"record_id\": \"2041045925564746752\",\n      \"previous_value\": \"240e:391:cd1:b2c0::4\",\n      \"detail\": null\n    },\n    {\n      \"ipv4\": \"192.168.3.200\",\n      \"fqdn\": \"200.v6.222869.xyz\",\n      \"status\": \"unchanged\",\n      \"best_ipv6\": \"240e:390:9eb:3000:be24:11ff:fe29:92a4\",\n      \"record_id\": \"2041045948948014080\",\n      \"previous_value\": \"240e:390:9eb:3000:be24:11ff:fe29:92a4\",\n      \"detail\": null\n    },\n    {\n      \"ipv4\": \"192.168.3.201\",\n      \"fqdn\": \"201.v6.222869.xyz\",\n      \"status\": \"unchanged\",\n      \"best_ipv6\": \"240e:390:9eb:3000:be24:11ff:feaf:93a1\",\n      \"record_id\": \"2044477385366026240\",\n      \"previous_value\": \"240e:390:9eb:3000:be24:11ff:feaf:93a1\",\n      \"detail\": null\n    }\n  ],\n  \"notification_error\": null\n}\n\nDDNS 最近一次执行域名: 222869.xyz\n- unchanged   2.v6.222869.xyz          240e:390:9eb:3000:be24:11ff:fe9f:ba81 (192.168.3.2)\n- unchanged   10.v6.222869.xyz         240e:391:cd1:b2c0::4 (192.168.3.10)\n- unchanged   200.v6.222869.xyz        240e:390:9eb:3000:be24:11ff:fe29:92a4 (192.168.3.200)\n- unchanged   201.v6.222869.xyz        240e:390:9eb:3000:be24:11ff:feaf:93a1 (192.168.3.201)\n",
+      "error": "",
+      "domains": [
+        "leecaiy.shop",
+        "222869.xyz"
+      ],
+      "timestamp": "2026-04-18T18:40:02.186Z"
+    }
+  },
+  "lucky": {
+    "proxies": [],
+    "history": [],
+    "syncStatus": {},
+    "lastSync": "2026-04-25T09:00:07.164Z",
+    "ddnsTasks": [
+      "ddns-2-v6-leecaiy.shop",
+      "ddns-2-v6-222869.xyz",
+      "ddns-10-v6-leecaiy.shop",
+      "ddns-10-v6-222869.xyz",
+      "ddns-200-v6-leecaiy.shop",
+      "ddns-200-v6-222869.xyz",
+      "ddns-201-v6-leecaiy.shop",
+      "ddns-201-v6-222869.xyz",
+      "ddns-254-v6-leecaiy.shop",
+      "ddns-254-v6-222869.xyz"
+    ],
+    "ddnsLastReconcile": "2026-04-25T08:00:00.336Z"
+  },
+  "sunpanel": {
+    "cards": [],
+    "history": [],
+    "syncStatus": {
+      "test40025-222869-xyz_0": {
+        "hash": "8541a9610e243e94c831d04b35530874",
+        "domain": "test40025.222869.xyz",
+        "remark": "Test Central Hub",
+        "target": "http://192.168.3.200:51000",
+        "serviceId": null,
+        "groupId": 33,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-23T14:00:00.813Z"
+      },
+      "svc-hub_0": {
+        "hash": "a7836a05604d44e89fe17822cc7da56c",
+        "domain": "hub.leecaiy.shop",
+        "remark": "Central Hub",
+        "target": "http://[240e:390:9e3:d060:d432:f732:2eaf:1100]:51000",
+        "serviceId": "hub",
+        "groupId": 33,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-23T16:29:04.796Z"
+      },
+      "svc-lucky-admin_0": {
+        "hash": "13f7d445066d64f4073c1791bfae153d",
+        "domain": "lucky-admin.leecaiy.shop",
+        "remark": "Lucky 管理",
+        "target": "http://[240e:390:9e3:d060:be24:11ff:fe9f:ba81]:16601",
+        "serviceId": "lucky-admin",
+        "groupId": 33,
+        "groupOnlyName": "其他",
+        "lastSync": "2026-04-23T16:29:04.811Z"
+      }
+    },
+    "lastSync": "2026-04-25T08:45:00.089Z"
+  },
+  "devices": {
+    "lastUpdate": "2026-04-25T09:10:06.780Z",
+    "devices": {},
+    "ipv6Map": {},
+    "totalDevices": 0,
+    "ipv6Ready": 0
+  },
+  "services": {
+    "lastUpdate": "2026-04-23T16:27:00.821Z",
+    "totalServices": 2,
+    "proxiedServices": 2
+  },
+  "cloudflare": {
+    "lastSync": null,
+    "records": {},
+    "syncStatus": {}
+  }
+}

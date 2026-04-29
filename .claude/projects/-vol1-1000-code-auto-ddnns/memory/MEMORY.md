@@ -1,0 +1,2 @@
+- [Central Hub 编排架构](central-hub-architecture.md) — 模块独立，Hub 层统一调度，模块间不互相调用
+- [项目指引](project-guide.md) — 代码规范、接口约定、部署信息

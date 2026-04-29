@@ -1,31 +1,6 @@
 {
   "env": {
-    "ANTHROPIC_AUTH_TOKEN": "70b9276e960446c0aa73ffd4fa1d304f.Oop33QAK0IeVFyap",
-    "ANTHROPIC_BASE_URL": "https://open.bigmodel.cn/api/anthropic",
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "GLM-5-Turbo",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "GLM-5-Turbo",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "GLM-5-Turbo",
-    "ANTHROPIC_MODEL": "GLM-5-Turbo",
-    "ANTHROPIC_REASONING_MODEL": "GLM-5-Turbo",
-    "API_TIMEOUT_MS": "3000000",
-    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
-  },
-  "skipDangerousModePermissionPrompt": true,
-  "permissions": {
-    "allow": [
-      "Bash(node \"C:/Users/Administrator/.claude/skills/web-access/scripts/check-deps.mjs\")",
-      "Bash(gh search:*)",
-      "WebFetch(domain:github.com)",
-      "Bash(curl -I -s http://127.0.0.1:51000)",
-      "Bash(findstr \":51100\")",
-      "Bash(curl -s http://127.0.0.1:51000/api/health)",
-      "Bash(curl -s http://127.0.0.1:51000/api/services/list)",
-      "Bash(curl -s http://127.0.0.1:51000/api/dashboard/overview)",
-      "Bash(curl -I --max-time 10 http://127.0.0.1:51000/)",
-      "Bash(curl -I --max-time 10 http://192.168.3.200:51000/)",
-      "Bash(curl -s http://127.0.0.1:51000/api/dashboard/status)",
-      "Bash(curl -s http://127.0.0.1:51000/api/sync/lucky)",
-      "Bash(curl -s http://127.0.0.1:51000/api/proxies/sync)"
-    ]
+    "ANTHROPIC_API_KEY": "llllllllllllllll",
+    "ANTHROPIC_BASE_URL": "https://cc-vibe.com"
   }
 }
