@@ -83,11 +83,10 @@ export async function listAllPorts(config = null) {
     throw new Error(`Lucky API 错误 ${data.ret}: ${data.msg || '未知错误'}`);
   }
 
-  if (!Array.isArray(data.ruleList)) {
-    throw new Error('Lucky API 响应缺少 ruleList');
-  }
+  // ruleList 为 null 表示尚未创建任何规则，视为空列表
+  const ruleList = Array.isArray(data.ruleList) ? data.ruleList : [];
 
-  return data.ruleList.map(r => ({
+  return ruleList.map(r => ({
     key: r.RuleKey,
     name: r.RuleName,
     port: r.ListenPort,
@@ -229,9 +228,15 @@ export async function smartCreateOrAddProxy(port, name, domain, target, options 
     };
   }
 
-  const ruleKey = createResult.data?.ruleKey;
+  // Lucky API 创建成功后不返回 ruleKey，需要重新查询获取
+  const createdPort = await getPortDetail(port, config);
+  if (!createdPort) {
+    return { ret: -1, msg: '创建端口成功但无法查询到新端口', action: 'create_no_query' };
+  }
+
+  const ruleKey = createdPort.key;  // 注意：listAllPorts 返回的字段名是 key 而不是 ruleKey
   if (!ruleKey) {
-    return { ret: -1, msg: '创建端口成功但未返回ruleKey', action: 'create_no_key' };
+    return { ret: -1, msg: '创建端口成功但未找到ruleKey', action: 'create_no_key' };
   }
 
   // 3. 添加反向代理子规则
