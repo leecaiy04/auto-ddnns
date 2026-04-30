@@ -113,7 +113,7 @@ export class SunPanelManager {
     this.config = config;
     this.stateManager = stateManager;
     this.sunpanelConfig = {
-      apiBase: config.apiBase || getEnv('SUNPANEL_API_BASE', 'http://192.168.3.2:20001/openapi/v1'),
+      apiBase: config.apiBase || getEnv('SUNPANEL_API_BASE', 'http://192.168.9.2:20001/openapi/v1'),
       apiToken: config.apiToken || getEnv('SUNPANEL_API_TOKEN', ''),
       instances: Array.isArray(config.instances) ? config.instances : undefined
     };

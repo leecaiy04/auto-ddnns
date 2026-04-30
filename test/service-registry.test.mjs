@@ -18,8 +18,8 @@ const baseProxyDefaults = {
 
 const baseDevices = {
   devices: [
-    { id: '10', name: 'App Server', ipv4: '192.168.3.10', isKeyMachine: true },
-    { id: '200', name: 'NAS', ipv4: '192.168.3.200', isKeyMachine: true }
+    { id: '10', name: 'App Server', ipv4: '192.168.9.10', isKeyMachine: true },
+    { id: '200', name: 'NAS', ipv4: '192.168.9.200', isKeyMachine: true }
   ]
 };
 
@@ -44,7 +44,7 @@ const baseRegistry = {
       sunpanel: {
         group: '工具',
         icon: 'https://existing.leecaiy.shop/favicon.ico',
-        lanUrl: 'http://192.168.3.10:8080'
+        lanUrl: 'http://192.168.9.10:8080'
       },
       advanced: {
         waf: false,
@@ -171,8 +171,8 @@ describe('service-registry', () => {
     const fromState = createRegistry({}, {
       devices: {
         devices: {
-          '88': { ipv4: '192.168.3.88' },
-          '99': { ipv4: '192.168.3.99' }
+          '88': { ipv4: '192.168.9.88' },
+          '99': { ipv4: '192.168.9.99' }
         }
       }
     });
@@ -222,7 +222,7 @@ describe('service-registry', () => {
     assert.equal(service.internalProtocol, 'http');
     assert.equal(service.lucky.port, 55000);
     assert.equal(service.sunpanel.icon, 'https://my-app.leecaiy.shop/favicon.ico');
-    assert.equal(service.sunpanel.lanUrl, 'http://192.168.3.10:3000');
+    assert.equal(service.sunpanel.lanUrl, 'http://192.168.9.10:3000');
     assert.equal(stateManager.state.services.totalServices, 2);
     assert.equal(stateManager.saves, 1);
     assert.ok(writes.some((entry) => entry.filePath.endsWith('services-registry.json')));
@@ -249,7 +249,7 @@ describe('service-registry', () => {
     assert.equal(service.lucky.remark, 'Jellyfin');
     assert.equal(service.sunpanel.group, '其他');
     assert.equal(service.sunpanel.icon, 'https://jellyfin.leecaiy.shop/favicon.ico');
-    assert.equal(service.sunpanel.lanUrl, 'http://192.168.3.200:8096');
+    assert.equal(service.sunpanel.lanUrl, 'http://192.168.9.200:8096');
     assert.deepEqual(service.advanced, {
       waf: false,
       ignoreTlsVerify: true,
@@ -289,7 +289,7 @@ describe('service-registry', () => {
     assert.equal(updated.lucky.advancedConfig, 'set-header X-Test 1');
     assert.equal(updated.sunpanel.group, '开发');
     assert.equal(updated.sunpanel.icon, 'https://existing.leecaiy.shop/favicon.ico');
-    assert.equal(updated.sunpanel.lanUrl, 'http://192.168.3.10:8080');
+    assert.equal(updated.sunpanel.lanUrl, 'http://192.168.9.10:8080');
     assert.deepEqual(updated.advanced, {
       waf: false,
       ignoreTlsVerify: true,
@@ -331,7 +331,7 @@ describe('service-registry', () => {
       url: 'https://existing.leecaiy.shop',
       onlyName: 'svc-existing',
       iconUrl: 'https://existing.leecaiy.shop/favicon.ico',
-      lanUrl: 'http://192.168.3.10:8080',
+      lanUrl: 'http://192.168.9.10:8080',
       description: 'Existing service',
       itemGroupOnlyName: 'ops-group',
       isSaveIcon: false

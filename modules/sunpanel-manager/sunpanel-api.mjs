@@ -8,7 +8,7 @@ import { getEnv } from '../../shared/env-loader.mjs';
 import { pathToFileURL } from 'node:url';
 import { appendFileSync } from 'fs';
 
-const DEFAULT_API_BASE = 'http://192.168.3.2:20001/openapi/v1';
+const DEFAULT_API_BASE = 'http://192.168.9.2:20001/openapi/v1';
 const DEBUG_LOG = '/tmp/sunpanel-debug.log';
 
 function debugLog(message) {

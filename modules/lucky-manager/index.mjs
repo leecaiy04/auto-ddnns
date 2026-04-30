@@ -116,7 +116,7 @@ export class LuckyManager {
     this.config = config;
     this.stateManager = stateManager;
     this.luckyConfig = {
-      apiBase: config.apiBase || getEnv('LUCKY_API_BASE', 'http://192.168.3.2:16601/666'),
+      apiBase: config.apiBase || getEnv('LUCKY_API_BASE', 'http://192.168.9.2:16601/666'),
       openToken: config.openToken || getEnv('LUCKY_OPEN_TOKEN', ''),
       httpsPort: parseInt(`${config.httpsPort || getEnv('LUCKY_HTTPS_PORT', '55000')}`, 10),
       instances: Array.isArray(config.instances) ? config.instances : undefined
@@ -267,7 +267,7 @@ export class LuckyManager {
 
         try {
           const deviceIPv6 = ipv6Map[service.device] || null;
-          const targetHost = deviceIPv6 || `192.168.3.${service.device}`;
+          const targetHost = deviceIPv6 || `192.168.9.${service.device}`;
           const formattedTargetHost = formatTargetHost(targetHost);
           const protocol = service.internalProtocol || 'http';
           const target = `${protocol}://${formattedTargetHost}:${service.internalPort}`;

@@ -33,7 +33,7 @@ Central Hub API (端口 51000) 目前**无认证保护**，仅适用于内网环
 {
   "cors": {
     "enabled": true,
-    "origin": ["http://192.168.3.200:51000", "http://localhost:51000"]
+    "origin": ["http://192.168.9.200:51000", "http://localhost:51000"]
   }
 }
 ```

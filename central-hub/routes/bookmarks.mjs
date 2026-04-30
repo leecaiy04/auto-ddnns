@@ -43,7 +43,7 @@ function getSunPanelInstances(modules) {
 
   const apiBase = modules.sunpanelManager?.sunpanelConfig?.apiBase
     || modules.config?.modules?.sunpanel?.apiBase
-    || getEnv('SUNPANEL_API_BASE', 'http://192.168.3.2:20001/openapi/v1');
+    || getEnv('SUNPANEL_API_BASE', 'http://192.168.9.2:20001/openapi/v1');
   const apiToken = modules.sunpanelManager?.sunpanelConfig?.apiToken
     || modules.config?.modules?.sunpanel?.apiToken
     || getEnv('SUNPANEL_API_TOKEN', '');

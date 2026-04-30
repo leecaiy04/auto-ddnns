@@ -92,11 +92,11 @@ ALIYUN_AK=your-aliyun-access-key-id
 ALIYUN_SK=your-aliyun-access-key-secret
 ALIYUN_DOMAIN=example.com
 
-LUCKY_API_BASE=http://192.168.3.200:16601
+LUCKY_API_BASE=http://192.168.9.200:16601
 LUCKY_OPEN_TOKEN=your-lucky-open-token
 LUCKY_HTTPS_PORT=55000
 
-SUNPANEL_API_BASE=http://192.168.3.200:20001/openapi/v1
+SUNPANEL_API_BASE=http://192.168.9.200:20001/openapi/v1
 SUNPANEL_API_TOKEN=your-sunpanel-api-token
 
 CF_API_TOKEN=your-cloudflare-api-token
@@ -151,7 +151,7 @@ node central-hub/hub-cli.mjs sunpanel:sync
 如果 Hub 不在本机，先覆盖 `HUB_URL`：
 
 ```bash
-HUB_URL=http://192.168.3.200:51000 node central-hub/hub-cli.mjs status
+HUB_URL=http://192.168.9.200:51000 node central-hub/hub-cli.mjs status
 ```
 
 ## 默认端口

@@ -84,13 +84,13 @@ curl http://localhost:51000/api/services/connectivity
 Lucky API 端口体现在 `LUCKY_API_BASE` 中，例如：
 
 ```env
-LUCKY_API_BASE=http://192.168.3.200:17001
+LUCKY_API_BASE=http://192.168.9.200:17001
 ```
 
 如果使用备节点，也一并更新：
 
 ```env
-LUCKY_BACKUP_API_BASE=http://192.168.3.2:17001
+LUCKY_BACKUP_API_BASE=http://192.168.9.2:17001
 ```
 
 ### 验证
@@ -105,8 +105,8 @@ curl http://localhost:51000/api/dashboard/status
 SunPanel 端口同样体现在 API Base 中：
 
 ```env
-SUNPANEL_API_BASE=http://192.168.3.200:21001/openapi/v1
-SUNPANEL_BACKUP_API_BASE=http://192.168.3.2:21001/openapi/v1
+SUNPANEL_API_BASE=http://192.168.9.200:21001/openapi/v1
+SUNPANEL_BACKUP_API_BASE=http://192.168.9.2:21001/openapi/v1
 ```
 
 ### 验证

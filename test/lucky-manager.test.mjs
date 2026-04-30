@@ -10,7 +10,7 @@ test('LuckyManager defaults lucky apiBase to /666 endpoint', () => {
     delete process.env.LUCKY_API_BASE;
 
     const manager = new LuckyManager({}, { state: {} }, null);
-    assert.equal(manager.luckyConfig.apiBase, 'http://192.168.3.2:16601/666');
+    assert.equal(manager.luckyConfig.apiBase, 'http://192.168.9.2:16601/666');
   } finally {
     if (previous === undefined) delete process.env.LUCKY_API_BASE;
     else process.env.LUCKY_API_BASE = previous;

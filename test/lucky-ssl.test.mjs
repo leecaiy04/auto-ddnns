@@ -148,7 +148,7 @@ describe('lucky-ssl', () => {
     });
 
     assert.equal(requestLog.length, 1);
-    assert.match(requestLog[0].opts.path, /\/api\/ssl\/apply\?openToken=tok/);
+    assert.match(requestLog[0].opts.path, /\/api\/ssl\?openToken=tok/);
     const body = JSON.parse(requestLog[0].body);
     assert.equal(body.Remark, 'Wildcard cert');
     assert.equal(body.Enable, true);
@@ -172,7 +172,7 @@ describe('lucky-ssl', () => {
     assert.equal(requestLog.length, 2);
     assert.match(requestLog[0].opts.path, /\/api\/ssl\/renew\?openToken=tok/);
     assert.deepEqual(JSON.parse(requestLog[0].body), { Key: 'cert-renew' });
-    assert.match(requestLog[1].opts.path, /\/api\/ssl\/delete\?openToken=tok/);
+    assert.match(requestLog[1].opts.path, /\/api\/ssl\?openToken=tok/);
     assert.deepEqual(JSON.parse(requestLog[1].body), { Key: 'cert-delete' });
   });
 

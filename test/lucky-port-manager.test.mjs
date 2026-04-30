@@ -86,7 +86,7 @@ function createBaseRules() {
           key: 'sub-app',
           remark: 'App Service',
           domains: ['app.leecaiy.shop'],
-          locations: ['http://192.168.3.10:3000'],
+          locations: ['http://192.168.9.10:3000'],
           advanced: {
             ignoreTlsVerify: true,
             accessLog: true,
@@ -114,7 +114,7 @@ function createBaseRules() {
           key: 'sub-nas',
           remark: 'NAS',
           domains: ['nas.leecaiy.shop'],
-          locations: ['http://192.168.3.200:5000'],
+          locations: ['http://192.168.9.200:5000'],
           enable: false
         }),
         createRawSubRule({
@@ -290,7 +290,7 @@ describe('lucky-port-manager', () => {
           name: 'App Service',
           type: 'reverseproxy',
           domains: ['app.leecaiy.shop'],
-          targets: ['http://192.168.3.10:3000'],
+          targets: ['http://192.168.9.10:3000'],
           enabled: true,
           rawAdvanced: {
             LocationInsecureSkipVerify: true,
@@ -354,7 +354,7 @@ describe('lucky-port-manager', () => {
       enableTLS: true,
       remark: 'App Service',
       domains: ['app.leecaiy.shop'],
-      target: 'http://192.168.3.10:3000',
+      target: 'http://192.168.9.10:3000',
       enabled: true,
       rawAdvanced: {
         LocationInsecureSkipVerify: true,
@@ -411,7 +411,7 @@ describe('lucky-port-manager', () => {
       55000,
       'App Service',
       'app.leecaiy.shop',
-      'http://192.168.3.10:3000',
+      'http://192.168.9.10:3000',
       {},
       { apiBase: 'http://lucky.local:16601', openToken: 'tok' }
     );
@@ -432,15 +432,15 @@ describe('lucky-port-manager', () => {
       50010,
       'New Proxy',
       'new.leecaiy.shop',
-      'http://192.168.3.10:50010',
+      'http://192.168.9.10:50010',
       {},
       { apiBase: 'http://lucky.local:16601', openToken: 'tok' }
     );
 
     assert.deepEqual(result, {
       ret: -1,
-      msg: '创建端口成功但未返回ruleKey',
-      action: 'create_no_key'
+      msg: '创建端口成功但无法查询到新端口',
+      action: 'create_no_query'
     });
   });
 
@@ -449,7 +449,7 @@ describe('lucky-port-manager', () => {
       50010,
       'New Proxy',
       'new.leecaiy.shop',
-      'http://192.168.3.10:50010',
+      'http://192.168.9.10:50010',
       { network: 'tcp6', enableTLS: true },
       { apiBase: 'http://lucky.local:16601', openToken: 'tok' }
     );
@@ -463,7 +463,7 @@ describe('lucky-port-manager', () => {
     assert.equal(createdRule.ProxyList.length, 1);
     assert.equal(createdRule.ProxyList[0].Remark, 'New Proxy');
     assert.deepEqual(createdRule.ProxyList[0].Domains, ['new.leecaiy.shop']);
-    assert.deepEqual(createdRule.ProxyList[0].Locations, ['http://192.168.3.10:50010']);
+    assert.deepEqual(createdRule.ProxyList[0].Locations, ['http://192.168.9.10:50010']);
   });
 
   it('smartAddOrUpdateSubRule returns port_not_found when Lucky rule is missing', async () => {
@@ -472,7 +472,7 @@ describe('lucky-port-manager', () => {
       'Ghost Rule',
       'reverseproxy',
       ['ghost.leecaiy.shop'],
-      ['http://192.168.3.123:12345'],
+      ['http://192.168.9.123:12345'],
       {},
       { apiBase: 'http://lucky.local:16601', openToken: 'tok' }
     );
@@ -490,7 +490,7 @@ describe('lucky-port-manager', () => {
       'Admin Console',
       'reverseproxy',
       ['admin.leecaiy.shop'],
-      ['http://192.168.3.2:16601'],
+      ['http://192.168.9.2:16601'],
       {
         advanced: {
           useTargetHost: true,
@@ -520,7 +520,7 @@ describe('lucky-port-manager', () => {
       'App Service',
       'reverseproxy',
       ['app.leecaiy.shop', 'api.leecaiy.shop'],
-      ['https://192.168.3.10:3443'],
+      ['https://192.168.9.10:3443'],
       {
         enable: false,
         advanced: {
@@ -545,7 +545,7 @@ describe('lucky-port-manager', () => {
     const updatedRule = mockState.ruleList.find((rule) => rule.ListenPort === 55000);
     const updatedSubRule = updatedRule.ProxyList.find((sub) => sub.Remark === 'App Service');
     assert.deepEqual(updatedSubRule.Domains, ['app.leecaiy.shop', 'api.leecaiy.shop']);
-    assert.deepEqual(updatedSubRule.Locations, ['https://192.168.3.10:3443']);
+    assert.deepEqual(updatedSubRule.Locations, ['https://192.168.9.10:3443']);
     assert.equal(updatedSubRule.Enable, false);
     assert.equal(updatedSubRule.LocationInsecureSkipVerify, false);
     assert.equal(updatedSubRule.EnableAccessLog, false);

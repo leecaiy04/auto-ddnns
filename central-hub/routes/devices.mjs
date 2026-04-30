@@ -136,7 +136,7 @@ export function deviceRoutes(modules) {
         return res.status(404).json({ error: `设备 ${deviceId} 不存在` });
       }
 
-      const ipv4 = device?.ipv4 || deviceConfig?.ipv4 || `192.168.3.${deviceId}`;
+      const ipv4 = device?.ipv4 || deviceConfig?.ipv4 || `192.168.9.${deviceId}`;
       const ipv6Map = modules.deviceMonitor?.getIPv6Map?.() || {};
       const ipv6 = device?.ipv6 || ipv6Map[deviceId] || deviceConfig?.ipv6 || null;
 

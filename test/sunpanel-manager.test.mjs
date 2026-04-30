@@ -103,19 +103,19 @@ describe('sunpanel-manager', () => {
     const { manager } = createManager();
 
     assert.equal(
-      manager.buildLanUrl('http://127.0.0.1:3000/admin?a=1#hash', '192.168.3.2'),
-      'http://192.168.3.2:3000/admin?a=1#hash'
+      manager.buildLanUrl('http://127.0.0.1:3000/admin?a=1#hash', '192.168.9.2'),
+      'http://192.168.9.2:3000/admin?a=1#hash'
     );
     assert.equal(
-      manager.buildLanUrl('https://localhost/app', '192.168.3.2'),
-      'https://192.168.3.2/app'
+      manager.buildLanUrl('https://localhost/app', '192.168.9.2'),
+      'https://192.168.9.2/app'
     );
     assert.equal(
-      manager.buildLanUrl('http://[::1]:16601/', '192.168.3.2'),
-      'http://192.168.3.2:16601'
+      manager.buildLanUrl('http://[::1]:16601/', '192.168.9.2'),
+      'http://192.168.9.2:16601'
     );
     assert.equal(
-      manager.buildLanUrl('not-a-url', '192.168.3.2'),
+      manager.buildLanUrl('not-a-url', '192.168.9.2'),
       'not-a-url'
     );
   });
@@ -126,7 +126,7 @@ describe('sunpanel-manager', () => {
     const cardA = {
       title: 'App',
       url: 'https://app.example.com',
-      lanUrl: 'http://192.168.3.10:3000',
+      lanUrl: 'http://192.168.9.10:3000',
       iconUrl: 'https://app.example.com/favicon.ico',
       itemGroupOnlyName: '其他'
     };
@@ -135,7 +135,7 @@ describe('sunpanel-manager', () => {
     const hash2 = manager.calculateSunPanelHash(proxy, cardA);
     const hash3 = manager.calculateSunPanelHash(proxy, {
       ...cardA,
-      lanUrl: 'http://192.168.3.10:3001'
+      lanUrl: 'http://192.168.9.10:3001'
     });
 
     assert.equal(hash1, hash2);
@@ -189,7 +189,7 @@ describe('sunpanel-manager', () => {
         sunpanel: {
           group: '服务器',
           icon: 'https://app.example.com/icon.png',
-          lanUrl: 'http://192.168.3.10:3000'
+          lanUrl: 'http://192.168.9.10:3000'
         }
       }
     ], [
@@ -201,7 +201,7 @@ describe('sunpanel-manager', () => {
         domains: ['app.example.com'],
         target: 'http://127.0.0.1:3000'
       }
-    ], '192.168.3.2');
+    ], '192.168.9.2');
 
     assert.deepEqual(result, {
       success: 1,
@@ -221,7 +221,7 @@ describe('sunpanel-manager', () => {
       url: 'https://app.example.com:55000',
       onlyName: 'svc-app',
       iconUrl: 'https://app.example.com/icon.png',
-      lanUrl: 'http://192.168.3.10:3000',
+      lanUrl: 'http://192.168.9.10:3000',
       description: 'Main app',
       itemGroupID: 2,
       itemGroupOnlyName: '服务器',
@@ -288,7 +288,7 @@ describe('sunpanel-manager', () => {
         sunpanel: {
           group: '其他',
           icon: 'https://app.example.com/icon.png',
-          lanUrl: 'http://192.168.3.10:3000'
+          lanUrl: 'http://192.168.9.10:3000'
         }
       }
     ];
@@ -297,7 +297,7 @@ describe('sunpanel-manager', () => {
       url: 'https://app.example.com:55000',
       onlyName: 'svc-app',
       iconUrl: 'https://app.example.com/icon.png',
-      lanUrl: 'http://192.168.3.10:3000',
+      lanUrl: 'http://192.168.9.10:3000',
       description: 'Main app',
       itemGroupID: 3,
       itemGroupOnlyName: '其他',
@@ -305,7 +305,7 @@ describe('sunpanel-manager', () => {
     };
     stateManager.state.sunpanel.syncStatus['svc-app_0'].hash = manager.calculateSunPanelHash(proxy, cardConfig);
 
-    const result = await manager.syncToSunPanel(services, [proxy], '192.168.3.2');
+    const result = await manager.syncToSunPanel(services, [proxy], '192.168.9.2');
 
     assert.deepEqual(result, {
       success: 0,
@@ -376,7 +376,7 @@ describe('sunpanel-manager', () => {
         sunpanel: {
           group: '其他',
           icon: 'https://app.example.com/icon.png',
-          lanUrl: 'http://192.168.3.10:3000'
+          lanUrl: 'http://192.168.9.10:3000'
         }
       }
     ], [
@@ -388,7 +388,7 @@ describe('sunpanel-manager', () => {
         domains: ['app.example.com'],
         target: 'http://127.0.0.1:3000'
       }
-    ], '192.168.3.2');
+    ], '192.168.9.2');
 
     assert.deepEqual(result, {
       success: 2,
@@ -454,7 +454,7 @@ describe('sunpanel-manager', () => {
         domains: ['standalone.example.com'],
         target: 'http://127.0.0.1:3000'
       }
-    ], '192.168.3.2');
+    ], '192.168.9.2');
 
     assert.deepEqual(result, {
       success: 1,

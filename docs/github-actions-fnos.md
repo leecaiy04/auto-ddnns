@@ -42,7 +42,7 @@ GitHub 会自动运行：
 
 ## 为什么必须用 self-hosted runner
 
-飞牛主机当前地址是局域网地址 `192.168.3.200`。GitHub 官方托管 runner 无法直接访问局域网私有地址，所以必须在飞牛 OS 或同一局域网机器上安装 `self-hosted runner`。
+飞牛主机当前地址是局域网地址 `192.168.9.200`。GitHub 官方托管 runner 无法直接访问局域网私有地址，所以必须在飞牛 OS 或同一局域网机器上安装 `self-hosted runner`。
 
 推荐直接安装在飞牛主机上，并添加标签：`fnos`
 

@@ -8,7 +8,7 @@
 import { Client } from 'ssh2';
 import { getEnv } from '../../shared/env-loader.mjs';
 
-const ROUTER_HOST = getEnv('ROUTER_HOST', '192.168.3.1');
+const ROUTER_HOST = getEnv('ROUTER_HOST', '192.168.9.1');
 const ROUTER_USERNAME = getEnv('ROUTER_USERNAME', 'root');
 const ROUTER_PASSWORD = getEnv('ROUTER_PASSWORD', '');
 
@@ -261,7 +261,7 @@ export async function getARPTable(options = {}) {
     for (const line of lines) {
       if (!line.trim()) continue;
 
-      const ipMatch = line.match(/(192\.168\.3\.\d+)/);
+      const ipMatch = line.match(/(192\.168\.9\.\d+)/);
       const macMatch = line.match(/([0-9a-f]{2}[:][0-9a-f]{2}[:][0-9a-f]{2}[:][0-9a-f]{2}[:][0-9a-f]{2}[:][0-9a-f]{2}|[0-9a-f]{4}[-][0-9a-f]{4}[-][0-9a-f]{4}|[0-9a-f]{2}[-][0-9a-f]{2}[-][0-9a-f]{2}[-][0-9a-f]{2}[-][0-9a-f]{2}[-][0-9a-f]{2})/i);
 
       if (!ipMatch || !macMatch) continue;

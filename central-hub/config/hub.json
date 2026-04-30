@@ -30,7 +30,7 @@
         "254"
       ],
       "router": {
-        "host": "192.168.3.1",
+        "host": "192.168.9.1",
         "username": "root",
         "password": "${ROUTER_PASSWORD}",
         "timeout": 10000
@@ -48,14 +48,14 @@
     },
     "lucky": {
       "enabled": true,
-      "apiBase": "http://192.168.3.2:16601/666",
+      "apiBase": "http://192.168.9.2:16601/666",
       "httpsPort": 55000,
       "autoSync": true,
       "autoCreateProxy": true
     },
     "sunpanel": {
       "enabled": true,
-      "apiBase": "http://192.168.3.2:20001/openapi/v1",
+      "apiBase": "http://192.168.9.2:20001/openapi/v1",
       "autoSync": true,
       "autoCreateGroups": true
     },

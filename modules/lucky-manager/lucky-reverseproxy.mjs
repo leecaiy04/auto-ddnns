@@ -20,7 +20,7 @@ export const REVERSE_PROXY_API = {
  * @property {string} Key - 规则唯一标识
  * @property {string} Remark - 备注/名称
  * @property {string[]} Domains - 域名列表
- * @property {string[]} Locations - 目标地址列表 (如 ["http://192.168.3.200:5666"])
+ * @property {string[]} Locations - 目标地址列表 (如 ["http://192.168.9.200:5666"])
  * @property {boolean} Enable - 是否启用
  * @property {string} WebServiceType - 服务类型: "reverseproxy" | "redirect" | "fileserver"
  * @property {boolean} EnableBasicAuth - 是否启用基础认证

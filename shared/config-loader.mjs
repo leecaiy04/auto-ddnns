@@ -114,7 +114,7 @@ export async function loadConfigWithEnv(configPath, envPath = null) {
       env,
       ['ROUTER_HOST', 'ROUTER_IP'],
       routerConfig.host ?? legacyRouterConfig.host ?? legacyRouterConfig.gateway,
-      '192.168.3.1'
+      '192.168.9.1'
     ),
     port: toInt(
       getConfig(env, 'ROUTER_PORT', routerConfig.port ?? legacyRouterConfig.port, 22),

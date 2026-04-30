@@ -13,7 +13,7 @@ export class DeviceMonitor {
     this.config = config;
     this.stateManager = stateManager;
     this.router = {
-      host: getEnv('ROUTER_HOST', config.router?.host || '192.168.3.1'),
+      host: getEnv('ROUTER_HOST', config.router?.host || '192.168.9.1'),
       username: getEnv('ROUTER_USERNAME', config.router?.username || 'root'),
       password: getEnv('ROUTER_PASSWORD', ''),
       timeout: config.router?.timeout || 10000

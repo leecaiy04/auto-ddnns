@@ -72,7 +72,7 @@ CMD ["npm", "start"]
 至少保证这些变量正确：
 
 ```env
-ROUTER_HOST=192.168.3.1
+ROUTER_HOST=192.168.9.1
 ROUTER_USERNAME=root
 ROUTER_PASSWORD=your-router-password
 
@@ -80,11 +80,11 @@ ALIYUN_AK=your-aliyun-access-key-id
 ALIYUN_SK=your-aliyun-access-key-secret
 ALIYUN_DOMAIN=example.com
 
-LUCKY_API_BASE=http://192.168.3.200:16601
+LUCKY_API_BASE=http://192.168.9.200:16601
 LUCKY_OPEN_TOKEN=your-lucky-open-token
 LUCKY_HTTPS_PORT=50000
 
-SUNPANEL_API_BASE=http://192.168.3.200:20001/openapi/v1
+SUNPANEL_API_BASE=http://192.168.9.200:20001/openapi/v1
 SUNPANEL_API_TOKEN=your-sunpanel-api-token
 
 CF_API_TOKEN=your-cloudflare-api-token

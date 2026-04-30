@@ -61,11 +61,11 @@ node scripts/sync-lucky-to-sunpanel.mjs --dry-run
 ```json
 {
   "lucky": {
-    "apiBase": "http://192.168.3.200:16601",
+    "apiBase": "http://192.168.9.200:16601",
     "openToken": "your-lucky-token"
   },
   "sunpanel": {
-    "apiBase": "http://192.168.3.200:20001/openapi/v1",
+    "apiBase": "http://192.168.9.200:20001/openapi/v1",
     "apiToken": "your-sunpanel-token",
     "defaultGroupId": 9
   }
@@ -160,7 +160,7 @@ crontab -e
 |-----------|--------------|------|
 | Remark | title | "Sun Panel" |
 | Domains[0] | url | "https://panel.leecaiy.xyz" |
-| Locations[0] | lanUrl | "http://192.168.3.200:20001" |
+| Locations[0] | lanUrl | "http://192.168.9.200:20001" |
 | Key | onlyName | "panel-leecaiy-xyz" |
 | - | iconUrl | "https://panel.leecaiy.xyz/favicon.ico" |
 
@@ -204,10 +204,10 @@ crontab -e
 
 ```bash
 # 检查 Lucky Token
-curl -H "Authorization: Bearer YOUR_TOKEN" http://192.168.3.200:16601/api/webservice/rules
+curl -H "Authorization: Bearer YOUR_TOKEN" http://192.168.9.200:16601/api/webservice/rules
 
 # 检查 SunPanel Token
-curl -X POST -H "token: YOUR_TOKEN" http://192.168.3.200:20001/openapi/v1/version
+curl -X POST -H "token: YOUR_TOKEN" http://192.168.9.200:20001/openapi/v1/version
 ```
 
 ### 同步不生效

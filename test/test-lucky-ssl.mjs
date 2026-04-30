@@ -7,7 +7,7 @@
 import { getSSLList } from '../modules/lucky-manager/lucky-ssl.mjs';
 
 const config = {
-  apiBase: process.env.LUCKY_API_BASE || 'http://192.168.3.2:16601/666',
+  apiBase: process.env.LUCKY_API_BASE || 'http://192.168.9.2:16601/666',
   openToken: process.env.LUCKY_OPEN_TOKEN || process.env.LUCKY_TOKEN
 };
 

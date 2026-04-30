@@ -108,11 +108,11 @@ central-hub/                   # 编排层（Express 入口）
 
 | 服务 | 地址 | 登录方式 |
 |------|------|----------|
-| Central Hub 仪表盘 | `http://192.168.3.200:51000` | 无需登录，直接访问 |
-| Lucky | `http://192.168.3.2:16601` | OpenToken（`LUCKY_OPEN_TOKEN`）；Web 登录（`LUCKY_USERNAME`/`LUCKY_PASSWORD`） |
-| SunPanel | `http://192.168.3.2:20001` | API Token（`SUNPANEL_API_TOKEN`）；Web 登录（`SUNPANEL_USERNAME`/`SUNPANEL_PASSWORD`） |
+| Central Hub 仪表盘 | `http://192.168.9.200:51000` | 无需登录，直接访问 |
+| Lucky | `http://192.168.9.2:16601` | OpenToken（`LUCKY_OPEN_TOKEN`）；Web 登录（`LUCKY_USERNAME`/`LUCKY_PASSWORD`） |
+| SunPanel | `http://192.168.9.2:20001` | API Token（`SUNPANEL_API_TOKEN`）；Web 登录（`SUNPANEL_USERNAME`/`SUNPANEL_PASSWORD`） |
 | Cloudflare | `https://dash.cloudflare.com` | API Token（`.env` 中 `CF_API_TOKEN`） |
-| 路由器管理 | `http://192.168.3.1` | SSH（`ROUTER_USERNAME`/`ROUTER_PASSWORD`）或 Web 管理页面 |
+| 路由器管理 | `http://192.168.9.1` | SSH（`ROUTER_USERNAME`/`ROUTER_PASSWORD`）或 Web 管理页面 |
 | 浏览器 MCP | 通过 `.claude/settings.local.json` 中 `shared-chrome` MCP 配置 | 无需额外登录 |
 
 **Lucky OpenToken 获取**: Lucky 设置页 → 安全设置 → OpenToken → 生成并复制

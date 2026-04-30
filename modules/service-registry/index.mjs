@@ -65,7 +65,7 @@ function inferInternalProtocol(port) {
 
 function buildDefaultLanUrl(service) {
   const protocol = inferInternalProtocol(service.internalPort);
-  return `${protocol}://192.168.3.${service.device}:${service.internalPort}`;
+  return `${protocol}://192.168.9.${service.device}:${service.internalPort}`;
 }
 
 function formatTargetHost(targetHost) {
@@ -493,7 +493,7 @@ export class ServiceRegistry {
       throw new Error(`服务ID ${id} 不存在`);
     }
 
-    const targetHost = deviceIPv6 || `192.168.3.${service.device}`;
+    const targetHost = deviceIPv6 || `192.168.9.${service.device}`;
     const formattedTargetHost = formatTargetHost(targetHost);
     const target = service.enableTLS
       ? `https://${formattedTargetHost}:${service.internalPort}`

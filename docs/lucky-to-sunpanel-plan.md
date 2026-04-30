@@ -127,11 +127,11 @@ auto-dnns/
 ```json
 {
   "lucky": {
-    "apiBase": "http://192.168.3.200:16601",
+    "apiBase": "http://192.168.9.200:16601",
     "openToken": "your-token"
   },
   "sunpanel": {
-    "apiBase": "http://192.168.3.200:20001/openapi/v1",
+    "apiBase": "http://192.168.9.200:20001/openapi/v1",
     "apiToken": "your-token",
     "defaultGroupId": 9
   },

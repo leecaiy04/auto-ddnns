@@ -186,7 +186,7 @@ describe('ssh-client', () => {
     const output = await executeSSHCommand('echo "ok"', {
       password: 'secret',
       username: 'root',
-      host: '192.168.3.1'
+      host: '192.168.9.1'
     });
 
     assert.equal(output, 'ok');
@@ -243,9 +243,9 @@ describe('ssh-client', () => {
     installSSHScenario({
       commandResponses: {
         'ip neigh': [
-          '192.168.3.10 dev br0 lladdr AA-BB-CC-DD-EE-10 REACHABLE\n',
-          '192.168.3.20 dev br0 lladdr aabb-ccdd-ee20 STALE\n',
-          '192.168.3.30 dev br0 lladdr 00:00:00:00:00:00 STALE\n',
+          '192.168.9.10 dev br0 lladdr AA-BB-CC-DD-EE-10 REACHABLE\n',
+          '192.168.9.20 dev br0 lladdr aabb-ccdd-ee20 STALE\n',
+          '192.168.9.30 dev br0 lladdr 00:00:00:00:00:00 STALE\n',
           '10.0.0.1 dev br0 lladdr aa:bb:cc:dd:ee:40 REACHABLE\n'
         ]
       }
@@ -255,8 +255,8 @@ describe('ssh-client', () => {
 
     assert.equal(arpEntries.length, 2);
     assert.deepEqual(arpEntries.map((entry) => ({ ip: entry.ip, mac: entry.mac })), [
-      { ip: '192.168.3.10', mac: 'aa:bb:cc:dd:ee:10' },
-      { ip: '192.168.3.20', mac: 'aa:bb:cc:dd:ee:20' }
+      { ip: '192.168.9.10', mac: 'aa:bb:cc:dd:ee:10' },
+      { ip: '192.168.9.20', mac: 'aa:bb:cc:dd:ee:20' }
     ]);
   });
 
@@ -265,8 +265,8 @@ describe('ssh-client', () => {
     installSSHScenario({
       commandResponses: {
         'ip neigh': [
-          '192.168.3.10 dev br0 lladdr aa:bb:cc:dd:ee:10 REACHABLE\n',
-          '192.168.3.20 dev br0 lladdr aa-bb-cc-dd-ee-20 STALE\n'
+          '192.168.9.10 dev br0 lladdr aa:bb:cc:dd:ee:10 REACHABLE\n',
+          '192.168.9.20 dev br0 lladdr aa-bb-cc-dd-ee-20 STALE\n'
         ],
         'ip -6 neigh': [
           '240e:390:9e3:d060::10 dev br0 lladdr aa-bb-cc-dd-ee-10 REACHABLE\n',
@@ -278,13 +278,13 @@ describe('ssh-client', () => {
     const deviceMap = await buildDeviceAddressMap({ password: 'secret' });
 
     assert.deepEqual(Object.fromEntries(deviceMap), {
-      '192.168.3.10': {
-        ipv4: '192.168.3.10',
+      '192.168.9.10': {
+        ipv4: '192.168.9.10',
         mac: 'aa:bb:cc:dd:ee:10',
         ipv6: '240e:390:9e3:d060::10'
       },
-      '192.168.3.20': {
-        ipv4: '192.168.3.20',
+      '192.168.9.20': {
+        ipv4: '192.168.9.20',
         mac: 'aa:bb:cc:dd:ee:20',
         ipv6: '240e:390:9e3:d060::20'
       }

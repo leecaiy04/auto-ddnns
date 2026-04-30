@@ -28,11 +28,11 @@ vim .env
 ```bash
 # ========== SunPanel ==========
 SUNPANEL_API_TOKEN=your-sunpanel-api-token
-SUNPANEL_API_BASE=http://192.168.3.200:20001/openapi/v1
+SUNPANEL_API_BASE=http://192.168.9.200:20001/openapi/v1
 
 # ========== Lucky ==========
 LUCKY_OPEN_TOKEN=your-lucky-open-token-here
-LUCKY_API_BASE=http://192.168.3.200:16601
+LUCKY_API_BASE=http://192.168.9.200:16601
 
 # ========== Central Hub ==========
 HUB_PORT=51000
@@ -70,7 +70,7 @@ chmod 600 .env  # 仅所有者可读写
 
 | 环境变量 | 说明 | 默认值 |
 |---------|------|--------|
-| `SUNPANEL_API_BASE` | SunPanel API 地址 | `http://192.168.3.200:20001/openapi/v1` |
+| `SUNPANEL_API_BASE` | SunPanel API 地址 | `http://192.168.9.200:20001/openapi/v1` |
 | `SUNPANEL_API_TOKEN` | SunPanel API Token | (必填) |
 
 **使用示例**:
@@ -86,7 +86,7 @@ SUNPANEL_API_TOKEN=xxx node sunpanel-management/src/sunpanel-api.mjs test
 
 | 环境变量 | 说明 | 默认值 |
 |---------|------|--------|
-| `LUCKY_API_BASE` | Lucky API 地址 | `http://192.168.3.200:16601` |
+| `LUCKY_API_BASE` | Lucky API 地址 | `http://192.168.9.200:16601` |
 | `LUCKY_OPEN_TOKEN` | Lucky OpenToken | (必填) |
 
 **使用示例**:
@@ -102,9 +102,9 @@ LUCKY_OPEN_TOKEN=xxx node lucky-management/github-manager.mjs
 
 | 环境变量 | 说明 | 默认值 |
 |---------|------|--------|
-| `LUCKY_API_BASE` | Lucky API 地址 | `http://192.168.3.200:16601` |
+| `LUCKY_API_BASE` | Lucky API 地址 | `http://192.168.9.200:16601` |
 | `LUCKY_OPEN_TOKEN` | Lucky OpenToken | (必填) |
-| `SUNPANEL_API_BASE` | SunPanel API 地址 | `http://192.168.3.200:20001/openapi/v1` |
+| `SUNPANEL_API_BASE` | SunPanel API 地址 | `http://192.168.9.200:20001/openapi/v1` |
 | `SUNPANEL_API_TOKEN` | SunPanel API Token | (必填) |
 
 **使用示例**:
@@ -122,13 +122,13 @@ node scripts/sync-lucky-to-sunpanel.mjs --sync 2>&1 | grep ".env"
 |---------|------|--------|
 | `HUB_PORT` | 服务端口 | `3000` |
 | `HUB_HOST` | 监听地址 | `0.0.0.0` |
-| `LUCKY_API_BASE` | Lucky API 地址 | `http://192.168.3.200:16601` |
+| `LUCKY_API_BASE` | Lucky API 地址 | `http://192.168.9.200:16601` |
 | `LUCKY_OPEN_TOKEN` | Lucky OpenToken | (必填) |
-| `SUNPANEL_API_BASE` | SunPanel API 地址 | `http://192.168.3.200:20001/openapi/v1` |
+| `SUNPANEL_API_BASE` | SunPanel API 地址 | `http://192.168.9.200:20001/openapi/v1` |
 | `SUNPANEL_API_TOKEN` | SunPanel API Token | (必填) |
 | `DDNS_SCRIPT_PATH` | DDNS 脚本入口（兼容保留） | `./scripts/aliddns_sync.sh` |
 | `DDNS_TARGETS_CONFIG` | Python 版 IPv6 DDNS 目标配置 | `./config/private_ipv6_ddns_targets.json` |
-| `ROUTER_HOST` | 路由器网关 | `192.168.3.1` |
+| `ROUTER_HOST` | 路由器网关 | `192.168.9.1` |
 
 **使用示例**:
 ```bash
@@ -232,11 +232,11 @@ cd central-hub && npm start
 
 ```bash
 # SunPanel
-curl -X POST http://192.168.3.200:20001/openapi/v1/version \
+curl -X POST http://192.168.9.200:20001/openapi/v1/version \
   -H "token: YOUR_TOKEN"
 
 # Lucky
-curl http://192.168.3.200:16601/api/webservice/rules \
+curl http://192.168.9.200:16601/api/webservice/rules \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 

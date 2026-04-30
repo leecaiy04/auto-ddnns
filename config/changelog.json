@@ -11,21 +11,21 @@
       "timestamp": "2026-04-04T08:45:15.583Z",
       "action": "scan_device",
       "target": "10",
-      "detail": "扫描设备 10 (192.168.3.10), 发现 4 个开放端口",
+      "detail": "扫描设备 10 (192.168.9.10), 发现 4 个开放端口",
       "user": "admin"
     },
     {
       "timestamp": "2026-04-04T08:55:54.906Z",
       "action": "scan_device",
       "target": "10",
-      "detail": "扫描设备 10 (192.168.3.10), 发现 4 个开放端口",
+      "detail": "扫描设备 10 (192.168.9.10), 发现 4 个开放端口",
       "user": "admin"
     },
     {
       "timestamp": "2026-04-04T08:55:58.756Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 11 个开放端口",
       "user": "admin"
     },
     {
@@ -54,7 +54,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://fn-os.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:5666"
+            "lanUrl": "http://192.168.9.200:5666"
           }
         }
       }
@@ -63,7 +63,7 @@
       "timestamp": "2026-04-04T08:56:44.060Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 11 个开放端口",
       "user": "admin"
     },
     {
@@ -92,7 +92,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://fn-sunpanel.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:20001"
+            "lanUrl": "http://192.168.9.200:20001"
           }
         }
       }
@@ -101,7 +101,7 @@
       "timestamp": "2026-04-04T08:57:16.928Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 11 个开放端口",
       "user": "admin"
     },
     {
@@ -130,7 +130,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://nextcloud.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:58841"
+            "lanUrl": "http://192.168.9.200:58841"
           }
         }
       }
@@ -139,7 +139,7 @@
       "timestamp": "2026-04-04T08:57:56.611Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 11 个开放端口",
       "user": "admin"
     },
     {
@@ -168,7 +168,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://gitea.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:33100"
+            "lanUrl": "http://192.168.9.200:33100"
           }
         }
       }
@@ -258,7 +258,7 @@
       "timestamp": "2026-04-04T10:02:12.502Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 11 个开放端口",
       "user": "admin"
     },
     {
@@ -287,7 +287,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://nas-fn.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:5666"
+            "lanUrl": "http://192.168.9.200:5666"
           }
         }
       }
@@ -758,7 +758,7 @@
       "timestamp": "2026-04-04T11:31:59.140Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 11 个开放端口",
       "user": "admin"
     },
     {
@@ -787,7 +787,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://fn-os-test.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:5666"
+            "lanUrl": "http://192.168.9.200:5666"
           }
         }
       }
@@ -818,7 +818,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://fn-os-test.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:5666"
+            "lanUrl": "http://192.168.9.200:5666"
           }
         }
       }
@@ -827,7 +827,7 @@
       "timestamp": "2026-04-04T11:34:02.556Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 11 个开放端口",
       "user": "admin"
     },
     {
@@ -856,7 +856,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://fn-os-test-v2.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:5666"
+            "lanUrl": "http://192.168.9.200:5666"
           }
         }
       }
@@ -887,7 +887,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://fn-os-test-v2.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:5666"
+            "lanUrl": "http://192.168.9.200:5666"
           }
         }
       }
@@ -896,7 +896,7 @@
       "timestamp": "2026-04-04T11:36:05.115Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 11 个开放端口",
       "user": "admin"
     },
     {
@@ -925,7 +925,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://fn-os-final-test.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:5666"
+            "lanUrl": "http://192.168.9.200:5666"
           }
         }
       }
@@ -989,7 +989,7 @@
       "timestamp": "2026-04-04T12:54:30.206Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 11 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 11 个开放端口",
       "user": "admin"
     },
     {
@@ -1018,7 +1018,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://test-purge-service.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:5666"
+            "lanUrl": "http://192.168.9.200:5666"
           }
         }
       }
@@ -1043,7 +1043,7 @@
           "instances": [
             {
               "instance": 1,
-              "apiBase": "http://192.168.3.200:16601/666",
+              "apiBase": "http://192.168.9.200:16601/666",
               "deleted": 1,
               "failed": 0,
               "errors": []
@@ -1151,11 +1151,11 @@
         "serviceName": "lucky",
         "fromNode": "primary",
         "toNode": "backup",
-        "fromIPv4": "192.168.3.200",
-        "toIPv4": "192.168.3.2",
+        "fromIPv4": "192.168.9.200",
+        "toIPv4": "192.168.9.2",
         "reason": "primary 节点连续失败",
         "status": "completed",
-        "message": "成功切换到 backup(192.168.3.2) 节点",
+        "message": "成功切换到 backup(192.168.9.2) 节点",
         "manual": true
       }
     },
@@ -1170,11 +1170,11 @@
         "serviceName": "lucky",
         "fromNode": "backup",
         "toNode": "primary",
-        "fromIPv4": "192.168.3.2",
-        "toIPv4": "192.168.3.200",
+        "fromIPv4": "192.168.9.2",
+        "toIPv4": "192.168.9.200",
         "reason": "backup 节点连续失败",
         "status": "completed",
-        "message": "成功切换到 primary(192.168.3.200) 节点",
+        "message": "成功切换到 primary(192.168.9.200) 节点",
         "manual": true
       }
     },
@@ -1189,11 +1189,11 @@
         "serviceName": "lucky",
         "fromNode": "primary",
         "toNode": "backup",
-        "fromIPv4": "192.168.3.200",
-        "toIPv4": "192.168.3.2",
+        "fromIPv4": "192.168.9.200",
+        "toIPv4": "192.168.9.2",
         "reason": "primary 节点连续失败",
         "status": "completed",
-        "message": "成功切换到 backup(192.168.3.2) 节点",
+        "message": "成功切换到 backup(192.168.9.2) 节点",
         "manual": true
       }
     },
@@ -1208,11 +1208,11 @@
         "serviceName": "lucky",
         "fromNode": "backup",
         "toNode": "primary",
-        "fromIPv4": "192.168.3.2",
-        "toIPv4": "192.168.3.200",
+        "fromIPv4": "192.168.9.2",
+        "toIPv4": "192.168.9.200",
         "reason": "backup 节点连续失败",
         "status": "completed",
-        "message": "成功切换到 primary(192.168.3.200) 节点",
+        "message": "成功切换到 primary(192.168.9.200) 节点",
         "manual": true
       }
     },
@@ -1227,11 +1227,11 @@
         "serviceName": "sunpanel",
         "fromNode": "primary",
         "toNode": "backup",
-        "fromIPv4": "192.168.3.200",
-        "toIPv4": "192.168.3.2",
+        "fromIPv4": "192.168.9.200",
+        "toIPv4": "192.168.9.2",
         "reason": "primary 节点连续失败",
         "status": "completed",
-        "message": "成功切换到 backup(192.168.3.2) 节点",
+        "message": "成功切换到 backup(192.168.9.2) 节点",
         "manual": true
       }
     },
@@ -1246,11 +1246,11 @@
         "serviceName": "lucky",
         "fromNode": "primary",
         "toNode": "backup",
-        "fromIPv4": "192.168.3.200",
-        "toIPv4": "192.168.3.2",
+        "fromIPv4": "192.168.9.200",
+        "toIPv4": "192.168.9.2",
         "reason": "primary 节点连续失败",
         "status": "completed",
-        "message": "成功切换到 backup(192.168.3.2) 节点",
+        "message": "成功切换到 backup(192.168.9.2) 节点",
         "manual": true
       }
     },
@@ -1265,67 +1265,67 @@
         "serviceName": "sunpanel",
         "fromNode": "backup",
         "toNode": "primary",
-        "fromIPv4": "192.168.3.2",
-        "toIPv4": "192.168.3.200",
+        "fromIPv4": "192.168.9.2",
+        "toIPv4": "192.168.9.200",
         "reason": "backup 节点连续失败",
         "status": "completed",
-        "message": "成功切换到 primary(192.168.3.200) 节点"
+        "message": "成功切换到 primary(192.168.9.200) 节点"
       }
     },
     {
       "timestamp": "2026-04-04T16:20:05.777Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 10 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 10 个开放端口",
       "user": "admin"
     },
     {
       "timestamp": "2026-04-04T16:20:16.151Z",
       "action": "scan_device",
       "target": "201",
-      "detail": "扫描设备 201 (192.168.3.201), 发现 4 个开放端口",
+      "detail": "扫描设备 201 (192.168.9.201), 发现 4 个开放端口",
       "user": "admin"
     },
     {
       "timestamp": "2026-04-04T16:20:21.530Z",
       "action": "scan_device",
       "target": "10",
-      "detail": "扫描设备 10 (192.168.3.10), 发现 4 个开放端口",
+      "detail": "扫描设备 10 (192.168.9.10), 发现 4 个开放端口",
       "user": "admin"
     },
     {
       "timestamp": "2026-04-04T16:46:17.197Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 10 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 10 个开放端口",
       "user": "admin"
     },
     {
       "timestamp": "2026-04-04T16:46:28.500Z",
       "action": "scan_device",
       "target": "10",
-      "detail": "扫描设备 10 (192.168.3.10), 发现 4 个开放端口",
+      "detail": "扫描设备 10 (192.168.9.10), 发现 4 个开放端口",
       "user": "admin"
     },
     {
       "timestamp": "2026-04-04T16:46:29.013Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 10 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 10 个开放端口",
       "user": "admin"
     },
     {
       "timestamp": "2026-04-04T16:46:29.524Z",
       "action": "scan_device",
       "target": "201",
-      "detail": "扫描设备 201 (192.168.3.201), 发现 4 个开放端口",
+      "detail": "扫描设备 201 (192.168.9.201), 发现 4 个开放端口",
       "user": "admin"
     },
     {
       "timestamp": "2026-04-04T16:46:30.039Z",
       "action": "scan_device",
       "target": "254",
-      "detail": "扫描设备 254 (192.168.3.254), 发现 1 个开放端口",
+      "detail": "扫描设备 254 (192.168.9.254), 发现 1 个开放端口",
       "user": "admin"
     },
     {
@@ -1354,7 +1354,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://sunpanel.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:20001"
+            "lanUrl": "http://192.168.9.200:20001"
           }
         }
       }
@@ -1385,7 +1385,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://sunpanel.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:20001"
+            "lanUrl": "http://192.168.9.200:20001"
           }
         }
       }
@@ -1410,14 +1410,14 @@
       "timestamp": "2026-04-14T17:07:29.746Z",
       "action": "scan_device",
       "target": "1",
-      "detail": "扫描设备 1 (192.168.3.1), 发现 2 个开放端口",
+      "detail": "扫描设备 1 (192.168.9.1), 发现 2 个开放端口",
       "user": "admin"
     },
     {
       "timestamp": "2026-04-14T17:07:32.365Z",
       "action": "scan_device",
       "target": "2",
-      "detail": "扫描设备 2 (192.168.3.2), 发现 4 个开放端口",
+      "detail": "扫描设备 2 (192.168.9.2), 发现 4 个开放端口",
       "user": "admin"
     },
     {
@@ -1457,7 +1457,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://openclaw.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.10:18789"
+            "lanUrl": "http://192.168.9.10:18789"
           }
         }
       }
@@ -1499,7 +1499,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://nextcloud.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.200:58841"
+            "lanUrl": "http://192.168.9.200:58841"
           }
         }
       }
@@ -1541,7 +1541,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://cc-live-verify-1775675411674.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.10:18789"
+            "lanUrl": "http://192.168.9.10:18789"
           }
         }
       }
@@ -1583,7 +1583,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://cc-live-add-1775675459436.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.10:18789"
+            "lanUrl": "http://192.168.9.10:18789"
           }
         }
       }
@@ -1625,7 +1625,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://jellyfin.example.com/favicon.ico",
-            "lanUrl": "http://192.168.3.2:8096"
+            "lanUrl": "http://192.168.9.2:8096"
           }
         }
       }
@@ -1667,7 +1667,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://ha.example.com/favicon.ico",
-            "lanUrl": "http://192.168.3.10:8123"
+            "lanUrl": "http://192.168.9.10:8123"
           }
         }
       }
@@ -1676,28 +1676,28 @@
       "timestamp": "2026-04-14T19:34:31.671Z",
       "action": "scan_device",
       "target": "1",
-      "detail": "扫描设备 1 (192.168.3.1), 发现 2 个开放端口",
+      "detail": "扫描设备 1 (192.168.9.1), 发现 2 个开放端口",
       "user": "admin"
     },
     {
       "timestamp": "2026-04-14T19:34:32.188Z",
       "action": "scan_device",
       "target": "2",
-      "detail": "扫描设备 2 (192.168.3.2), 发现 4 个开放端口",
+      "detail": "扫描设备 2 (192.168.9.2), 发现 4 个开放端口",
       "user": "admin"
     },
     {
       "timestamp": "2026-04-14T19:34:32.700Z",
       "action": "scan_device",
       "target": "10",
-      "detail": "扫描设备 10 (192.168.3.10), 发现 3 个开放端口",
+      "detail": "扫描设备 10 (192.168.9.10), 发现 3 个开放端口",
       "user": "admin"
     },
     {
       "timestamp": "2026-04-14T19:34:33.210Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 17 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 17 个开放端口",
       "user": "admin"
     },
     {
@@ -1737,7 +1737,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://ha.example.com/favicon.ico",
-            "lanUrl": "http://192.168.3.10:8123"
+            "lanUrl": "http://192.168.9.10:8123"
           }
         }
       }
@@ -1779,7 +1779,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://jellyfin.example.com/favicon.ico",
-            "lanUrl": "http://192.168.3.2:8096"
+            "lanUrl": "http://192.168.9.2:8096"
           }
         }
       }
@@ -1826,7 +1826,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://hub-final-verify.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.200:51000"
+            "lanUrl": "http://192.168.9.200:51000"
           }
         }
       }
@@ -1857,7 +1857,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://hub-final-verify-2.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.200:51000"
+            "lanUrl": "http://192.168.9.200:51000"
           }
         }
       }
@@ -1866,14 +1866,14 @@
       "timestamp": "2026-04-16T11:23:46.710Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 7 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 7 个开放端口",
       "user": "admin"
     },
     {
       "timestamp": "2026-04-16T12:03:05.363Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 7 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 7 个开放端口",
       "user": "admin"
     },
     {
@@ -1902,7 +1902,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://hermes-night-verify.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.200:5666"
+            "lanUrl": "http://192.168.9.200:5666"
           }
         }
       }
@@ -1933,7 +1933,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://hermes-night-verify-2.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.200:5122"
+            "lanUrl": "http://192.168.9.200:5122"
           }
         }
       }
@@ -1964,7 +1964,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://hermes-night-verify-3.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.200:5123"
+            "lanUrl": "http://192.168.9.200:5123"
           }
         }
       }
@@ -1995,7 +1995,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://hermes-night-verify-3.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.200:5123"
+            "lanUrl": "http://192.168.9.200:5123"
           }
         }
       }
@@ -2004,7 +2004,7 @@
       "timestamp": "2026-04-16T12:15:28.534Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 8 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 8 个开放端口",
       "user": "admin"
     },
     {
@@ -2027,7 +2027,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://hermes-manual-ui-verify.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.200:5124"
+            "lanUrl": "http://192.168.9.200:5124"
           },
           "proxyDomain": "hermes-manual-ui-verify.222869.xyz",
           "lucky": {
@@ -2070,7 +2070,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://hermes-manual-ui-verify.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.200:5124"
+            "lanUrl": "http://192.168.9.200:5124"
           },
           "proxyDomain": "hermes-manual-ui-verify.222869.xyz",
           "lucky": {
@@ -2119,7 +2119,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://hermes-night-verify-2.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.200:5122"
+            "lanUrl": "http://192.168.9.200:5122"
           }
         }
       }
@@ -2150,7 +2150,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://hub-final-verify.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.200:51000"
+            "lanUrl": "http://192.168.9.200:51000"
           }
         }
       }
@@ -2192,7 +2192,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://cc-live-verify-1775675411674.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.10:18789"
+            "lanUrl": "http://192.168.9.10:18789"
           }
         }
       }
@@ -2234,7 +2234,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://cc-live-add-1775675459436.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.10:18789"
+            "lanUrl": "http://192.168.9.10:18789"
           }
         }
       }
@@ -2265,7 +2265,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://hermes-night-verify.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.200:5666"
+            "lanUrl": "http://192.168.9.200:5666"
           }
         }
       }
@@ -2296,7 +2296,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://hub-final-verify-2.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.200:51000"
+            "lanUrl": "http://192.168.9.200:51000"
           }
         }
       }
@@ -2338,7 +2338,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://nextcloud.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.200:58841"
+            "lanUrl": "http://192.168.9.200:58841"
           }
         }
       }
@@ -2380,7 +2380,7 @@
           "sunpanel": {
             "group": "测试",
             "icon": "",
-            "lanUrl": "http://192.168.3.10:8888"
+            "lanUrl": "http://192.168.9.10:8888"
           }
         }
       }
@@ -2422,7 +2422,7 @@
           "sunpanel": {
             "group": "测试",
             "icon": "",
-            "lanUrl": "http://192.168.3.10:8888"
+            "lanUrl": "http://192.168.9.10:8888"
           }
         }
       }
@@ -2464,7 +2464,7 @@
           "sunpanel": {
             "group": "测试",
             "icon": "",
-            "lanUrl": "http://192.168.3.10:9999"
+            "lanUrl": "http://192.168.9.10:9999"
           }
         }
       }
@@ -2506,7 +2506,7 @@
           "sunpanel": {
             "group": "测试",
             "icon": "",
-            "lanUrl": "http://192.168.3.10:9999"
+            "lanUrl": "http://192.168.9.10:9999"
           }
         }
       }
@@ -2548,7 +2548,7 @@
           "sunpanel": {
             "group": "测试",
             "icon": "",
-            "lanUrl": "http://192.168.3.10:7777"
+            "lanUrl": "http://192.168.9.10:7777"
           }
         }
       }
@@ -2590,7 +2590,7 @@
           "sunpanel": {
             "group": "测试",
             "icon": "",
-            "lanUrl": "http://192.168.3.10:7777"
+            "lanUrl": "http://192.168.9.10:7777"
           }
         }
       }
@@ -2632,7 +2632,7 @@
           "sunpanel": {
             "group": "测试",
             "icon": "",
-            "lanUrl": "http://192.168.3.10:6666"
+            "lanUrl": "http://192.168.9.10:6666"
           }
         }
       }
@@ -2674,7 +2674,7 @@
           "sunpanel": {
             "group": "测试",
             "icon": "",
-            "lanUrl": "http://192.168.3.10:6666"
+            "lanUrl": "http://192.168.9.10:6666"
           }
         }
       }
@@ -2716,7 +2716,7 @@
           "sunpanel": {
             "group": "测试",
             "icon": "",
-            "lanUrl": "http://192.168.3.10:5555"
+            "lanUrl": "http://192.168.9.10:5555"
           }
         }
       }
@@ -2758,7 +2758,7 @@
           "sunpanel": {
             "group": "测试",
             "icon": "",
-            "lanUrl": "http://192.168.3.10:5555"
+            "lanUrl": "http://192.168.9.10:5555"
           }
         }
       }
@@ -2800,7 +2800,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://openclaw.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.10:18789"
+            "lanUrl": "http://192.168.9.10:18789"
           }
         }
       }
@@ -2809,7 +2809,7 @@
       "timestamp": "2026-04-18T15:51:00.382Z",
       "action": "scan_device",
       "target": "201",
-      "detail": "扫描设备 201 (192.168.3.201), 发现 4 个开放端口",
+      "detail": "扫描设备 201 (192.168.9.201), 发现 4 个开放端口",
       "user": "admin"
     },
     {
@@ -2838,7 +2838,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://synology.222869.xyz/favicon.ico",
-            "lanUrl": "http://192.168.3.201:5000"
+            "lanUrl": "http://192.168.9.201:5000"
           }
         }
       }
@@ -2863,7 +2863,7 @@
           "instances": [
             {
               "instance": 1,
-              "apiBase": "http://192.168.3.2:16601/666",
+              "apiBase": "http://192.168.9.2:16601/666",
               "deleted": 1,
               "failed": 0,
               "errors": []
@@ -3032,7 +3032,7 @@
       "timestamp": "2026-04-18T19:25:38.527Z",
       "action": "scan_device",
       "target": "2",
-      "detail": "扫描设备 2 (192.168.3.2), 发现 4 个开放端口",
+      "detail": "扫描设备 2 (192.168.9.2), 发现 4 个开放端口",
       "user": "admin"
     },
     {
@@ -3055,7 +3055,7 @@
           "instances": [
             {
               "instance": 1,
-              "apiBase": "http://192.168.3.2:16601/666",
+              "apiBase": "http://192.168.9.2:16601/666",
               "deleted": 0,
               "failed": 0,
               "errors": []
@@ -3091,14 +3091,14 @@
       "timestamp": "2026-04-19T15:36:30.734Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 8 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 8 个开放端口",
       "user": "admin"
     },
     {
       "timestamp": "2026-04-19T15:45:39.786Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 8 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 8 个开放端口",
       "user": "admin"
     },
     {
@@ -3127,7 +3127,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://sun.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:20000"
+            "lanUrl": "http://192.168.9.200:20000"
           }
         }
       }
@@ -3158,7 +3158,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://sun.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:20000"
+            "lanUrl": "http://192.168.9.200:20000"
           }
         }
       }
@@ -3167,7 +3167,7 @@
       "timestamp": "2026-04-19T16:17:52.058Z",
       "action": "scan_device",
       "target": "200",
-      "detail": "扫描设备 200 (192.168.3.200), 发现 8 个开放端口",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 8 个开放端口",
       "user": "admin"
     },
     {
@@ -3196,7 +3196,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://sunpanel.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:50000"
+            "lanUrl": "http://192.168.9.200:50000"
           }
         }
       }
@@ -3243,7 +3243,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://sunpanel.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:50000"
+            "lanUrl": "http://192.168.9.200:50000"
           }
         }
       }
@@ -3275,7 +3275,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://hub.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.200:51000"
+            "lanUrl": "http://192.168.9.200:51000"
           }
         }
       }
@@ -3307,7 +3307,7 @@
           "sunpanel": {
             "group": "其他",
             "icon": "https://lucky-admin.leecaiy.shop/favicon.ico",
-            "lanUrl": "http://192.168.3.2:16601"
+            "lanUrl": "http://192.168.9.2:16601"
           }
         }
       }

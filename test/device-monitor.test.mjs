@@ -175,12 +175,12 @@ describe('device-monitor', () => {
         },
         devices: {
           '10': {
-            ipv4: '192.168.3.10',
+            ipv4: '192.168.9.10',
             ipv6: '240e:390:9e3:d060::10',
             mac: 'aa:bb:cc:dd:ee:10'
           },
           '200': {
-            ipv4: '192.168.3.200',
+            ipv4: '192.168.9.200',
             ipv6: null,
             mac: 'aa:bb:cc:dd:ee:c8'
           }
@@ -192,20 +192,20 @@ describe('device-monitor', () => {
     assert.equal(monitor.getDeviceIPv6('10'), '240e:390:9e3:d060::10');
     assert.equal(monitor.getDeviceIPv6('200'), null);
     assert.deepEqual(monitor.getDeviceInfo('200'), {
-      ipv4: '192.168.3.200',
+      ipv4: '192.168.9.200',
       ipv6: null,
       mac: 'aa:bb:cc:dd:ee:c8'
     });
     assert.deepEqual(monitor.getAllDevices(), [
       {
         id: '10',
-        ipv4: '192.168.3.10',
+        ipv4: '192.168.9.10',
         ipv6: '240e:390:9e3:d060::10',
         mac: 'aa:bb:cc:dd:ee:10'
       },
       {
         id: '200',
-        ipv4: '192.168.3.200',
+        ipv4: '192.168.9.200',
         ipv6: null,
         mac: 'aa:bb:cc:dd:ee:c8'
       }
@@ -225,12 +225,12 @@ describe('device-monitor', () => {
       devices: {
         devices: {
           '10': {
-            ipv4: '192.168.3.10',
+            ipv4: '192.168.9.10',
             ipv6: '240e:390:9e3:d060::10',
             mac: 'aa:bb:cc:dd:ee:10'
           },
           '200': {
-            ipv4: '192.168.3.200',
+            ipv4: '192.168.9.200',
             ipv6: null,
             mac: 'aa:bb:cc:dd:ee:c8'
           }
@@ -247,7 +247,7 @@ describe('device-monitor', () => {
     assert.equal(table.entries.length, 2);
     assert.deepEqual(table.entries[0], {
       deviceId: '10',
-      ipv4: '192.168.3.10',
+      ipv4: '192.168.9.10',
       ipv6: '240e:390:9e3:d060::10',
       mac: 'aa:bb:cc:dd:ee:10',
       domain: '10.v6.leecaiy.shop',
@@ -255,7 +255,7 @@ describe('device-monitor', () => {
     });
     assert.deepEqual(table.entries[1], {
       deviceId: '200',
-      ipv4: '192.168.3.200',
+      ipv4: '192.168.9.200',
       ipv6: null,
       mac: 'aa:bb:cc:dd:ee:c8',
       domain: null,
@@ -267,9 +267,9 @@ describe('device-monitor', () => {
     process.env.ROUTER_PASSWORD = 'secret';
     const restoreSSH = installSSHMock({
       arpOutput: [
-        '192.168.3.10 dev br0 lladdr aa:bb:cc:dd:ee:10 REACHABLE',
-        '192.168.3.200 dev br0 lladdr aa-bb-cc-dd-ee-c8 STALE',
-        '192.168.3.201 dev br0 lladdr 00:00:00:00:00:00 STALE'
+        '192.168.9.10 dev br0 lladdr aa:bb:cc:dd:ee:10 REACHABLE',
+        '192.168.9.200 dev br0 lladdr aa-bb-cc-dd-ee-c8 STALE',
+        '192.168.9.201 dev br0 lladdr 00:00:00:00:00:00 STALE'
       ].join('\n'),
       ipv6Output: [
         '240e:390:9e3:d060::10 dev br0 lladdr aa:bb:cc:dd:ee:10 REACHABLE',

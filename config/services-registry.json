@@ -20,7 +20,7 @@
       "sunpanel": {
         "group": "其他",
         "icon": "https://hub.leecaiy.shop/favicon.ico",
-        "lanUrl": "http://192.168.3.200:51000"
+        "lanUrl": "http://192.168.9.200:51000"
       }
     },
     {
@@ -43,7 +43,7 @@
       "sunpanel": {
         "group": "其他",
         "icon": "https://lucky-admin.leecaiy.shop/favicon.ico",
-        "lanUrl": "http://192.168.3.2:16601"
+        "lanUrl": "http://192.168.9.2:16601"
       }
     }
   ]

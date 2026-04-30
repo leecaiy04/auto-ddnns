@@ -101,7 +101,7 @@ GET    /api/health           # 健康检查
 | `SUNPANEL_API_BASE` | SunPanel API 地址 | - |
 | `SUNPANEL_API_TOKEN` | SunPanel API Token | - |
 | `CF_API_TOKEN` | Cloudflare API Token | - |
-| `ROUTER_HOST` | 路由器地址 | 192.168.3.1 |
+| `ROUTER_HOST` | 路由器地址 | 192.168.9.1 |
 
 ### 定时调度
 

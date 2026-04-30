@@ -17,7 +17,7 @@ test('loadConfigWithEnv lets env values override json config and returns server 
       JSON.stringify({
         server: { port: 3000, host: '0.0.0.0' },
         router: {
-          gateway: '192.168.3.1',
+          gateway: '192.168.9.1',
           checkInterval: 300,
           username: 'json-root',
           password: 'json-pass'
