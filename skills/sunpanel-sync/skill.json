@@ -1,0 +1,22 @@
+{
+  "name": "sunpanel-sync",
+  "version": "1.0.0",
+  "description": "SunPanel 导航面板同步",
+  "actions": [
+    "syncFromLucky",
+    "addService",
+    "batchSync"
+  ],
+  "dependencies": [
+    "sunpanel-sync",
+    "lucky-manager"
+  ],
+  "config": {
+    "required": [
+      "SUNPANEL_API_BASE",
+      "SUNPANEL_API_TOKEN",
+      "LUCKY_API_BASE",
+      "LUCKY_OPEN_TOKEN"
+    ]
+  }
+}

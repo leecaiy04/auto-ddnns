@@ -1,0 +1,25 @@
+{
+  "name": "cloudflare-dns",
+  "version": "1.0.0",
+  "description": "Cloudflare DNS 记录管理和 DDNS 更新",
+  "actions": [
+    "listRecords",
+    "createRecord",
+    "updateRecord",
+    "deleteRecord",
+    "updateDDNS",
+    "batchUpdateDDNS"
+  ],
+  "dependencies": [
+    "cloudflare-manager"
+  ],
+  "config": {
+    "required": [
+      "CLOUDFLARE_API_TOKEN",
+      "CLOUDFLARE_ZONE_ID"
+    ],
+    "optional": [
+      "ALIYUN_DOMAIN"
+    ]
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "name": "lucky-manager",
+  "version": "1.0.0",
+  "description": "Lucky 反向代理管理 skill，提供 DDNS、端口监听、反向代理、SSL 证书管理功能",
+  "author": "Auto-DDNS Team",
+  "actions": [
+    {
+      "name": "manageDDNS",
+      "description": "管理 DDNS 任务",
+      "parameters": {
+        "action": {
+          "type": "string",
+          "enum": ["list", "create", "update", "delete"],
+          "required": true,
+          "description": "操作类型"
+        },
+        "taskId": {
+          "type": "string",
+          "required": false,
+          "description": "任务 ID（update/delete 时必需）"
+        },
+        "config": {
+          "type": "object",
+          "required": false,
+          "description": "任务配置（create/update 时必需）"
+        }
+      }
+    },
+    {
+      "name": "managePort",
+      "description": "管理端口监听和反向代理规则",
+      "parameters": {
+        "action": {
+          "type": "string",
+          "enum": ["list", "create", "update", "delete", "add-proxy", "remove-proxy"],
+          "required": true,
+          "description": "操作类型"
+        },
+        "port": {
+          "type": "number",
+          "required": false,
+          "description": "端口号"
+        },
+        "proxyConfig": {
+          "type": "object",
+          "required": false,
+          "description": "反向代理配置"
+        }
+      }
+    },
+    {
+      "name": "manageSSL",
+      "description": "管理 SSL 证书",
+      "parameters": {
+        "action": {
+          "type": "string",
+          "enum": ["list", "apply", "delete", "get-detail"],
+          "required": true,
+          "description": "操作类型"
+        },
+        "certKey": {
+          "type": "string",
+          "required": false,
+          "description": "证书 Key（delete/get-detail 时必需）"
+        },
+        "certConfig": {
+          "type": "object",
+          "required": false,
+          "description": "证书配置（apply 时必需）"
+        }
+      }
+    },
+    {
+      "name": "syncToSunPanel",
+      "description": "同步反向代理规则到 SunPanel",
+      "parameters": {
+        "port": {
+          "type": "number",
+          "required": false,
+          "description": "指定端口（可选，不指定则同步所有）"
+        }
+      }
+    },
+    {
+      "name": "getStatus",
+      "description": "获取 Lucky 服务状态",
+      "parameters": {}
+    }
+  ],
+  "dependencies": [
+    "../../lib/api-clients/lucky-api.mjs",
+    "../../modules/lucky-manager/lucky-ddns.mjs",
+    "../../modules/lucky-manager/lucky-port-manager.mjs",
+    "../../modules/lucky-manager/lucky-ssl.mjs",
+    "../../modules/sunpanel-sync/sunpanel-sync.mjs"
+  ],
+  "config": {
+    "env": [
+      "LUCKY_API_BASE",
+      "LUCKY_OPEN_TOKEN",
+      "LUCKY_ADMIN_TOKEN",
+      "LUCKY_HTTPS_PORT",
+      "LUCKY_USERNAME"
+    ]
+  }
+}

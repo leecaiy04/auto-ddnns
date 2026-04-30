@@ -1,0 +1,123 @@
+{
+  "name": "device-monitor",
+  "version": "1.0.0",
+  "description": "设备监控 Skill - 提供设备 IPv6 地址查询和监控功能",
+  "author": "Auto-DDNS Team",
+  "actions": [
+    {
+      "name": "checkDevices",
+      "description": "检查所有设备的 IPv6 地址",
+      "parameters": [],
+      "returns": {
+        "type": "object",
+        "properties": {
+          "success": "boolean",
+          "totalDevices": "number",
+          "ipv6Ready": "number",
+          "devices": "object"
+        }
+      }
+    },
+    {
+      "name": "getDeviceIPv6",
+      "description": "获取指定设备的 IPv6 地址",
+      "parameters": [
+        {
+          "name": "deviceId",
+          "type": "string",
+          "required": true,
+          "description": "设备 ID (IP 最后一位，如 '10', '200')"
+        }
+      ],
+      "returns": {
+        "type": "string|null",
+        "description": "IPv6 地址或 null"
+      }
+    },
+    {
+      "name": "getDeviceInfo",
+      "description": "获取指定设备的完整信息",
+      "parameters": [
+        {
+          "name": "deviceId",
+          "type": "string",
+          "required": true,
+          "description": "设备 ID"
+        }
+      ],
+      "returns": {
+        "type": "object|null",
+        "description": "设备信息或 null"
+      }
+    },
+    {
+      "name": "getAllDevices",
+      "description": "获取所有设备列表",
+      "parameters": [],
+      "returns": {
+        "type": "array",
+        "description": "设备列表"
+      }
+    },
+    {
+      "name": "getIPv6Map",
+      "description": "获取 IPv6 地址映射表",
+      "parameters": [],
+      "returns": {
+        "type": "object",
+        "description": "IPv6 地址映射 (deviceId -> ipv6)"
+      }
+    },
+    {
+      "name": "getStatus",
+      "description": "获取设备监控状态摘要",
+      "parameters": [],
+      "returns": {
+        "type": "object",
+        "properties": {
+          "lastUpdate": "string|null",
+          "totalDevices": "number",
+          "ipv6Ready": "number",
+          "enabled": "boolean"
+        }
+      }
+    },
+    {
+      "name": "generatePortMappingTable",
+      "description": "生成端口映射对照表",
+      "parameters": [],
+      "returns": {
+        "type": "object",
+        "properties": {
+          "lastUpdate": "string",
+          "entries": "array"
+        }
+      }
+    }
+  ],
+  "dependencies": {
+    "modules": [
+      "device-monitor",
+      "state-manager"
+    ],
+    "env": [
+      "ROUTER_HOST",
+      "ROUTER_USERNAME",
+      "ROUTER_PASSWORD"
+    ]
+  },
+  "examples": [
+    {
+      "title": "检查所有设备",
+      "code": "import deviceMonitor from './skills/device-monitor/index.mjs';\n\nconst result = await deviceMonitor.checkDevices();\nconsole.log(result);"
+    },
+    {
+      "title": "获取指定设备的 IPv6",
+      "code": "import deviceMonitor from './skills/device-monitor/index.mjs';\n\nconst ipv6 = await deviceMonitor.getDeviceIPv6('10');\nconsole.log('Device 10 IPv6:', ipv6);"
+    },
+    {
+      "title": "获取所有设备列表",
+      "code": "import deviceMonitor from './skills/device-monitor/index.mjs';\n\nconst devices = await deviceMonitor.getAllDevices();\nconsole.log('Total devices:', devices.length);"
+    }
+  ]
+}
