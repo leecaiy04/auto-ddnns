@@ -80,7 +80,7 @@ export async function applyACMECert({
     }
   };
 
-  return await openTokenFetch('/api/ssl/apply', {
+  return await openTokenFetch('/api/ssl', {
     method: 'POST',
     body: requestBody
   }, config);
@@ -101,13 +101,15 @@ export async function renewCert(certKey, config = null) {
 
 /**
  * 删除证书
+ * 注意：此功能在某些 Lucky 版本中可能不可用，返回 ItemNotFoundForKey 错误
+ * 如果 API 调用失败，请通过 Lucky Web 界面手动删除证书
  * @param {string} certKey - 证书 Key
  * @param {Object} config - 配置对象
  * @returns {Promise<Object>} 删除结果
  */
 export async function deleteCert(certKey, config = null) {
-  return await openTokenFetch('/api/ssl/delete', {
-    method: 'POST',
+  return await openTokenFetch('/api/ssl', {
+    method: 'DELETE',
     body: { Key: certKey }
   }, config);
 }
