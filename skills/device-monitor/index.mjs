@@ -4,7 +4,7 @@
  */
 
 import { DeviceMonitor } from '../../modules/device-monitor/index.mjs';
-import { StateManager } from '../../lib/state-manager.mjs';
+import { StateManager } from '../../shared/state-manager.mjs';
 import { getEnv } from '../../shared/env-loader.mjs';
 
 /**

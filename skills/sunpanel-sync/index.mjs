@@ -3,7 +3,6 @@
  * SunPanel 导航面板同步功能
  */
 
-import { syncProxyRulesToSunPanel } from '../../modules/sunpanel-sync/sunpanel-sync.mjs';
 import { listAllPorts } from '../../modules/lucky-manager/lucky-port-manager.mjs';
 import { getEnv } from '../../shared/env-loader.mjs';
 
@@ -35,14 +34,14 @@ export async function syncFromLucky(params = {}) {
     }
   }
 
-  // 同步到 SunPanel
-  const result = await syncProxyRulesToSunPanel(proxyRules);
+  // 注意：实际的 SunPanel 同步功能需要通过 SunPanelManager 模块实现
+  // 这里只返回需要同步的规则列表
+  console.warn('[SunPanelSync] 注意：实际同步功能需要通过 Central Hub 的 SunPanelManager 模块实现');
 
   return {
     totalRules: proxyRules.length,
-    synced: result.synced || 0,
-    failed: result.failed || 0,
-    details: result.details || []
+    rules: proxyRules,
+    message: '已获取反向代理规则列表，实际同步需要通过 Central Hub 执行'
   };
 }
 
