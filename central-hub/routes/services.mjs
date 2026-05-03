@@ -7,7 +7,7 @@
 import express from 'express';
 import { appendFileSync } from 'fs';
 
-const CONNECTIVITY_PROBE_TIMEOUT_MS = 2500;
+const CONNECTIVITY_PROBE_TIMEOUT_MS = 5000;
 
 function normalizeDomain(value) {
   return String(value || '').trim().toLowerCase();
@@ -63,9 +63,11 @@ async function probeUrl(url, timeoutMs) {
       };
 
       const req = https.request(options, (res) => {
+        // 接受 2xx, 3xx (重定向), 4xx (客户端错误但服务可达)
+        const isReachable = res.statusCode >= 200 && res.statusCode < 500;
         resolve({
           url,
-          ok: res.statusCode < 500,
+          ok: isReachable,
           status: res.statusCode,
           latency: Date.now() - startTime
         });
@@ -108,9 +110,11 @@ async function probeUrl(url, timeoutMs) {
       redirect: 'manual'
     });
 
+    // 接受 2xx, 3xx (重定向), 4xx (客户端错误但服务可达)
+    const isReachable = response.status >= 200 && response.status < 500;
     return {
       url,
-      ok: response.status < 500,
+      ok: isReachable,
       status: response.status,
       latency: Date.now() - startTime
     };

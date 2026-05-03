@@ -91,22 +91,25 @@ export class DeviceMonitor {
         
         if (this.directQueryDevices.has(deviceId)) {
           const credentials = this.directQueryDevices.get(deviceId);
-          console.log('[DeviceMonitor] 直接查询设备 ' + deviceId + ' (' + device.ipv4 + ')...');
-          
+          console.log(`[DeviceMonitor] 尝试直接查询设备 ${deviceId} (${device.ipv4})...`);
+
           try {
             const directAddresses = await getDeviceIPv6Addresses(device.ipv4, {
               username: credentials.username,
               password: credentials.password,
               timeout: this.router.timeout
             });
-            
+
             if (directAddresses.length > 0) {
               ipv6Addresses = directAddresses;
               queryMethod = 'direct-ssh';
-              console.log('[DeviceMonitor] 设备 ' + deviceId + ' 查询成功: ' + directAddresses.length + ' IPv6');
+              console.log(`[DeviceMonitor] ✅ 设备 ${deviceId} SSH 查询成功: ${directAddresses.length} 个 IPv6 地址`);
+            } else {
+              console.log(`[DeviceMonitor] ⚠️  设备 ${deviceId} SSH 查询返回空结果，使用路由器数据`);
             }
           } catch (error) {
-            console.error('[DeviceMonitor] 设备 ' + deviceId + ' 查询失败: ' + error.message);
+            console.warn(`[DeviceMonitor] ⚠️  设备 ${deviceId} SSH 查询失败: ${error.message}，降级使用路由器数据`);
+            // 继续使用路由器 API 获取的 IPv6 地址
           }
         }
         

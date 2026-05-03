@@ -211,8 +211,35 @@ export class SunPanelManager {
     }
   }
 
-  getServiceByDomain(services, domain) {
-    return services.find(service => service.proxyDomain === domain) || null;
+  /**
+   * 智能推断服务分组
+   * @param {object} service - 服务对象
+   * @param {string} domain - 域名
+   * @returns {string} 分组名称
+   */
+  inferServiceGroup(service, domain) {
+    // 如果服务配置中明确指定了分组，使用配置的分组
+    if (service?.sunpanel?.group) {
+      return service.sunpanel.group;
+    }
+
+    // 根据设备 ID 推断分组
+    const deviceId = service?.device || '';
+    if (deviceId === '200' || deviceId === '201') {
+      return 'NAS';
+    }
+
+    // 根据域名或服务名称推断
+    const name = (service?.name || domain || '').toLowerCase();
+    if (name.includes('nas') || name.includes('nextcloud') || name.includes('fnos')) {
+      return 'NAS';
+    }
+    if (name.includes('server') || name.includes('服务器')) {
+      return '服务器';
+    }
+
+    // 默认分组
+    return '其他';
   }
 
   /**
@@ -259,7 +286,7 @@ export class SunPanelManager {
             if (!domain) continue;
 
             const matchedService = this.getServiceByDomain(services, domain);
-            const configuredGroupName = matchedService?.sunpanel?.group || '其他';
+            const configuredGroupName = this.inferServiceGroup(matchedService, domain);
             const groupOnlyName = this.buildGroupOnlyName(configuredGroupName);
             const groupId = groupMap.get(groupOnlyName);
 
@@ -366,7 +393,6 @@ export class SunPanelManager {
 
   /**
    * 清空 SunPanel 远端数据
-   * 注意：SunPanel OpenAPI v1 不提供删除接口，此方法仅清空本地同步状态
    * @param {string[]} manualOnlyNames - 可选：手动指定要删除的卡片 onlyName 列表（当本地状态丢失时使用）
    * @returns {object} 清理结果
    */
@@ -375,7 +401,10 @@ export class SunPanelManager {
       console.log('[SunPanelManager] purgeSunPanel 调用参数:', { manualOnlyNames, type: typeof manualOnlyNames, isArray: Array.isArray(manualOnlyNames) });
 
       const syncedCards = this.stateManager.state.sunpanel?.syncStatus || {};
-      let cardList = Object.values(syncedCards);
+      let cardList = Object.entries(syncedCards).map(([key, value]) => ({
+        ...value,
+        onlyName: key.replace(/_\d+$/, '') // 移除实例后缀
+      }));
 
       // 如果提供了手动列表，使用手动列表
       if (manualOnlyNames && Array.isArray(manualOnlyNames) && manualOnlyNames.length > 0) {
@@ -396,8 +425,7 @@ export class SunPanelManager {
           title: card.remark || 'unknown',
           domain: card.domain || 'unknown',
           serviceId: card.serviceId || null
-        })),
-        warning: 'SunPanel OpenAPI v1 不提供删除接口，请手动登录 SunPanel Web 界面删除卡片'
+        }))
       };
 
       if (cardList.length === 0) {
@@ -406,21 +434,40 @@ export class SunPanelManager {
         return result;
       }
 
-      // SunPanel OpenAPI v1 不提供删除接口，只能清空本地状态
-      // 用户需要手动登录 SunPanel Web 界面删除卡片
-      console.log('[SunPanelManager] ⚠️  SunPanel OpenAPI v1 不提供删除接口');
-      console.log('[SunPanelManager] ℹ️  请手动登录 SunPanel Web 界面删除以下卡片:');
-      cardList.forEach(card => {
-        console.log(`[SunPanelManager]    - ${card.onlyName || card.serviceId} (${card.remark || 'unknown'})`);
-      });
+      // 删除所有实例上的卡片
+      const instances = this.sunpanelConfig.instances || [this.sunpanelConfig];
+
+      for (let i = 0; i < instances.length; i++) {
+        const instanceConfig = { ...this.sunpanelConfig, ...instances[i] };
+        console.log(`[SunPanelManager] ➡️ 正在清理 SunPanel 实例 ${i + 1} (${instanceConfig.apiBase})`);
+
+        for (const card of cardList) {
+          try {
+            await deleteItem(card.onlyName, instanceConfig);
+            if (i === 0) result.deleted++;
+            console.log(`[SunPanelManager] 🗑️ [实例 ${i+1}] 已删除卡片: ${card.onlyName} (${card.remark || 'unknown'})`);
+          } catch (error) {
+            if (error.message.includes('1203')) {
+              // 卡片不存在，跳过
+              console.log(`[SunPanelManager] ℹ️  [实例 ${i+1}] 卡片不存在: ${card.onlyName}`);
+            } else {
+              if (i === 0) {
+                result.failed++;
+                result.errors.push({ onlyName: card.onlyName, error: error.message });
+              }
+              console.error(`[SunPanelManager] ❌ [实例 ${i+1}] 删除卡片失败: ${card.onlyName} - ${error.message}`);
+            }
+          }
+        }
+      }
 
       // 清空本地同步状态
       this.stateManager.state.sunpanel.syncStatus = {};
       this.stateManager.state.sunpanel.lastSync = null;
       await this.stateManager.save();
 
-      result.message = `本地状态已清空（${cardList.length} 个卡片记录），但 SunPanel 远端卡片需要手动删除`;
-      console.log(`[SunPanelManager] ✅ 本地状态已清空: ${cardList.length} 个卡片记录`);
+      result.message = `成功删除 ${result.deleted} 个卡片，失败 ${result.failed} 个`;
+      console.log(`[SunPanelManager] ✅ 清理完成: 删除 ${result.deleted} 个，失败 ${result.failed} 个`);
 
       return result;
     } catch (error) {
