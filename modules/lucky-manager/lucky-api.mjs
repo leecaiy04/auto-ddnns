@@ -5,7 +5,15 @@
 
 import http from 'node:http';
 import https from 'node:https';
+import fs from 'node:fs';
 import { getEnv } from '../../shared/env-loader.mjs';
+
+// 启动时写入日志
+try {
+  fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] lucky-api.mjs loaded\n`);
+} catch (e) {
+  // ignore
+}
 
 const DEFAULT_DOMAIN = 'leecaiy.shop';
 const DEFAULT_ADMIN_API_BASE_URL = `https://lucky.${getEnv('ALIYUN_DOMAIN', DEFAULT_DOMAIN).trim() || DEFAULT_DOMAIN}:50000/666`;
@@ -114,6 +122,12 @@ function buildRequestPath(url, resolvedConfig) {
 async function luckyFetch(url, options = {}, config = null) {
   const resolvedConfig = resolveConfig(config);
   const fullUrl = `${resolvedConfig.apiBase}${buildRequestPath(url, resolvedConfig)}`;
+
+  // 写入调试日志到文件
+  const fs = await import('fs');
+  const debugLog = `[${new Date().toISOString()}] Lucky API Request: ${fullUrl}\n`;
+  fs.appendFileSync('/tmp/lucky-debug.log', debugLog);
+
   const urlObj = new URL(fullUrl);
   const requestModule = urlObj.protocol === 'http:' ? http : https;
   const requestOptions = {
@@ -147,6 +161,7 @@ async function luckyFetch(url, options = {}, config = null) {
     try {
       return await new Promise((resolve, reject) => {
         const req = requestModule.request(requestOptions, (res) => {
+          console.log('[DEBUG] Lucky API Response:', res.statusCode);
           let data = '';
 
           res.on('data', (chunk) => {
@@ -197,5 +212,7 @@ export async function adminTokenFetch(url, options = {}, config = null) {
 }
 
 export async function openTokenFetch(url, options = {}, config = null) {
+  const fs = await import('fs');
+  fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] openTokenFetch called: ${url}\n`);
   return luckyFetch(url, options, config);
 }

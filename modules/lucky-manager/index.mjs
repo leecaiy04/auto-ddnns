@@ -190,12 +190,20 @@ export class LuckyManager {
     return null;
   }
 
-  async getLuckyProxies() {
+  async getLuckyProxies(config = null) {
+    const fs = await import('fs');
+    fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] getLuckyProxies called\n`);
     try {
-      const instances = this.luckyConfig.instances || [this.luckyConfig];
-      const mainConfig = { ...this.luckyConfig, ...instances[0] };
-      const proxies = await getAllProxies(mainConfig);
-      return proxies.map(p => ({
+      // 如果传入了 config，直接使用该配置
+      const targetConfig = config || (() => {
+        const instances = this.luckyConfig.instances || [this.luckyConfig];
+        return { ...this.luckyConfig, ...instances[0] };
+      })();
+
+      fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Calling getAllProxies\n`);
+      const proxies = await getAllProxies(targetConfig);
+      fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] getAllProxies returned ${proxies.length} proxies\n`);
+      const result = proxies.map(p => ({
         port: p.port,
         ruleKey: p.ruleKey,
         remark: p.remark,
@@ -210,8 +218,12 @@ export class LuckyManager {
           enabled: p.enabled
         })
       }));
+      fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] getLuckyProxies returning ${result.length} proxies\n`);
+      return result;
     } catch (error) {
+      fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] getLuckyProxies error: ${error.message}\n${error.stack}\n`);
       console.error('[LuckyManager] ❌ 获取Lucky代理失败:', error.message);
+      fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] getLuckyProxies returned 0 proxies\n`);
       return [];
     }
   }
@@ -223,6 +235,8 @@ export class LuckyManager {
    */
   async syncServicesToLucky(services, ipv6Map = {}) {
     console.log('[LuckyManager] 🔄 开始同步服务到Lucky实例...');
+    const fs = await import('fs');
+    fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] syncServicesToLucky called\n`);
 
     const instances = this.luckyConfig.instances || [this.luckyConfig];
     const results = {
@@ -236,30 +250,50 @@ export class LuckyManager {
     for (let i = 0; i < instances.length; i++) {
       const instanceConfig = { ...this.luckyConfig, ...instances[i] };
       console.log(`[LuckyManager] ➡️ 正在同步到 Lucky 实例 ${i + 1} (${instanceConfig.apiBase})`);
+      fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Calling getLuckyProxies with config: ${JSON.stringify({apiBase: instanceConfig.apiBase, authMode: instanceConfig.authMode})}\n`);
 
-      const luckyProxies = await this.getLuckyProxies();
-      const serviceDomains = new Set(services.filter(s => s.enableProxy).map(s => s.proxyDomain));
+      fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] About to call getLuckyProxies\n`);
 
-      for (const proxy of luckyProxies) {
-        const domain = proxy.domains[0];
-        if (domain && !serviceDomains.has(domain)) {
-          try {
-            console.log(`[LuckyManager] 🗑️  [实例 ${i+1}] 删除不存在的服务: ${proxy.remark} (${domain})`);
-            const deleteResult = await deleteSubRuleByDomain(proxy.ruleKey, domain, instanceConfig);
-            if (deleteResult.deleted) {
-              if (i === 0) results.deleted++;
-              results.details.push({ service: proxy.remark, instance: i, action: 'deleted', domain });
-              console.log(`[LuckyManager] ✅ [实例 ${i+1}] 成功删除: ${proxy.remark} (${domain})`);
-            } else {
-              console.error(`[LuckyManager] ❌ [实例 ${i+1}] 删除失败: ${proxy.remark} - ${deleteResult.msg}`);
-            }
-          } catch (error) {
-            console.error(`[LuckyManager] ❌ [实例 ${i+1}] 删除规则失败: ${proxy.remark} - ${error.message}`);
-          }
-        }
+      let luckyProxies, serviceDomains;
+      try {
+        luckyProxies = await this.getLuckyProxies(instanceConfig);
+        fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Got ${luckyProxies.length} proxies, creating serviceDomains set\n`);
+        serviceDomains = new Set(services.filter(s => s.enableProxy).map(s => s.proxyDomain));
+        fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] serviceDomains has ${serviceDomains.size} domains\n`);
+      } catch (error) {
+        fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Error creating serviceDomains: ${error.message}\n${error.stack}\n`);
+        throw error;
       }
 
+      fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Starting proxy cleanup loop, ${luckyProxies.length} proxies to check\n`);
+      try {
+        for (const proxy of luckyProxies) {
+          const domain = proxy.domains[0];
+          if (domain && !serviceDomains.has(domain)) {
+            try {
+              console.log(`[LuckyManager] 🗑️  [实例 ${i+1}] 删除不存在的服务: ${proxy.remark} (${domain})`);
+              const deleteResult = await deleteSubRuleByDomain(proxy.ruleKey, domain, instanceConfig);
+              if (deleteResult.deleted) {
+                if (i === 0) results.deleted++;
+                results.details.push({ service: proxy.remark, instance: i, action: 'deleted', domain });
+                console.log(`[LuckyManager] ✅ [实例 ${i+1}] 成功删除: ${proxy.remark} (${domain})`);
+              } else {
+                console.error(`[LuckyManager] ❌ [实例 ${i+1}] 删除失败: ${proxy.remark} - ${deleteResult.msg}`);
+              }
+            } catch (error) {
+              console.error(`[LuckyManager] ❌ [实例 ${i+1}] 删除规则失败: ${proxy.remark} - ${error.message}`);
+            }
+          }
+        }
+        fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Proxy cleanup loop completed\n`);
+      } catch (error) {
+        fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Error in proxy cleanup loop: ${error.message}\n${error.stack}\n`);
+        throw error;
+      }
+
+      fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Processing ${services.length} services\n`);
       for (const service of services) {
+        fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Processing service: ${service.id}, enableProxy: ${service.enableProxy}\n`);
         if (!service.enableProxy) {
           if (i === 0) results.skipped++;
           continue;
@@ -276,15 +310,17 @@ export class LuckyManager {
             console.warn(`[LuckyManager] ⚠️  服务 ${service.id} 未使用统一的55000端口，当前端口: ${service.lucky.port}`);
           }
 
+          fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Calling smartAddOrUpdateSubRule for ${service.id}\n`);
           const result = await smartAddOrUpdateSubRule(
             instanceConfig.httpsPort,
             service.lucky.remark || service.name,
             service.proxyType,
             [service.proxyDomain],
             [target],
-            { enable: true, tls: service.enableTLS },
+            { enable: true, tls: true },  // 统一的 55000 端口始终启用 TLS
             instanceConfig
           );
+          fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] smartAddOrUpdateSubRule result: ${JSON.stringify(result)}\n`);
 
           if (result.ret === 0) {
             if (i === 0) results.success++;
@@ -296,7 +332,11 @@ export class LuckyManager {
           }
         } catch (error) {
           if (i === 0) results.failed++;
-          console.error(`[LuckyManager] ❌ [实例 ${i+1}] 同步异常: ${service.name} - ${error.message}`);
+          const errorMsg = `[FORK-MODE-v3] ${error.message}`;
+          fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Exception in service sync: ${errorMsg}\n`);
+          fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Stack trace: ${error.stack}\n`);
+          console.error(`[LuckyManager] ❌ [实例 ${i+1}] 同步异常: ${service.name} - ${errorMsg}`);
+          console.error(`[LuckyManager] Stack:`, error.stack);
         }
       }
     }
@@ -491,9 +531,11 @@ export class LuckyManager {
 
     const results = { created: 0, removed: 0, unchanged: 0, errors: [] };
 
-    // 创建缺失的任务
+    // 创建或更新任务
     for (const task of desired) {
-      if (!existingNames.has(task.taskName)) {
+      const existing = existingNames.get(task.taskName);
+      if (!existing) {
+        // 任务不存在，创建新任务
         try {
           await createDDNSTask({
             taskName: task.taskName,
@@ -509,7 +551,38 @@ export class LuckyManager {
           console.error(`[LuckyManager] ❌ 创建 DDNS 任务失败: ${task.taskName} - ${err.message}`);
         }
       } else {
-        results.unchanged++;
+        // 任务已存在，检查是否需要更新
+        const existingRecord = existing.Records?.[0]?.SyncRecordData?.fullDomainName;
+        if (existingRecord !== task.fullDomainName) {
+          // 域名变化，需要更新
+          try {
+            const { updateDDNSTask } = await import('./lucky-ddns.mjs');
+            const updatedTask = {
+              ...existing,
+              Records: [buildRecord(task.fullDomainName, 'AAAA')].map(record => ({
+                SyncRecordData: {
+                  type: record.type || 'AAAA',
+                  remark: record.remark || '',
+                  fullDomainName: record.fullDomainName || record.subDomain || '',
+                  ttl: record.ttl || 0,
+                  BizName: record.bizName || 'web',
+                  AliESASourceType: 'Domain',
+                  AliESAHostPolicy: 'follow_hostname',
+                  ipv6Address: record.ipv6Address || '{ipv6Addr}'
+                },
+                Disable: record.disable || false
+              }))
+            };
+            await updateDDNSTask(existing.TaskKey, updatedTask, config);
+            results.created++; // 计入更新数
+            console.log(`[LuckyManager] 🔄 更新 DDNS 任务: ${task.taskName} (${existingRecord} → ${task.fullDomainName})`);
+          } catch (err) {
+            results.errors.push(`更新 ${task.taskName}: ${err.message}`);
+            console.error(`[LuckyManager] ❌ 更新 DDNS 任务失败: ${task.taskName} - ${err.message}`);
+          }
+        } else {
+          results.unchanged++;
+        }
       }
     }
 

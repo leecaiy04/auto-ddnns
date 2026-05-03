@@ -309,7 +309,7 @@
                             <span class="text-muted">Lucky 反代</span>
                             <span class="badge success" id="status-lucky">检测中</span>
                         </div>
-                        <a href="http://192.168.3.2:16601/666" target="_blank" style="color:#60a5fa; text-decoration:none; font-size:12px; margin-top:8px; display:inline-flex; align-items:center; gap:4px;">
+                        <a href="http://192.168.9.2:16601/666" target="_blank" style="color:#60a5fa; text-decoration:none; font-size:12px; margin-top:8px; display:inline-flex; align-items:center; gap:4px;">
                             🔗 打开管理界面
                         </a>
                     </div>
@@ -318,7 +318,7 @@
                             <span class="text-muted">SunPanel 面板</span>
                             <span class="badge success" id="status-sunpanel">检测中</span>
                         </div>
-                        <a href="http://192.168.3.10:20001" target="_blank" style="color:#60a5fa; text-decoration:none; font-size:12px; margin-top:8px; display:inline-flex; align-items:center; gap:4px;">
+                        <a href="http://192.168.9.2:20001" target="_blank" style="color:#60a5fa; text-decoration:none; font-size:12px; margin-top:8px; display:inline-flex; align-items:center; gap:4px;">
                             🔗 打开管理界面
                         </a>
                     </div>
@@ -733,7 +733,7 @@
             tbody.innerHTML = services.map(s => {
                 const ipv4Url = `https://${s.proxyDomain}:55000`; // Will be mapped by defaults
                 const protocol = s.internalProtocol || 'http';
-                const lanUrl = s.sunpanel?.lanUrl || `${protocol}://192.168.3.${s.device}:${s.internalPort}`;
+                const lanUrl = s.sunpanel?.lanUrl || `${protocol}://192.168.9.${s.device}:${s.internalPort}`;
                 const deviceEndpoint = `${s.device}:${s.internalPort}`;
 
                 return `

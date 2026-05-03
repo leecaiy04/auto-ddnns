@@ -227,11 +227,16 @@ export class ServiceRegistry {
    * @param {string} [params.description] - 描述
    */
   async quickAddFromScan(params) {
+    const fs = await import('fs');
+    fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] quickAddFromScan called with params: ${JSON.stringify(params)}\n`);
+
     const { deviceId, port, name, id, group, description, ipv6 } = params;
     const serviceId = sanitizeId(id || name);
     const serviceName = String(name || '').trim() || serviceId;
     const serviceIpv6 = String(ipv6 || '').trim() || null;
     const device = this.getDeviceById(deviceId);
+
+    fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Device found: ${device ? device.name : 'null'}\n`);
 
     if (!device) {
       throw new Error(`设备 ${deviceId} 不存在`);
@@ -239,6 +244,8 @@ export class ServiceRegistry {
     if (this.services.some(s => s.id === serviceId)) {
       throw new Error(`服务ID ${serviceId} 已存在`);
     }
+
+    fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Validation passed, creating service object\n`);
 
     const internalProtocol = inferInternalProtocol(port);
     const primaryDomain = this.proxyDefaults?.domains?.[0] || MANAGED_DOMAIN;
@@ -269,11 +276,19 @@ export class ServiceRegistry {
       }
     };
 
+    fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Service object created, pushing to array\n`);
     this.services.push(service);
+
+    fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Calling saveRegistry\n`);
     await this.saveRegistry();
+
+    fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Calling updateState\n`);
     await this.updateState();
 
+    fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Appending changelog\n`);
     this.changelog?.append('add_service', serviceId, `从端口扫描快速添加: ${serviceName} (${device.name}:${port})`, { service });
+
+    fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] quickAddFromScan completed successfully\n`);
     console.log(`[ServiceRegistry] ✅ 快速添加服务: ${serviceName} (${serviceId})`);
     return service;
   }

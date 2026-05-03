@@ -3311,6 +3311,2834 @@
           }
         }
       }
+    },
+    {
+      "timestamp": "2026-05-01T11:10:08.530Z",
+      "action": "add_service",
+      "target": "test-1777633808",
+      "detail": "从端口扫描快速添加: Test Service (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-1777633808",
+          "name": "Test Service",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-1777633808.leecaiy.shop",
+          "description": "Test Service on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Service",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-1777633808.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T11:12:10.837Z",
+      "action": "add_service",
+      "target": "test-1777633930",
+      "detail": "从端口扫描快速添加: Test Service 2 (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-1777633930",
+          "name": "Test Service 2",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-1777633930.leecaiy.shop",
+          "description": "Test Service 2 on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Service 2",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-1777633930.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T11:12:50.091Z",
+      "action": "add_service",
+      "target": "test-1777633970",
+      "detail": "从端口扫描快速添加: Test Service 3 (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-1777633970",
+          "name": "Test Service 3",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-1777633970.leecaiy.shop",
+          "description": "Test Service 3 on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Service 3",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-1777633970.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T11:13:33.091Z",
+      "action": "add_service",
+      "target": "test-1777634013",
+      "detail": "从端口扫描快速添加: Test Service 4 (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-1777634013",
+          "name": "Test Service 4",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-1777634013.leecaiy.shop",
+          "description": "Test Service 4 on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Service 4",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-1777634013.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T11:14:45.233Z",
+      "action": "add_service",
+      "target": "test-1777634085",
+      "detail": "从端口扫描快速添加: Test Service 5 (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-1777634085",
+          "name": "Test Service 5",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-1777634085.leecaiy.shop",
+          "description": "Test Service 5 on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Service 5",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-1777634085.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T11:15:47.982Z",
+      "action": "add_service",
+      "target": "test-1777634147",
+      "detail": "从端口扫描快速添加: Test Service 6 (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-1777634147",
+          "name": "Test Service 6",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-1777634147.leecaiy.shop",
+          "description": "Test Service 6 on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Service 6",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-1777634147.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T11:16:35.169Z",
+      "action": "add_service",
+      "target": "test-1777634195",
+      "detail": "从端口扫描快速添加: Test Service 7 (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-1777634195",
+          "name": "Test Service 7",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-1777634195.leecaiy.shop",
+          "description": "Test Service 7 on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Service 7",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-1777634195.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T11:17:37.642Z",
+      "action": "add_service",
+      "target": "test-1777634257",
+      "detail": "从端口扫描快速添加: Test Service 8 (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-1777634257",
+          "name": "Test Service 8",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-1777634257.leecaiy.shop",
+          "description": "Test Service 8 on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Service 8",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-1777634257.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T11:31:33.878Z",
+      "action": "add_service",
+      "target": "test-1777635093",
+      "detail": "从端口扫描快速添加: Test Service (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-1777635093",
+          "name": "Test Service",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-1777635093.leecaiy.shop",
+          "description": "Test Service on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Service",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-1777635093.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T11:35:02.411Z",
+      "action": "add_service",
+      "target": "test-1777635302",
+      "detail": "从端口扫描快速添加: Test Service (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-1777635302",
+          "name": "Test Service",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-1777635302.leecaiy.shop",
+          "description": "Test Service on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Service",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-1777635302.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T11:36:56.229Z",
+      "action": "add_service",
+      "target": "test-1777635416",
+      "detail": "从端口扫描快速添加: Test Service (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-1777635416",
+          "name": "Test Service",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-1777635416.leecaiy.shop",
+          "description": "Test Service on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Service",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-1777635416.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T11:41:18.401Z",
+      "action": "add_service",
+      "target": "test-1777635678",
+      "detail": "从端口扫描快速添加: Test Service (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-1777635678",
+          "name": "Test Service",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-1777635678.leecaiy.shop",
+          "description": "Test Service on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Service",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-1777635678.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T11:44:31.262Z",
+      "action": "add_service",
+      "target": "test-1777635871",
+      "detail": "从端口扫描快速添加: Test Service (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-1777635871",
+          "name": "Test Service",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-1777635871.leecaiy.shop",
+          "description": "Test Service on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Service",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-1777635871.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T11:45:47.995Z",
+      "action": "add_service",
+      "target": "test-1777635947",
+      "detail": "从端口扫描快速添加: Test Service (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-1777635947",
+          "name": "Test Service",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-1777635947.leecaiy.shop",
+          "description": "Test Service on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Service",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-1777635947.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T11:49:34.661Z",
+      "action": "add_service",
+      "target": "test-1777636174",
+      "detail": "从端口扫描快速添加: Final Test (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-1777636174",
+          "name": "Final Test",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-1777636174.leecaiy.shop",
+          "description": "Final Test on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Final Test",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-1777636174.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T11:54:54.216Z",
+      "action": "add_service",
+      "target": "test-final-1777636494",
+      "detail": "从端口扫描快速添加: Final Test (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-final-1777636494",
+          "name": "Final Test",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-final-1777636494.leecaiy.shop",
+          "description": "Final Test on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Final Test",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-final-1777636494.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T11:58:46.201Z",
+      "action": "add_service",
+      "target": "test-success-1777636726",
+      "detail": "从端口扫描快速添加: Success Test (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-success-1777636726",
+          "name": "Success Test",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-success-1777636726.leecaiy.shop",
+          "description": "Success Test on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Success Test",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-success-1777636726.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T12:07:54.765Z",
+      "action": "add_service",
+      "target": "test-final-check-1777637274",
+      "detail": "从端口扫描快速添加: Final Check (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-final-check-1777637274",
+          "name": "Final Check",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-final-check-1777637274.leecaiy.shop",
+          "description": "Final Check on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Final Check",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-final-check-1777637274.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T12:17:47.357Z",
+      "action": "add_service",
+      "target": "test-final-1777637867",
+      "detail": "从端口扫描快速添加: Final Test (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-final-1777637867",
+          "name": "Final Test",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-final-1777637867.leecaiy.shop",
+          "description": "Final Test on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Final Test",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-final-1777637867.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T12:23:44.192Z",
+      "action": "add_service",
+      "target": "direct-test-1777638224",
+      "detail": "从端口扫描快速添加: Direct Test (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "direct-test-1777638224",
+          "name": "Direct Test",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "direct-test-1777638224.leecaiy.shop",
+          "description": "Direct Test on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Direct Test",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://direct-test-1777638224.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T12:29:30.529Z",
+      "action": "add_service",
+      "target": "version-test-1777638570",
+      "detail": "从端口扫描快速添加: Version Test (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "version-test-1777638570",
+          "name": "Version Test",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "version-test-1777638570.leecaiy.shop",
+          "description": "Version Test on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Version Test",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://version-test-1777638570.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T12:32:43.675Z",
+      "action": "scan_device",
+      "target": "1",
+      "detail": "扫描设备 1 (192.168.9.1), 发现 2 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-01T12:32:43.690Z",
+      "action": "scan_device",
+      "target": "2",
+      "detail": "扫描设备 2 (192.168.9.2), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-01T12:32:43.698Z",
+      "action": "scan_device",
+      "target": "10",
+      "detail": "扫描设备 10 (192.168.9.10), 发现 3 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-01T12:32:44.203Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 8 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-01T12:32:44.221Z",
+      "action": "scan_device",
+      "target": "201",
+      "detail": "扫描设备 201 (192.168.9.201), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-01T12:32:47.996Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 23 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-01T12:32:47.997Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 71,
+          "cleared": 71,
+          "message": "已清空本地同步状态（71 个卡片）。注意：SunPanel API 没有删除接口，远端卡片需要手动删除",
+          "cards": [
+            {
+              "onlyName": "unknown",
+              "title": "Sunpanel 管理界面",
+              "domain": "leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "fnos",
+              "domain": "fn.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "vscode",
+              "domain": "code.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "相似度",
+              "domain": "similar.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "pve",
+              "domain": "pve.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "pdf",
+              "domain": "pdf.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "webdav",
+              "domain": "webdav.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "n8n",
+              "domain": "n8n.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "lucky",
+              "domain": "lucky.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "synology群晖",
+              "domain": "nas.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "1panel",
+              "domain": "1panel.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "nextcloud",
+              "domain": "nextcloud.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "terminal",
+              "domain": "terminal.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "onlyoffice",
+              "domain": "onlyoffice.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "gitea",
+              "domain": "gitea.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "reference",
+              "domain": "reference.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "filebox",
+              "domain": "f.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "nextGPT",
+              "domain": "nextgpt.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "Jenkins",
+              "domain": "Jenkins.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "oneapi",
+              "domain": "oneapi.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "json2csv",
+              "domain": "json2csv.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "lunix-commond",
+              "domain": "lunix.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "gemin反向代理",
+              "domain": "gemini.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "apitable",
+              "domain": "apitable.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "阅读",
+              "domain": "reader.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "leantime",
+              "domain": "leantime.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "openclaw",
+              "domain": "claw.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "vscode in 飞牛os",
+              "domain": "vscode2.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "sanbox aio",
+              "domain": "aio.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "飞牛OS Web",
+              "domain": "nas200.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "黑群晖DSM",
+              "domain": "nas201.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "Debian Web",
+              "domain": "web10.leecaiy.shop",
+              "serviceId": null
+            },
+            {
+              "onlyName": "sunpanel-----",
+              "title": "Sunpanel 管理界面",
+              "domain": "leecaiy.shop",
+              "serviceId": "sunpanel-----"
+            },
+            {
+              "onlyName": "fnos",
+              "title": "fnos",
+              "domain": "fn.leecaiy.shop",
+              "serviceId": "fnos"
+            },
+            {
+              "onlyName": "vscode",
+              "title": "vscode",
+              "domain": "code.leecaiy.shop",
+              "serviceId": "vscode"
+            },
+            {
+              "onlyName": "---",
+              "title": "相似度",
+              "domain": "similar.leecaiy.shop",
+              "serviceId": "---"
+            },
+            {
+              "onlyName": "pve",
+              "title": "pve",
+              "domain": "pve.leecaiy.shop",
+              "serviceId": "pve"
+            },
+            {
+              "onlyName": "pdf",
+              "title": "pdf",
+              "domain": "pdf.leecaiy.shop",
+              "serviceId": "pdf"
+            },
+            {
+              "onlyName": "webdav",
+              "title": "webdav",
+              "domain": "webdav.leecaiy.shop",
+              "serviceId": "webdav"
+            },
+            {
+              "onlyName": "n8n",
+              "title": "n8n",
+              "domain": "n8n.leecaiy.shop",
+              "serviceId": "n8n"
+            },
+            {
+              "onlyName": "lucky",
+              "title": "lucky",
+              "domain": "lucky.leecaiy.shop",
+              "serviceId": "lucky"
+            },
+            {
+              "onlyName": "synology--",
+              "title": "synology群晖",
+              "domain": "nas.leecaiy.shop",
+              "serviceId": "synology--"
+            },
+            {
+              "onlyName": "1panel",
+              "title": "1panel",
+              "domain": "1panel.leecaiy.shop",
+              "serviceId": "1panel"
+            },
+            {
+              "onlyName": "nextcloud",
+              "title": "nextcloud",
+              "domain": "nextcloud.222869.xyz",
+              "serviceId": "nextcloud"
+            },
+            {
+              "onlyName": "terminal",
+              "title": "terminal",
+              "domain": "terminal.leecaiy.shop",
+              "serviceId": "terminal"
+            },
+            {
+              "onlyName": "onlyoffice",
+              "title": "onlyoffice",
+              "domain": "onlyoffice.leecaiy.shop",
+              "serviceId": "onlyoffice"
+            },
+            {
+              "onlyName": "gitea",
+              "title": "gitea",
+              "domain": "gitea.leecaiy.shop",
+              "serviceId": "gitea"
+            },
+            {
+              "onlyName": "reference",
+              "title": "reference",
+              "domain": "reference.leecaiy.shop",
+              "serviceId": "reference"
+            },
+            {
+              "onlyName": "filebox",
+              "title": "filebox",
+              "domain": "f.leecaiy.shop",
+              "serviceId": "filebox"
+            },
+            {
+              "onlyName": "nextgpt",
+              "title": "nextGPT",
+              "domain": "nextgpt.leecaiy.shop",
+              "serviceId": "nextgpt"
+            },
+            {
+              "onlyName": "jenkins",
+              "title": "Jenkins",
+              "domain": "Jenkins.leecaiy.shop",
+              "serviceId": "jenkins"
+            },
+            {
+              "onlyName": "oneapi",
+              "title": "oneapi",
+              "domain": "oneapi.leecaiy.shop",
+              "serviceId": "oneapi"
+            },
+            {
+              "onlyName": "json2csv",
+              "title": "json2csv",
+              "domain": "json2csv.leecaiy.shop",
+              "serviceId": "json2csv"
+            },
+            {
+              "onlyName": "lunix-commond",
+              "title": "lunix-commond",
+              "domain": "lunix.leecaiy.shop",
+              "serviceId": "lunix-commond"
+            },
+            {
+              "onlyName": "gemin----",
+              "title": "gemin反向代理",
+              "domain": "gemini.leecaiy.shop",
+              "serviceId": "gemin----"
+            },
+            {
+              "onlyName": "apitable",
+              "title": "apitable",
+              "domain": "apitable.leecaiy.shop",
+              "serviceId": "apitable"
+            },
+            {
+              "onlyName": "--",
+              "title": "阅读",
+              "domain": "reader.leecaiy.shop",
+              "serviceId": "--"
+            },
+            {
+              "onlyName": "leantime",
+              "title": "leantime",
+              "domain": "leantime.leecaiy.shop",
+              "serviceId": "leantime"
+            },
+            {
+              "onlyName": "openclaw",
+              "title": "openclaw",
+              "domain": "claw.leecaiy.shop",
+              "serviceId": "openclaw"
+            },
+            {
+              "onlyName": "vscode-in---os",
+              "title": "vscode in 飞牛os",
+              "domain": "vscode2.leecaiy.shop",
+              "serviceId": "vscode-in---os"
+            },
+            {
+              "onlyName": "sanbox-aio",
+              "title": "sanbox aio",
+              "domain": "aio.leecaiy.shop",
+              "serviceId": "sanbox-aio"
+            },
+            {
+              "onlyName": "nas200-web",
+              "title": "飞牛OS Web",
+              "domain": "nas200.leecaiy.shop",
+              "serviceId": "nas200-web"
+            },
+            {
+              "onlyName": "nas201-dsm",
+              "title": "黑群晖DSM",
+              "domain": "nas201.leecaiy.shop",
+              "serviceId": "nas201-dsm"
+            },
+            {
+              "onlyName": "debian10-web",
+              "title": "Debian Web",
+              "domain": "web10.leecaiy.shop",
+              "serviceId": "debian10-web"
+            },
+            {
+              "onlyName": "debian",
+              "title": "debian小龙虾",
+              "domain": "openclaw.222869.xyz",
+              "serviceId": "debian"
+            },
+            {
+              "onlyName": "cc-live-verify",
+              "title": "CC Live Verify",
+              "domain": "cc-live-verify-1775675411674.222869.xyz",
+              "serviceId": "cc-live-verify"
+            },
+            {
+              "onlyName": "cc-live-add-verify",
+              "title": "CC Live Add Verify",
+              "domain": "cc-live-add-1775675459436.222869.xyz",
+              "serviceId": "cc-live-add-verify"
+            },
+            {
+              "onlyName": "svc-jellyfin",
+              "title": "svc-jellyfin",
+              "domain": "jellyfin.example.com",
+              "serviceId": "svc-jellyfin"
+            },
+            {
+              "onlyName": "svc-homeassistant",
+              "title": "svc-homeassistant",
+              "domain": "ha.example.com",
+              "serviceId": "svc-homeassistant"
+            },
+            {
+              "onlyName": "unknown",
+              "title": "svc-homeassistant",
+              "domain": "ha.example.com",
+              "serviceId": null
+            },
+            {
+              "onlyName": "unknown",
+              "title": "svc-jellyfin",
+              "domain": "jellyfin.example.com",
+              "serviceId": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T12:32:53.553Z",
+      "action": "scan_device",
+      "target": "1",
+      "detail": "扫描设备 1 (192.168.9.1), 发现 2 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-01T12:32:53.561Z",
+      "action": "scan_device",
+      "target": "2",
+      "detail": "扫描设备 2 (192.168.9.2), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-01T12:32:53.567Z",
+      "action": "scan_device",
+      "target": "10",
+      "detail": "扫描设备 10 (192.168.9.10), 发现 3 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-01T12:32:54.077Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 8 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-01T12:32:54.085Z",
+      "action": "scan_device",
+      "target": "201",
+      "detail": "扫描设备 201 (192.168.9.201), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-01T12:33:07.398Z",
+      "action": "add_service",
+      "target": "lucky",
+      "detail": "从端口扫描快速添加: lucky (Lucky / SunPanel 服务器:16601)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "lucky",
+          "name": "lucky",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 16601,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "lucky.leecaiy.shop",
+          "description": "lucky on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "lucky",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://lucky.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:16601"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T12:33:15.325Z",
+      "action": "add_service",
+      "target": "stack-test-1777638795",
+      "detail": "从端口扫描快速添加: Stack Test (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "stack-test-1777638795",
+          "name": "Stack Test",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "stack-test-1777638795.leecaiy.shop",
+          "description": "Stack Test on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Stack Test",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://stack-test-1777638795.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T12:35:19.882Z",
+      "action": "add_service",
+      "target": "test-fork-1181",
+      "detail": "从端口扫描快速添加: Test Fork Mode (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-fork-1181",
+          "name": "Test Fork Mode",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-fork-1181.leecaiy.shop",
+          "description": "Test Fork Mode on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Fork Mode",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://test-fork-1181.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-01T12:37:52.914Z",
+      "action": "add_service",
+      "target": "marker-test-1777639072",
+      "detail": "从端口扫描快速添加: Marker Test (Lucky / SunPanel 服务器:80)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "marker-test-1777639072",
+          "name": "Marker Test",
+          "device": "2",
+          "ipv6": null,
+          "internalPort": 80,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "marker-test-1777639072.leecaiy.shop",
+          "description": "Marker Test on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Marker Test",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "测试",
+            "icon": "https://marker-test-1777639072.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:80"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-02T16:53:02.182Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 4 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-02T16:53:02.183Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": true,
+          "totalDeleted": 1,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 1,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "已删除 1 个 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 1,
+          "cleared": 1,
+          "message": "已清空本地同步状态（1 个卡片）。注意：SunPanel API 没有删除接口，远端卡片需要手动删除",
+          "cards": [
+            {
+              "onlyName": "lucky",
+              "title": "lucky",
+              "domain": "lucky.leecaiy.shop",
+              "serviceId": "lucky"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-02T16:53:04.810Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 8 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-02T16:53:23.465Z",
+      "action": "add_service",
+      "target": "lucky",
+      "detail": "从端口扫描快速添加: lucky (NAS / Nextcloud 服务器:16601)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "lucky",
+          "name": "lucky",
+          "device": "200",
+          "ipv6": "240e:0391:0c84:5b71:0000:0000:0000:0c39",
+          "internalPort": 16601,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "lucky.leecaiy.shop",
+          "description": "lucky on NAS / Nextcloud 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "lucky",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://lucky.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.200:16601"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-02T16:56:02.372Z",
+      "action": "add_service",
+      "target": "test-service-8080",
+      "detail": "从端口扫描快速添加: Test Service (NAS / Nextcloud 服务器:8080)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-service-8080",
+          "name": "Test Service",
+          "device": "200",
+          "ipv6": null,
+          "internalPort": 8080,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-service-8080.leecaiy.shop",
+          "description": "Test Service on NAS / Nextcloud 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Service",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://test-service-8080.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.200:8080"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-02T17:08:13.382Z",
+      "action": "add_service",
+      "target": "test-service-8081",
+      "detail": "从端口扫描快速添加: Test Service 8081 (Debian 应用服务器:8081)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-service-8081",
+          "name": "Test Service 8081",
+          "device": "10",
+          "ipv6": null,
+          "internalPort": 8081,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-service-8081.leecaiy.shop",
+          "description": "Test Service 8081 on Debian 应用服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Service 8081",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://test-service-8081.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.10:8081"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-02T17:13:51.628Z",
+      "action": "add_service",
+      "target": "test-trigger",
+      "detail": "从端口扫描快速添加: Trigger Sync (NAS / Nextcloud 服务器:9999)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-trigger",
+          "name": "Trigger Sync",
+          "device": "200",
+          "ipv6": null,
+          "internalPort": 9999,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-trigger.leecaiy.shop",
+          "description": "Trigger Sync on NAS / Nextcloud 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Trigger Sync",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://test-trigger.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.200:9999"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-02T19:58:44.278Z",
+      "action": "delete_service",
+      "target": "test-service-8080",
+      "detail": "删除服务: Test Service",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "test-service-8080",
+          "name": "Test Service",
+          "device": "200",
+          "ipv6": null,
+          "internalPort": 8080,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "test-service-8080.leecaiy.shop",
+          "description": "Test Service on NAS / Nextcloud 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "Test Service",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://test-service-8080.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.200:8080"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-02T19:58:48.028Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 3 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-02T19:58:48.029Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": true,
+          "totalDeleted": 1,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 1,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "已删除 1 个 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 4,
+          "cleared": 4,
+          "message": "已清空本地同步状态（4 个卡片）。注意：SunPanel API 没有删除接口，远端卡片需要手动删除",
+          "cards": [
+            {
+              "onlyName": "lucky",
+              "title": "lucky",
+              "domain": "lucky.leecaiy.shop",
+              "serviceId": "lucky"
+            },
+            {
+              "onlyName": "test-service-8080",
+              "title": "Test Service",
+              "domain": "test-service-8080.leecaiy.shop",
+              "serviceId": "test-service-8080"
+            },
+            {
+              "onlyName": "test-service-8081",
+              "title": "Test Service 8081",
+              "domain": "test-service-8081.leecaiy.shop",
+              "serviceId": "test-service-8081"
+            },
+            {
+              "onlyName": "test-trigger",
+              "title": "Trigger Sync",
+              "domain": "test-trigger.leecaiy.shop",
+              "serviceId": "test-trigger"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-02T19:59:26.263Z",
+      "action": "scan_device",
+      "target": "1",
+      "detail": "扫描设备 1 (192.168.9.1), 发现 2 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-02T19:59:26.277Z",
+      "action": "scan_device",
+      "target": "2",
+      "detail": "扫描设备 2 (192.168.9.2), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-02T19:59:26.288Z",
+      "action": "scan_device",
+      "target": "10",
+      "detail": "扫描设备 10 (192.168.9.10), 发现 3 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-02T19:59:26.794Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 8 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-02T19:59:26.810Z",
+      "action": "scan_device",
+      "target": "201",
+      "detail": "扫描设备 201 (192.168.9.201), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T05:41:07.492Z",
+      "action": "scan_device",
+      "target": "10",
+      "detail": "扫描设备 10 (192.168.9.10), 发现 3 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T05:41:15.814Z",
+      "action": "add_service",
+      "target": "lx",
+      "detail": "从端口扫描快速添加: lx (Debian 应用服务器:18789)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "lx",
+          "name": "lx",
+          "device": "10",
+          "ipv6": "240e:0390:09e5:7261:be24:11ff:fe88:7edf",
+          "internalPort": 18789,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "lx.leecaiy.shop",
+          "description": "lx on Debian 应用服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "lx",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://lx.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.10:18789"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T05:41:57.928Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 1 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T05:41:57.929Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": true,
+          "totalDeleted": 1,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 1,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "已删除 1 个 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 1,
+          "cleared": 1,
+          "message": "已清空本地同步状态（1 个卡片）。注意：SunPanel API 没有删除接口，远端卡片需要手动删除",
+          "cards": [
+            {
+              "onlyName": "lx",
+              "title": "lx",
+              "domain": "lx.leecaiy.shop",
+              "serviceId": "lx"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T05:43:48.628Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T05:43:48.629Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:28:28.529Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:28:28.531Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:28:43.064Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:28:43.066Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:29:07.483Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:29:07.484Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:29:45.517Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:29:45.518Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:30:30.523Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:30:30.524Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:30:52.544Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:30:52.546Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:36:17.395Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:36:17.396Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:38:27.318Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:38:27.320Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:44:06.644Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:44:06.645Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:47:45.066Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:47:45.068Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:49:07.434Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:49:07.435Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:50:54.145Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:50:54.146Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:52:25.532Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:52:25.534Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:54:36.138Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:54:36.139Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:54:43.969Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:54:43.970Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:57:24.873Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:57:24.874Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:58:11.610Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:58:11.611Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T07:59:33.655Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T07:59:33.658Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T08:02:30.522Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T08:02:30.524Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T08:08:39.764Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T08:08:39.765Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T08:09:49.008Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T08:09:49.010Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T08:09:56.141Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T08:09:56.143Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 0,
+          "cleared": 0,
+          "message": "没有已同步的 SunPanel 卡片需要清理",
+          "cards": []
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T08:18:27.420Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T08:18:27.422Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 1,
+          "deleted": 0,
+          "failed": 1,
+          "errors": [
+            "删除 test-123: API returned non-JSON response (200): <!DOCTYPE html>\n<html>\n<head>\n\t<meta charset=\"UTF-8\">\n\t<link rel=\"icon\" href=\"/favicon.ico\">\n\t<meta "
+          ],
+          "message": "已删除 0 个远端卡片，失败 1 个",
+          "cards": [
+            {
+              "onlyName": "test-123",
+              "title": "test-123",
+              "domain": "unknown",
+              "serviceId": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T08:25:14.695Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T08:25:14.697Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 1,
+          "deleted": 0,
+          "failed": 1,
+          "errors": [
+            "删除 test-123: API returned non-JSON response (200): <!DOCTYPE html>\n<html>\n<head>\n\t<meta charset=\"UTF-8\">\n\t<link rel=\"icon\" href=\"/favicon.ico\">\n\t<meta "
+          ],
+          "message": "已删除 0 个远端卡片，失败 1 个",
+          "cards": [
+            {
+              "onlyName": "test-123",
+              "title": "test-123",
+              "domain": "unknown",
+              "serviceId": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T08:26:20.484Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T08:26:20.486Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 1,
+          "deleted": 0,
+          "failed": 1,
+          "errors": [
+            "删除 test-123: API returned non-JSON response (200): <!DOCTYPE html>\n<html>\n<head>\n\t<meta charset=\"UTF-8\">\n\t<link rel=\"icon\" href=\"/favicon.ico\">\n\t<meta "
+          ],
+          "message": "已删除 0 个远端卡片，失败 1 个",
+          "cards": [
+            {
+              "onlyName": "test-123",
+              "title": "test-123",
+              "domain": "unknown",
+              "serviceId": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T08:30:48.809Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T08:30:48.811Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 1,
+          "deleted": 0,
+          "failed": 0,
+          "errors": [],
+          "message": "本地状态已清空（1 个卡片记录），但 SunPanel 远端卡片需要手动删除",
+          "cards": [
+            {
+              "onlyName": "test-123",
+              "title": "test-123",
+              "domain": "unknown",
+              "serviceId": null
+            }
+          ],
+          "warning": "SunPanel OpenAPI v1 不提供删除接口，请手动登录 SunPanel Web 界面删除卡片"
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T08:31:58.975Z",
+      "action": "clear_all_services",
+      "target": "services-registry",
+      "detail": "清空所有服务 (共 0 个)",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T08:31:58.976Z",
+      "action": "purge_remote",
+      "target": "all",
+      "detail": "批量清空远端数据 (Lucky/SunPanel)",
+      "user": "admin",
+      "data": {
+        "lucky": {
+          "success": false,
+          "totalDeleted": 0,
+          "instances": [
+            {
+              "instance": 1,
+              "apiBase": "http://192.168.9.2:16601/666",
+              "deleted": 0,
+              "failed": 0,
+              "errors": []
+            }
+          ],
+          "message": "没有找到可删除的 Lucky 反向代理规则"
+        },
+        "sunpanel": {
+          "total": 1,
+          "deleted": 0,
+          "failed": 0,
+          "errors": [],
+          "message": "本地状态已清空（1 个卡片记录），但 SunPanel 远端卡片需要手动删除",
+          "cards": [
+            {
+              "onlyName": "test-123",
+              "title": "test-123",
+              "domain": "unknown",
+              "serviceId": null
+            }
+          ],
+          "warning": "SunPanel OpenAPI v1 不提供删除接口，请手动登录 SunPanel Web 界面删除卡片"
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T16:46:20.812Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 8 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-05-03T16:46:28.578Z",
+      "action": "add_service",
+      "target": "fnos",
+      "detail": "从端口扫描快速添加: fnos (NAS / Nextcloud 服务器:5666)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "fnos",
+          "name": "fnos",
+          "device": "200",
+          "ipv6": null,
+          "internalPort": 5666,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "fnos.leecaiy.shop",
+          "description": "fnos on NAS / Nextcloud 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "fnos",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://fnos.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.200:5666"
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-03T16:52:20.756Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 8 个开放端口",
+      "user": "admin"
     }
   ]
 }

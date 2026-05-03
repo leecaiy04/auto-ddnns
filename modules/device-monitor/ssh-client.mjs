@@ -175,11 +175,12 @@ export function executeSSHCommand(command, options = {}) {
       port: 22,
       username,
       password,
+      hostVerifier: () => true,  // 跳过主机密钥验证
       readyTimeout: 10000,
       algorithms: {
         kex: ['curve25519-sha256', 'ecdh-sha2-nistp256', 'diffie-hellman-group14-sha256', 'diffie-hellman-group-exchange-sha256'],
         cipher: ['aes128-ctr', 'aes192-ctr', 'aes256-ctr', 'aes128-gcm', 'aes256-gcm'],
-        serverHostKey: ['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa', 'ecdsa-sha2-nistp256']
+        serverHostKey: ['ssh-ed25519', 'rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa', 'ecdsa-sha2-nistp256']
       },
       tryKeyboard: true
     });
@@ -352,3 +353,63 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       console.log('Usage: node ssh-client.mjs [test|ipv6|arp|map|exec <command>]');
   }
 }
+
+/**
+ * 直接从设备获取IPv6地址
+ * @param {string} deviceHost - 设备IP地址
+ * @param {object} options - SSH连接选项
+ * @returns {Promise<Array>} IPv6地址列表
+ */
+export async function getDeviceIPv6Addresses(deviceHost, options = {}) {
+  try {
+    const output = await executeSSHCommand('ip -6 addr show', {
+      host: deviceHost,
+      ...options
+    });
+    
+    const ipv6Addresses = [];
+    const lines = output.split('\n');
+    
+    for (const line of lines) {
+      // 匹配 inet6 行，例如：inet6 240e:391:c85:b671::c39/128 scope global
+      const match = line.match(/inet6\s+([0-9a-f:]+)\/\d+\s+scope\s+global/i);
+      if (match) {
+        const addr = match[1].toLowerCase();
+        // 排除link-local地址
+        if (!addr.startsWith('fe80:')) {
+          ipv6Addresses.push(addr);
+        }
+      }
+    }
+    
+    return ipv6Addresses;
+  } catch (error) {
+    console.error("[SSH] 获取设备IPv6地址失败:", error.message);
+    return [];
+  }
+}
+
+/**
+ * 选择最佳的IPv6地址
+ * 优先级：EUI-64 > 其他稳定地址 > 临时隐私地址
+ */
+export function chooseBestIPv6(addresses) {
+  if (!addresses || addresses.length === 0) return null;
+  
+  // 优先选择EUI-64格式的地址（包含ff:fe）
+  const eui64 = addresses.find(addr => addr.includes(':ff:fe'));
+  if (eui64) return eui64;
+  
+  // 其次选择非临时地址（不包含随机字符串的地址）
+  // 临时地址通常有更多的随机性
+  const stable = addresses.find(addr => {
+    const parts = addr.split(':');
+    // 简单启发式：如果地址段较少或有::压缩，可能是稳定地址
+    return parts.length <= 6 || addr.includes('::');
+  });
+  if (stable) return stable;
+  
+  // 最后返回第一个地址
+  return addresses[0];
+}
+

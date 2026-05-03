@@ -1,9 +1,11 @@
 /**
  * 设备监控模块
- * 负责通过SSH查询设备的IPv6地址，更新设备状态
+ * 支持通过 SSH 或 iKuai API 查询设备的 IPv6 地址，更新设备状态
  */
 
-import { getIPv6Neighbors, buildDeviceAddressMap } from './ssh-client.mjs';
+import { buildDeviceAddressMap as buildDeviceAddressMapSSH } from './ssh-client.mjs';
+import { getDeviceIPv6Addresses, chooseBestIPv6 as chooseBestIPv6SSH } from './ssh-client.mjs';
+import { createIKuaiClient } from './ikuai-client.mjs';
 import { getEnv } from '../../shared/env-loader.mjs';
 
 const PUBLIC_DOMAIN = getEnv('ALIYUN_DOMAIN', 'leecaiy.shop');
@@ -12,26 +14,49 @@ export class DeviceMonitor {
   constructor(config, stateManager) {
     this.config = config;
     this.stateManager = stateManager;
+    this.routerType = getEnv('ROUTER_TYPE', 'ssh').toLowerCase();
     this.router = {
       host: getEnv('ROUTER_HOST', config.router?.host || '192.168.9.1'),
       username: getEnv('ROUTER_USERNAME', config.router?.username || 'root'),
       password: getEnv('ROUTER_PASSWORD', ''),
+      sslVerify: getEnv('ROUTER_SSL_VERIFY', '1') !== '0',
       timeout: config.router?.timeout || 10000
     };
+    
+    this.directQueryDevices = this.parseDirectQueryDevices();
   }
 
-  /**
-   * 初始化模块
-   */
+  parseDirectQueryDevices() {
+    const config = getEnv('DIRECT_QUERY_DEVICES', '');
+    if (!config) return new Map();
+    
+    const devices = new Map();
+    const entries = config.split(',').map(s => s.trim()).filter(s => s);
+    
+    for (const entry of entries) {
+      const parts = entry.split(':');
+      if (parts.length >= 3) {
+        const [deviceId, username, password] = parts;
+        devices.set(deviceId, { username, password });
+      }
+    }
+    
+    return devices;
+  }
+
   async init() {
     console.log('[DeviceMonitor] 初始化设备监控模块...');
-
-    if (!this.router.password) {
-      console.warn('[DeviceMonitor] ⚠️  路由器密码未设置，SSH功能将不可用');
-      console.warn('[DeviceMonitor] 请设置 ROUTER_PASSWORD 环境变量');
+    console.log('[DeviceMonitor] 路由器类型: ' + this.routerType);
+    
+    if (this.directQueryDevices.size > 0) {
+      const deviceIds = Array.from(this.directQueryDevices.keys()).join(', ');
+      console.log('[DeviceMonitor] 直接查询设备: ' + deviceIds);
     }
 
-    // 初始化状态中的设备信息
+    if (!this.router.password) {
+      console.warn('[DeviceMonitor] 路由器密码未设置');
+    }
+
     if (!this.stateManager.state.devices) {
       this.stateManager.state.devices = {
         lastUpdate: null,
@@ -40,15 +65,89 @@ export class DeviceMonitor {
       };
     }
 
-    console.log('[DeviceMonitor] ✅ 设备监控模块初始化完成');
+    console.log('[DeviceMonitor] 设备监控模块初始化完成');
   }
 
-  /**
-   * 检查设备IPv6地址
-   */
+  async buildDeviceAddressMap() {
+    if (this.routerType === 'ikuai') {
+      return await this.buildDeviceAddressMapIKuai();
+    } else {
+      return await buildDeviceAddressMapSSH(this.router);
+    }
+  }
+
+  async buildDeviceAddressMapIKuai() {
+    const client = createIKuaiClient(this.router);
+    const macDeviceMap = await client.buildDeviceAddressMap();
+
+    const ipDeviceMap = new Map();
+
+    for (const [mac, device] of macDeviceMap.entries()) {
+      if (device.ipv4) {
+        const deviceId = device.ipv4.split('.').pop();
+        
+        let ipv6Addresses = device.ipv6;
+        let queryMethod = 'router-api';
+        
+        if (this.directQueryDevices.has(deviceId)) {
+          const credentials = this.directQueryDevices.get(deviceId);
+          console.log('[DeviceMonitor] 直接查询设备 ' + deviceId + ' (' + device.ipv4 + ')...');
+          
+          try {
+            const directAddresses = await getDeviceIPv6Addresses(device.ipv4, {
+              username: credentials.username,
+              password: credentials.password,
+              timeout: this.router.timeout
+            });
+            
+            if (directAddresses.length > 0) {
+              ipv6Addresses = directAddresses;
+              queryMethod = 'direct-ssh';
+              console.log('[DeviceMonitor] 设备 ' + deviceId + ' 查询成功: ' + directAddresses.length + ' IPv6');
+            }
+          } catch (error) {
+            console.error('[DeviceMonitor] 设备 ' + deviceId + ' 查询失败: ' + error.message);
+          }
+        }
+        
+        const bestIpv6 = chooseBestIPv6SSH(ipv6Addresses);
+
+        ipDeviceMap.set(device.ipv4, {
+          ipv4: device.ipv4,
+          mac: device.mac,
+          ipv6: bestIpv6,
+          ipv6State: bestIpv6 ? 'REACHABLE' : null,
+          ipv6Interface: device.interface || 'unknown',
+          queryMethod
+        });
+      }
+    }
+
+    return ipDeviceMap;
+  }
+
+  chooseBestIPv6(ipv6List) {
+    if (!ipv6List || ipv6List.length === 0) {
+      return null;
+    }
+
+    const globalAddresses = ipv6List.filter(ip => !ip.toLowerCase().startsWith('fe80:'));
+
+    if (globalAddresses.length === 0) {
+      return ipv6List[0];
+    }
+
+    const eui64Address = globalAddresses.find(ip => ip.toLowerCase().includes('ff:fe'));
+    if (eui64Address) {
+      return eui64Address;
+    }
+
+    return globalAddresses[0];
+  }
+
   async checkDevices() {
     if (!this.router.password) {
-      console.warn('[DeviceMonitor] ⚠️  路由器密码未设置，跳过设备检查');
+      console.warn('[DeviceMonitor] 路由器密码未设置');
       return {
         success: false,
         message: '路由器密码未设置'
@@ -56,17 +155,15 @@ export class DeviceMonitor {
     }
 
     try {
-      console.log('[DeviceMonitor] 🔍 开始检查设备IPv6地址...');
+      console.log('[DeviceMonitor] 开始检查设备IPv6地址...');
 
-      // 构建设备地址映射
-      const deviceMap = await buildDeviceAddressMap(this.router);
+      const deviceMap = await this.buildDeviceAddressMap();
 
-      // 更新状态
       const devices = {};
       const ipv6Map = {};
 
       for (const [ipv4, info] of deviceMap.entries()) {
-        const deviceId = ipv4.split('.').pop(); // 获取IP最后一位作为设备ID
+        const deviceId = ipv4.split('.').pop();
 
         devices[deviceId] = {
           ipv4,
@@ -74,6 +171,7 @@ export class DeviceMonitor {
           mac: info.mac,
           ipv6State: info.ipv6State,
           ipv6Interface: info.ipv6Interface,
+          queryMethod: info.queryMethod,
           lastSeen: new Date().toISOString()
         };
 
@@ -82,7 +180,6 @@ export class DeviceMonitor {
         }
       }
 
-      // 更新状态管理器
       this.stateManager.state.devices = {
         lastUpdate: new Date().toISOString(),
         devices,
@@ -93,7 +190,7 @@ export class DeviceMonitor {
 
       await this.stateManager.save();
 
-      console.log(`[DeviceMonitor] ✅ 设备检查完成: ${Object.keys(devices).length} 个设备, ${Object.values(devices).filter(d => d.ipv6).length} 个有IPv6`);
+      console.log('[DeviceMonitor] 完成: ' + Object.keys(devices).length + ' 设备, ' + Object.values(devices).filter(d => d.ipv6).length + ' IPv6');
 
       return {
         success: true,
@@ -102,7 +199,7 @@ export class DeviceMonitor {
         devices
       };
     } catch (error) {
-      console.error('[DeviceMonitor] ❌ 设备检查失败:', error.message);
+      console.error('[DeviceMonitor] 失败:', error.message);
       return {
         success: false,
         message: error.message
@@ -110,28 +207,14 @@ export class DeviceMonitor {
     }
   }
 
-  /**
-   * 获取指定设备的IPv6地址
-   * @param {string} deviceId - 设备ID (IP最后一位，如 "10", "200")
-   * @returns {string|null>} IPv6地址或null
-   */
   getDeviceIPv6(deviceId) {
     return this.stateManager.state.devices?.ipv6Map?.[deviceId] || null;
   }
 
-  /**
-   * 获取指定设备的完整信息
-   * @param {string} deviceId - 设备ID
-   * @returns {object|null>} 设备信息或null
-   */
   getDeviceInfo(deviceId) {
     return this.stateManager.state.devices?.devices?.[deviceId] || null;
   }
 
-  /**
-   * 获取所有设备列表
-   * @returns {Array>} 设备列表
-   */
   getAllDevices() {
     const devices = this.stateManager.state.devices?.devices || {};
     return Object.entries(devices).map(([id, info]) => ({
@@ -140,18 +223,10 @@ export class DeviceMonitor {
     }));
   }
 
-  /**
-   * 获取IPv6地址映射表
-   * @returns {object>} IPv6地址映射 (deviceId -> ipv6)
-   */
   getIPv6Map() {
     return this.stateManager.state.devices?.ipv6Map || {};
   }
 
-  /**
-   * 获取设备状态摘要
-   * @returns {object>} 状态摘要
-   */
   getStatus() {
     const devices = this.stateManager.state.devices;
     return {
@@ -162,10 +237,6 @@ export class DeviceMonitor {
     };
   }
 
-  /**
-   * 生成端口映射对照表
-   * @returns {object>} 端口映射对照表
-   */
   generatePortMappingTable() {
     const devices = this.getAllDevices();
     const ipv6Map = this.getIPv6Map();
@@ -177,7 +248,7 @@ export class DeviceMonitor {
         ipv4: device.ipv4,
         ipv6: device.ipv6,
         mac: device.mac,
-        domain: device.ipv6 ? `${device.id}.v6.${PUBLIC_DOMAIN}` : null,
+        domain: device.ipv6 ? device.id + '.v6.' + PUBLIC_DOMAIN : null,
         ready: !!device.ipv6
       }))
     };

@@ -366,24 +366,38 @@ export class SunPanelManager {
 
   /**
    * 清空 SunPanel 远端数据
-   * 注意：SunPanel API 没有删除接口，此方法仅清空本地同步状态
+   * 注意：SunPanel OpenAPI v1 不提供删除接口，此方法仅清空本地同步状态
+   * @param {string[]} manualOnlyNames - 可选：手动指定要删除的卡片 onlyName 列表（当本地状态丢失时使用）
    * @returns {object} 清理结果
    */
-  async purgeSunPanel() {
+  async purgeSunPanel(manualOnlyNames = null) {
     try {
+      console.log('[SunPanelManager] purgeSunPanel 调用参数:', { manualOnlyNames, type: typeof manualOnlyNames, isArray: Array.isArray(manualOnlyNames) });
+
       const syncedCards = this.stateManager.state.sunpanel?.syncStatus || {};
-      const cardList = Object.values(syncedCards);
+      let cardList = Object.values(syncedCards);
+
+      // 如果提供了手动列表，使用手动列表
+      if (manualOnlyNames && Array.isArray(manualOnlyNames) && manualOnlyNames.length > 0) {
+        cardList = manualOnlyNames.map(onlyName => ({ onlyName, remark: onlyName }));
+        console.log(`[SunPanelManager] 使用手动指定的 ${cardList.length} 个卡片进行删除`);
+      } else {
+        console.log('[SunPanelManager] 使用本地同步状态，共', cardList.length, '个卡片');
+      }
 
       const result = {
         total: cardList.length,
-        cleared: 0,
+        deleted: 0,
+        failed: 0,
+        errors: [],
         message: '',
         cards: cardList.map(card => ({
           onlyName: card.onlyName || card.serviceId || 'unknown',
           title: card.remark || 'unknown',
           domain: card.domain || 'unknown',
           serviceId: card.serviceId || null
-        }))
+        })),
+        warning: 'SunPanel OpenAPI v1 不提供删除接口，请手动登录 SunPanel Web 界面删除卡片'
       };
 
       if (cardList.length === 0) {
@@ -392,15 +406,21 @@ export class SunPanelManager {
         return result;
       }
 
+      // SunPanel OpenAPI v1 不提供删除接口，只能清空本地状态
+      // 用户需要手动登录 SunPanel Web 界面删除卡片
+      console.log('[SunPanelManager] ⚠️  SunPanel OpenAPI v1 不提供删除接口');
+      console.log('[SunPanelManager] ℹ️  请手动登录 SunPanel Web 界面删除以下卡片:');
+      cardList.forEach(card => {
+        console.log(`[SunPanelManager]    - ${card.onlyName || card.serviceId} (${card.remark || 'unknown'})`);
+      });
+
+      // 清空本地同步状态
       this.stateManager.state.sunpanel.syncStatus = {};
       this.stateManager.state.sunpanel.lastSync = null;
       await this.stateManager.save();
 
-      result.cleared = cardList.length;
-      result.message = `已清空本地同步状态（${cardList.length} 个卡片）。注意：SunPanel API 没有删除接口，远端卡片需要手动删除`;
-
-      console.log(`[SunPanelManager] ✅ 已清空 ${cardList.length} 个 SunPanel 卡片的本地同步状态`);
-      console.log('[SunPanelManager] ⚠️  SunPanel API 不支持删除，远端卡片仍需手动清理');
+      result.message = `本地状态已清空（${cardList.length} 个卡片记录），但 SunPanel 远端卡片需要手动删除`;
+      console.log(`[SunPanelManager] ✅ 本地状态已清空: ${cardList.length} 个卡片记录`);
 
       return result;
     } catch (error) {

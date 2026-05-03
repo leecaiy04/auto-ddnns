@@ -188,16 +188,25 @@ export class Coordinator {
    * 运行Lucky同步
    */
   async runLuckySync() {
-    if (!this.modules.luckyManager || !this.modules.serviceRegistry) return;
+    console.log('[Coordinator] runLuckySync called');
+
+    if (!this.modules.luckyManager || !this.modules.serviceRegistry) {
+      console.log('[Coordinator] runLuckySync: missing modules, returning early');
+      return;
+    }
 
     // 获取IPv6映射
     const ipv6Map = this.modules.deviceMonitor?.getIPv6Map() || {};
+    console.log('[Coordinator] runLuckySync: got ipv6Map with', Object.keys(ipv6Map).length, 'entries');
 
     // 获取需要同步的服务
     const services = this.modules.serviceRegistry.getProxiedServices();
+    console.log('[Coordinator] runLuckySync: got', services.length, 'services');
 
     // 同步到Lucky
+    console.log('[Coordinator] runLuckySync: calling syncServicesToLucky');
     const result = await this.modules.luckyManager.syncServicesToLucky(services, ipv6Map);
+    console.log('[Coordinator] runLuckySync: syncServicesToLucky returned', result);
 
     return result;
   }

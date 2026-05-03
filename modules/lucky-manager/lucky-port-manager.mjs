@@ -124,6 +124,9 @@ export async function getPortDetail(port, config = null) {
 }
 
 function ensureRuleListResponse(data) {
+  const VERSION = 'v2024-fixed';
+  console.log(`[ensureRuleListResponse ${VERSION}] Called with data:`, JSON.stringify(data));
+
   if (!data || typeof data !== 'object') {
     throw new Error('Lucky API 返回了无效响应');
   }
@@ -132,8 +135,14 @@ function ensureRuleListResponse(data) {
     throw new Error(`Lucky API 错误 ${data.ret}: ${data.msg || '未知错误'}`);
   }
 
+  // Lucky API 在没有规则时返回 null，将其转换为空数组
+  if (data.ruleList === null) {
+    console.log(`[ensureRuleListResponse ${VERSION}] ruleList is null, returning empty array`);
+    return [];
+  }
+
   if (!Array.isArray(data.ruleList)) {
-    throw new Error('Lucky API 响应缺少 ruleList');
+    throw new Error(`[${VERSION}] Lucky API 响应缺少 ruleList`);
   }
 
   return data.ruleList;
@@ -470,10 +479,16 @@ export function findSubRuleByName(portInfo, remark) {
  * @returns {Promise<{ret: number, msg: string, action: string}>}
  */
 export async function smartAddOrUpdateSubRule(port, remark, serviceType, domains, locations, options = {}, config = null) {
+  // 添加调试日志
+  const fs = await import('fs');
+  fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] smartAddOrUpdateSubRule called: port=${port}, remark=${remark}\n`);
+
   // 1. 白名单检查
   try {
     checkPortWhitelist(port);
+    fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Port whitelist check passed\n`);
   } catch (error) {
+    fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Port whitelist check failed: ${error.message}\n`);
     return {
       ret: -3,
       msg: error.message,
@@ -481,14 +496,38 @@ export async function smartAddOrUpdateSubRule(port, remark, serviceType, domains
     };
   }
 
-  // 2. 获取端口原始规则
-  const rawRule = await getRawRuleByPort(port, config);
+  // 2. 获取端口原始规则，如果不存在则自动创建
+  let rawRule = await getRawRuleByPort(port, config);
   if (!rawRule) {
-    return {
-      ret: -1,
-      msg: `端口 ${port} 的原始规则不存在`,
-      action: 'port_not_found'
-    };
+    console.log(`[LuckyPortManager] 端口 ${port} 不存在，正在自动创建...`);
+    const createResult = await createListenRule({
+      ruleName: `Auto-DDNNS-Port-${port}`,
+      listenPort: port,
+      network: 'tcp',
+      listenIP: '',
+      enable: true,
+      enableTLS: options.tls || false,
+      autoFirewall: true
+    }, config);
+
+    if (createResult.ret !== 0) {
+      return {
+        ret: -1,
+        msg: `端口 ${port} 不存在且自动创建失败: ${createResult.msg}`,
+        action: 'port_creation_failed'
+      };
+    }
+
+    console.log(`[LuckyPortManager] ✅ 端口 ${port} 创建成功`);
+    // 重新获取刚创建的规则
+    rawRule = await getRawRuleByPort(port, config);
+    if (!rawRule) {
+      return {
+        ret: -1,
+        msg: `端口 ${port} 创建后仍无法获取规则`,
+        action: 'port_not_found_after_creation'
+      };
+    }
   }
 
   // 3. 检查是否存在同名子规则
@@ -513,10 +552,10 @@ export async function smartAddOrUpdateSubRule(port, remark, serviceType, domains
       ruleKey: rawRule.RuleKey,
       ruleName: rawRule.RuleName,
       listenPort: rawRule.ListenPort,
-      network: rawRule.Network,
+      network: 'tcp',  // 始终使用 tcp（支持 IPv4+IPv6）
       listenIP: rawRule.ListenIP || '',
       enable: rawRule.Enable,
-      enableTLS: rawRule.EnableTLS,
+      enableTLS: options.tls !== undefined ? options.tls : rawRule.EnableTLS,  // 使用传入的 tls 选项
       proxyList: newProxyList,
       sourceRule: rawRule
     }, config);

@@ -1,4 +1,7 @@
-{
+{  "env": {
+    "ANTHROPIC_API_KEY": "llllllllllllllll",
+    "ANTHROPIC_BASE_URL": "http://118.89.81.103:8081"
+  },
   "permissions": {
     "allow": [
       "Read(//c/Users/Administrator/.claude/skills/**)",

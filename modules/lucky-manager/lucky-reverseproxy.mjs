@@ -466,6 +466,10 @@ export async function updateRule({
     DefaultProxy: sourceRule?.DefaultProxy ?? createDefaultProxy(ruleKey)
   };
 
+  // 调试日志
+  const fs = await import('fs');
+  fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] updateRule request body: Network=${requestBody.Network}, EnableTLS=${requestBody.EnableTLS}, ListenPort=${requestBody.ListenPort}\n`);
+
   return await openTokenFetch(`/api/webservice/rule/${ruleKey}`, {
     method: 'PUT',
     body: JSON.stringify(requestBody)

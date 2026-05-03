@@ -5,6 +5,7 @@
  */
 
 import express from 'express';
+import { appendFileSync } from 'fs';
 
 const CONNECTIVITY_PROBE_TIMEOUT_MS = 2500;
 
@@ -45,6 +46,58 @@ async function probeUrl(url, timeoutMs) {
   }
 
   const startTime = Date.now();
+
+  // 对于 HTTPS 请求，使用原生 https 模块以支持 rejectUnauthorized
+  if (url.startsWith('https://')) {
+    const https = await import('https');
+    const urlObj = new URL(url);
+
+    return new Promise((resolve) => {
+      const options = {
+        method: 'HEAD',
+        hostname: urlObj.hostname,
+        port: urlObj.port || 443,
+        path: urlObj.pathname + urlObj.search,
+        timeout: timeoutMs,
+        rejectUnauthorized: false
+      };
+
+      const req = https.request(options, (res) => {
+        resolve({
+          url,
+          ok: res.statusCode < 500,
+          status: res.statusCode,
+          latency: Date.now() - startTime
+        });
+        res.resume();
+      });
+
+      req.on('error', (error) => {
+        resolve({
+          url,
+          ok: false,
+          status: null,
+          latency: Date.now() - startTime,
+          error: error.code === 'ETIMEDOUT' ? 'timeout' : error.message
+        });
+      });
+
+      req.on('timeout', () => {
+        req.destroy();
+        resolve({
+          url,
+          ok: false,
+          status: null,
+          latency: Date.now() - startTime,
+          error: 'timeout'
+        });
+      });
+
+      req.end();
+    });
+  }
+
+  // 对于 HTTP 请求，使用 fetch
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -158,13 +211,19 @@ function isSyncStepSuccessful(result) {
 }
 
 async function triggerServiceSync(modules, reason) {
+  const fs = await import('fs');
+  fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] triggerServiceSync called\n`);
+
   if (!modules.coordinator) {
     return null;
   }
 
   const results = {};
 
+  fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Calling runLuckySync\n`);
   results.lucky = await runSyncStep('lucky', () => modules.coordinator.runLuckySync());
+  fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] runLuckySync result: ${JSON.stringify(results.lucky)}\n`);
+
   results.sunpanel = await runSyncStep('sunpanel', () => modules.coordinator.runSunpanelSync());
 
   if (modules.cloudflareManager) {
@@ -437,10 +496,18 @@ export function serviceRoutes(modules) {
   /**
    * 批量清空 Lucky/SunPanel 远端数据
    * POST /api/services/purge-remote
+   * Body (可选): { sunpanelOnlyNames: ["card1", "card2"] } - 手动指定要删除的 SunPanel 卡片
    */
-  router.post('/purge-remote', async (_req, res) => {
+  router.post('/purge-remote', async (req, res) => {
     try {
       const results = { lucky: null, sunpanel: null };
+      const { sunpanelOnlyNames } = req.body || {};
+      const debug = {
+        timestamp: new Date().toISOString(),
+        receivedBody: req.body,
+        parsedOnlyNames: sunpanelOnlyNames,
+        sunpanelManagerExists: !!modules.sunpanelManager
+      };
 
       // 清空 Lucky 反向代理规则
       if (modules.luckyManager) {
@@ -457,12 +524,16 @@ export function serviceRoutes(modules) {
       // 清空 SunPanel 卡片（通过 SunPanelManager 的 purgeSunPanel 方法）
       if (modules.sunpanelManager) {
         try {
-          const sunpanelResult = await modules.sunpanelManager.purgeSunPanel();
+          debug.callingPurgeSunPanel = true;
+          debug.argumentPassed = sunpanelOnlyNames;
+          const sunpanelResult = await modules.sunpanelManager.purgeSunPanel(sunpanelOnlyNames);
+          debug.purgeSunPanelResult = sunpanelResult;
           results.sunpanel = sunpanelResult;
-          console.log('[Services] ✅ SunPanel 本地同步状态已清空:', sunpanelResult);
+          console.log('[Services] ✅ SunPanel 卡片已清空:', sunpanelResult);
         } catch (error) {
           console.error('[Services] ❌ 清空 SunPanel 失败:', error.message);
           results.sunpanel = { error: error.message };
+          debug.purgeSunPanelError = error.message;
         }
       }
 
@@ -474,7 +545,12 @@ export function serviceRoutes(modules) {
       // 记录日志
       modules.changelogManager?.append('purge_remote', 'all', '批量清空远端数据 (Lucky/SunPanel)', results);
 
-      res.json({ success: true, message: '远端数据已清空', results });
+      res.json({
+        success: true,
+        message: '远端数据已清空 [CODE_VERSION_2026-05-03-16:10]',
+        results,
+        debug
+      });
     } catch (error) {
       console.error('[Services] 清空远端数据失败:', error);
       res.status(500).json({ error: error.message });
