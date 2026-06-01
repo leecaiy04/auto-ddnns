@@ -659,7 +659,14 @@
                 const services = await apiCall('/api/services/list');
                 // 获取设备列表
                 const devicesData = await apiCall('/api/devices/list');
-                const devices = devicesData.devices || {};
+
+                // 将设备数组转换为对象，以 id 为键
+                const devices = {};
+                if (Array.isArray(devicesData)) {
+                    devicesData.forEach(d => {
+                        devices[d.id] = d;
+                    });
+                }
 
                 if (!services || services.length === 0) {
                     document.getElementById('ddnsStatusArea').innerHTML = '<div class="text-muted text-sm">暂无服务配置</div>';
