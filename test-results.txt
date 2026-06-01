@@ -1,0 +1,676 @@
+
+> auto-dnns@2.0.0 test
+> node --test --test-concurrency=1 test/*.test.mjs
+
+✔ getCfAuthConfig returns ready=true when token and zoneId are set (0.987974ms)
+✔ getCfAuthConfig returns ready=false when token is missing (0.142061ms)
+✔ getCfAuthConfig returns ready=false when zoneId is missing (0.126099ms)
+✔ getCfAuthConfig falls back to env vars when no config provided (0.243242ms)
+✔ verifyToken calls CF API with correct auth header (23.981305ms)
+✔ verifyToken returns valid=false for inactive token (0.526288ms)
+✔ listDnsRecords fetches records for zone (0.492924ms)
+✔ upsertDnsRecord creates a new record when none exists (0.873927ms)
+✔ upsertDnsRecord updates existing record when content differs (1.487036ms)
+✔ upsertDnsRecord returns unchanged when record matches (0.806402ms)
+✔ cloudflare API throws on missing token (0.856115ms)
+[CloudflareManager] ⚠️  Cloudflare 模块未启用或认证信息未设置，跳过同步
+[CloudflareManager] ⚠️  Cloudflare 模块未启用或认证信息未设置，跳过同步
+[CloudflareManager] 🔄 开始同步服务到 Cloudflare DNS...
+[CloudflareManager] ⏭️  无变化: A svc-v6.example.com
+[CloudflareManager] ✅ 更新 DNS: AAAA svc-v6.example.com → 240e::10
+[CloudflareManager] ✅ 创建 DNS: A svc-v4.example.com → 1.2.3.4
+[CloudflareManager] ⏭️  无变化: A svc-same.example.com
+[CloudflareManager] ❌ 同步失败: Service Fail - Cloudflare API Error (GET /zones/zone-1/dns_records?type=A&name=svc-fail.example.com&per_page=100): 1000: lookup failed
+[CloudflareManager] 🎉 同步完成: 成功 2, 更新 1, 无变化 1, 失败 1, 跳过 1
+[CloudflareManager] 🔄 开始同步服务到 Cloudflare DNS...
+[CloudflareManager] ❌ 获取公网 IPv4 失败: 无法获取公网 IPv4 地址
+[CloudflareManager] 将尝试使用 IPv6 记录代替
+[CloudflareManager] ✅ 创建 DNS: AAAA svc-v6-only.example.com → 240e::10
+[CloudflareManager] 🎉 同步完成: 成功 1, 更新 0, 无变化 0, 失败 0, 跳过 1
+[CloudflareManager] ⚠️  服务 No IP 无可用 IP，跳过
+[CloudflareManager] ✅ 删除 DNS: AAAA svc.example.com
+▶ cloudflare-manager
+  ✔ hasAuthConfig and getStatus reflect auth readiness (2.114223ms)
+  ✔ syncServicesToCF returns zero counts when module is disabled or auth is unavailable (1.34801ms)
+  ✔ syncServicesToCF handles A+AAAA, A-only, unchanged, failed and skipped services (27.938512ms)
+  ✔ syncServicesToCF uses AAAA-only records and skips services without any IP when public IPv4 is unavailable (2.893228ms)
+  ✔ deleteRecord removes local sync status after deleting remote record (2.125679ms)
+  ✔ _fetchPublicIPv4 falls back to httpbin when ipify fails (0.582675ms)
+  ✔ _fetchPublicIPv4 falls back to ip.sb after earlier providers fail (0.676764ms)
+✔ cloudflare-manager (38.893969ms)
+✔ loadConfigWithEnv lets env values override json config and returns server module shape (7.353525ms)
+✔ GET /api/dashboard/overview returns actual lucky proxy count when available (41.778344ms)
+[Dashboard] 获取 Lucky 实际代理数失败: 获取 Lucky 实际代理数超时
+✔ GET /api/dashboard/overview falls back quickly when lucky proxy lookup hangs (69.304742ms)
+[DeviceMonitor] 初始化设备监控模块...
+[DeviceMonitor] 路由器类型: ikuai
+[DeviceMonitor] 直接查询设备: 200, 201
+[DeviceMonitor] 设备监控模块初始化完成
+[DeviceMonitor] 路由器密码未设置
+[DeviceMonitor] 路由器密码未设置
+[DeviceMonitor] 初始化设备监控模块...
+[DeviceMonitor] 路由器类型: ssh
+[DeviceMonitor] 直接查询设备: 200, 201
+[DeviceMonitor] 设备监控模块初始化完成
+[DeviceMonitor] 开始检查设备IPv6地址...
+▶ device-monitor
+  ✔ init initializes devices state when absent (2.793271ms)
+  ✔ checkDevices returns failure when router password is missing (0.734382ms)
+  ✔ getters and status read device information from state (1.090275ms)
+  ✔ generatePortMappingTable builds v6 domains for ready devices (0.839486ms)
+[DeviceMonitor] 完成: 2 设备, 2 IPv6
+  ✔ checkDevices updates state from SSH-derived ARP and IPv6 maps (12.488349ms)
+✔ device-monitor (19.207264ms)
+✔ parseEnvContent parses comments, quotes and equals signs (1.495092ms)
+✔ loadEnvFile loads values from an explicit path (11.41378ms)
+✔ loadEnvFileAsync respects search paths without mutating process.env (3.864602ms)
+▶ lucky-api config resolution
+  ✔ getLuckyAuthConfig reports open token auth when token provided (1.180172ms)
+  ✔ getLuckyAuthConfig reports admin token auth (0.37327ms)
+  ✔ getLuckyAuthConfig normalizes trailing slashes (0.288381ms)
+✔ lucky-api config resolution (3.09367ms)
+[DEBUG] Lucky API Response: 200
+▶ lucky-api fetch with explicit config
+  ✔ openTokenFetch sends openToken as URL query param (7.997671ms)
+[DEBUG] Lucky API Response: 200
+  ✔ adminTokenFetch sends lucky-admin-token header (1.384328ms)
+✔ lucky-api fetch with explicit config (9.711724ms)
+[DEBUG] Lucky API Response: 200
+▶ lucky-reverseproxy with config
+  ✔ getReverseProxyRules passes config through to openTokenFetch (1.83437ms)
+[DEBUG] Lucky API Response: 200
+  ✔ getAllReverseProxies passes config through (1.739798ms)
+✔ lucky-reverseproxy with config (4.007295ms)
+[LuckyManager] 初始化Lucky管理模块...
+[LuckyManager] ✅ Lucky管理模块初始化完成
+[LuckyManager] 初始化Lucky管理模块...
+[LuckyManager] ✅ Lucky管理模块初始化完成
+[LuckyManager] 初始化Lucky管理模块...
+[LuckyManager] ✅ Lucky管理模块初始化完成
+▶ LuckyManager DDNS reconciliation
+  ✔ buildDesiredDDNSTasks generates correct task list from config (29.664555ms)
+  ✔ buildDesiredDDNSTasks returns empty when no devices configured (1.26235ms)
+  ✔ getLuckyDDNSConfig returns apiBase and openToken (0.452309ms)
+  ✔ getStatus includes DDNS fields (1.179961ms)
+  ✔ init initializes DDNS state fields (0.679215ms)
+  ✔ init preserves existing DDNS state (0.527524ms)
+✔ LuckyManager DDNS reconciliation (34.863795ms)
+▶ lucky-ddns API functions
+  ✔ buildRecord creates correct AAAA record (0.454232ms)
+  ✔ buildRecord creates A record with ipv4Addr placeholder (0.187212ms)
+  ✔ buildAliyunDNSCredentials reads from env (0.220576ms)
+  ✔ buildAliyunDNSCredentials accepts overrides (0.226726ms)
+✔ lucky-ddns API functions (1.345503ms)
+✔ LuckyManager defaults lucky apiBase to /666 endpoint (1.26566ms)
+✔ ensureManagedDomainCertificates skips when sslCertDomains is empty (0.469001ms)
+✔ ensureManagedDomainCertificates applies certs when target domain is not covered (1.055434ms)
+✔ ensureManagedDomainCertificates skips apply when wildcard cert already covers domain (0.356892ms)
+✔ ensureManagedDomainCertificates returns missing_credentials when env is incomplete (0.273877ms)
+[DEBUG] Lucky API Response: 200
+▶ lucky-port-manager
+  ✔ listAllPorts maps raw Lucky rules to normalized port info (8.861214ms)
+[DEBUG] Lucky API Response: 200
+[DEBUG] Lucky API Response: 200
+[DEBUG] Lucky API Response: 200
+  ✔ lookup helpers find ports and domains from normalized data (3.019264ms)
+[DEBUG] Lucky API Response: 200
+[DEBUG] Lucky API Response: 200
+[DEBUG] Lucky API Response: 200
+[DEBUG] Lucky API Response: 200
+  ✔ getAllProxies, searchProxies and getPortStats flatten and summarize rule data (3.581772ms)
+  ✔ findSubRuleByName returns matching subrule or null (0.47253ms)
+[DEBUG] Lucky API Response: 200
+  ✔ smartCreateOrAddProxy returns port_exists when target port already exists (1.826231ms)
+[DEBUG] Lucky API Response: 200
+[DEBUG] Lucky API Response: 200
+[DEBUG] Lucky API Response: 200
+  ✔ smartCreateOrAddProxy returns create_no_key when Lucky omits ruleKey (3.577899ms)
+[DEBUG] Lucky API Response: 200
+[DEBUG] Lucky API Response: 200
+[DEBUG] Lucky API Response: 200
+[DEBUG] Lucky API Response: 200
+[DEBUG] Lucky API Response: 200
+  ✔ smartCreateOrAddProxy creates a port then appends reverse proxy subrule (3.688664ms)
+[DEBUG] Lucky API Response: 200
+[ensureRuleListResponse v2024-fixed] Called with data: {"ret":0,"ruleList":[{"RuleKey":"rule-55000","RuleName":"Lucky HTTPS","Network":"tcp6","ListenIP":"","ListenPort":55000,"EnableTLS":true,"Enable":true,"DefaultProxy":{"Key":"default"},"ProxyList":[{"Enable":true,"Key":"sub-app","GroupKey":"","Remark":"App Service","WebServiceType":"reverseproxy","Domains":["app.leecaiy.shop"],"Locations":["http://192.168.9.10:3000"],"LocationInsecureSkipVerify":true,"EnableAccessLog":true,"CorazaWAFInstance":"","EasyLucky":true,"OtherParams":{"ProxyProtocolV2":true,"UseTargetHost":true,"WebAuth":false}},{"Enable":true,"Key":"sub-jump","GroupKey":"","Remark":"Jump Redirect","WebServiceType":"redirect","Domains":["go.leecaiy.shop"],"Locations":["https://docs.example.test"],"LocationInsecureSkipVerify":true,"EnableAccessLog":true,"CorazaWAFInstance":"","EasyLucky":true,"OtherParams":{"ProxyProtocolV2":true,"UseTargetHost":false,"WebAuth":false}}]},{"RuleKey":"rule-8080","RuleName":"Legacy Panel","Network":"tcp4","ListenIP":"","ListenPort":8080,"EnableTLS":false,"Enable":false,"DefaultProxy":{"Key":"default"},"ProxyList":[{"Enable":false,"Key":"sub-nas","GroupKey":"","Remark":"NAS","WebServiceType":"reverseproxy","Domains":["nas.leecaiy.shop"],"Locations":["http://192.168.9.200:5000"],"LocationInsecureSkipVerify":true,"EnableAccessLog":true,"CorazaWAFInstance":"","EasyLucky":true,"OtherParams":{"ProxyProtocolV2":true,"UseTargetHost":false,"WebAuth":false}},{"Enable":true,"Key":"sub-files","GroupKey":"","Remark":"Static Files","WebServiceType":"fileserver","Domains":["files.leecaiy.shop"],"Locations":["/mnt/files"],"LocationInsecureSkipVerify":true,"EnableAccessLog":true,"CorazaWAFInstance":"","EasyLucky":true,"OtherParams":{"ProxyProtocolV2":true,"UseTargetHost":false,"WebAuth":false}}]},{"RuleKey":"rule-50000","RuleName":"Lucky Admin","Network":"tcp","ListenIP":"","ListenPort":50000,"EnableTLS":false,"Enable":true,"DefaultProxy":{"Key":"default"},"ProxyList":[]}]}
+[LuckyPortManager] 端口 12345 不存在，正在自动创建...
+[DEBUG] Lucky API Response: 200
+[LuckyPortManager] ✅ 端口 12345 创建成功
+[DEBUG] Lucky API Response: 200
+[ensureRuleListResponse v2024-fixed] Called with data: {"ret":0,"ruleList":[{"RuleKey":"rule-55000","RuleName":"Lucky HTTPS","Network":"tcp6","ListenIP":"","ListenPort":55000,"EnableTLS":true,"Enable":true,"DefaultProxy":{"Key":"default"},"ProxyList":[{"Enable":true,"Key":"sub-app","GroupKey":"","Remark":"App Service","WebServiceType":"reverseproxy","Domains":["app.leecaiy.shop"],"Locations":["http://192.168.9.10:3000"],"LocationInsecureSkipVerify":true,"EnableAccessLog":true,"CorazaWAFInstance":"","EasyLucky":true,"OtherParams":{"ProxyProtocolV2":true,"UseTargetHost":true,"WebAuth":false}},{"Enable":true,"Key":"sub-jump","GroupKey":"","Remark":"Jump Redirect","WebServiceType":"redirect","Domains":["go.leecaiy.shop"],"Locations":["https://docs.example.test"],"LocationInsecureSkipVerify":true,"EnableAccessLog":true,"CorazaWAFInstance":"","EasyLucky":true,"OtherParams":{"ProxyProtocolV2":true,"UseTargetHost":false,"WebAuth":false}}]},{"RuleKey":"rule-8080","RuleName":"Legacy Panel","Network":"tcp4","ListenIP":"","ListenPort":8080,"EnableTLS":false,"Enable":false,"DefaultProxy":{"Key":"default"},"ProxyList":[{"Enable":false,"Key":"sub-nas","GroupKey":"","Remark":"NAS","WebServiceType":"reverseproxy","Domains":["nas.leecaiy.shop"],"Locations":["http://192.168.9.200:5000"],"LocationInsecureSkipVerify":true,"EnableAccessLog":true,"CorazaWAFInstance":"","EasyLucky":true,"OtherParams":{"ProxyProtocolV2":true,"UseTargetHost":false,"WebAuth":false}},{"Enable":true,"Key":"sub-files","GroupKey":"","Remark":"Static Files","WebServiceType":"fileserver","Domains":["files.leecaiy.shop"],"Locations":["/mnt/files"],"LocationInsecureSkipVerify":true,"EnableAccessLog":true,"CorazaWAFInstance":"","EasyLucky":true,"OtherParams":{"ProxyProtocolV2":true,"UseTargetHost":false,"WebAuth":false}}]},{"RuleKey":"rule-50000","RuleName":"Lucky Admin","Network":"tcp","ListenIP":"","ListenPort":50000,"EnableTLS":false,"Enable":true,"DefaultProxy":{"Key":"default"},"ProxyList":[]},{"RuleKey":"rule-100","RuleName":"Auto-DDNNS-Port-12345","Network":"tcp","ListenIP":"","ListenPort":12345,"EnableTLS":false,"Enable":true,"DefaultProxy":{"Key":"default","WebServiceType":"reverseproxy","CorazaWAFInstance":"","Locations":[],"LocationInsecureSkipVerify":true,"EnableAccessLog":true,"LogLevel":4,"LogOutputToConsole":false,"AccessLogMaxNum":256,"WebListShowLastLogMaxCount":10,"RequestInfoLogFormat":"[#{clientIP}][#{remoteIP}]#{tab}[#{method}][#{host}#{url}]","ForwardedByClientIP":false,"TrustedCIDRsStrList":[],"UseRuleGlobalAuthSettings":false,"UseTargetHost":false,"DisableLongConnection":false,"CustomCrossDomain":"","CustomCrossMethods":"","RemoteIPHeaders":["X-Forwarded-For","X-Real-IP"],"AddRemoteIPToHeader":false,"AddRemoteIPHeaderKey":"","EnableCrossDomain":false,"EnableBasicAuth":false,"BasicAuthRegConf":"","BasicAuthUser":"","BasicAuthPasswd":"","BasicAuthUserList":"","BasicAuthMaxLoginErrorCount":0,"SafeIPMode":"blacklist","SafeUserAgentMode":"blacklist","UserAgentfilter":[""],"CustomRobotTxt":false,"RobotTxt":"User-agent:  *\nDisallow:  /","AddProtoToHeader":false,"ProtoHeaderKey":"","EasyLucky":false,"FileServerShowDir":true,"CacheBodyOnlyPath":"","FileServerIndexNames":"index.html\n","FileServerHideFiles":"","FileServerForbiddenPaths":"","FileServerMountList":[],"fileServerCollapsectiveName":0,"NginxConf":"","CustomOutputText":"","DisableHTTP3":false,"MaxContinuous404Count":0,"MaxCorazaInterceptionCount":0,"HttpClientNetwork":"tcp","DisableKeepAlives":true,"HttpClientTimeout":10,"ProxyType":"","ProxyAddr":"","ProxyUser":"","ProxyPassword":"","AutoProxyLocation":false,"AutoProxyLocationWithoutSameHost":false,"CacheEnabled":false,"CachePath":"","CacheKey":"","CacheLimit":0,"CacheBodyMinLimit":0,"CacheBodyMaxLimit":0,"CacheOnlyKeyReg":"","CacheValidityPeriod":0,"DealCacheBeforeReverseProxy":true,"GRPCSecureConnection":false,"CertificateSyncToken":"","OtherParams":{"ProxyProtocolV2":true,"SpeedTestFrontSource":"","OauthType":"github","OauthClientID":"","OauthClientSecret":"","OauthClientKey":"","OauthRedirectURI":"","OauthServer":"","HttpClientProxyType":"","HttpClientProxyAddr":"","HttpClientProxyUser":"","HttpClientProxyPassword":"","WebAuth":false,"AllowAllThirdAuthUsers":false,"AllowThirdUserList":[],"AllowThirdUserSkipTwoFA":false}},"ProxyList":[],"DiaglogShowMode":"simple","CorazaWAFInstance":"","AutoOptionsFirewall":true,"TLSMinVersion":2,"MaxHeaderKBytes":32,"IPFilterRule":"disable","MaxContinuous404Count":0,"MaxCorazaInterceptionCount":0,"SendRateLimitEnabled":false,"SendRateLimit":0,"ReceRateLimitEnabled":false,"ReceRateLimit":0,"SingleConnSendRateLimitEnabled":false,"SingleConnSendRateLimit":0,"SingleConnReceRateLimitEnabled":false,"SingleConnReceRateLimit":0,"GlobalAllowAllThirdAuthUsers":false,"GlobalThirdAuthLoginUserList":[],"GlobalAllowThirdUserSkipTwoFA":false,"SingleIPSendRateLimitEnabled":false,"SingleIPSendRateLimit":0,"SingleIPReceRateLimitEnabled":false,"SingleIPReceRateLimit":0,"Http3":false,"GlobalBasicAuthUserList":"","ECH":false,"ECHDomain":"","ECDHPrivateKey":"","ECHConfigList":""}]}
+[DEBUG] Lucky API Response: 200
+[DEBUG] Lucky API Response: 200
+  ✖ smartAddOrUpdateSubRule returns port_not_found when Lucky rule is missing (4.799681ms)
+[DEBUG] Lucky API Response: 200
+[ensureRuleListResponse v2024-fixed] Called with data: {"ret":0,"ruleList":[{"RuleKey":"rule-55000","RuleName":"Lucky HTTPS","Network":"tcp6","ListenIP":"","ListenPort":55000,"EnableTLS":true,"Enable":true,"DefaultProxy":{"Key":"default"},"ProxyList":[{"Enable":true,"Key":"sub-app","GroupKey":"","Remark":"App Service","WebServiceType":"reverseproxy","Domains":["app.leecaiy.shop"],"Locations":["http://192.168.9.10:3000"],"LocationInsecureSkipVerify":true,"EnableAccessLog":true,"CorazaWAFInstance":"","EasyLucky":true,"OtherParams":{"ProxyProtocolV2":true,"UseTargetHost":true,"WebAuth":false}},{"Enable":true,"Key":"sub-jump","GroupKey":"","Remark":"Jump Redirect","WebServiceType":"redirect","Domains":["go.leecaiy.shop"],"Locations":["https://docs.example.test"],"LocationInsecureSkipVerify":true,"EnableAccessLog":true,"CorazaWAFInstance":"","EasyLucky":true,"OtherParams":{"ProxyProtocolV2":true,"UseTargetHost":false,"WebAuth":false}}]},{"RuleKey":"rule-8080","RuleName":"Legacy Panel","Network":"tcp4","ListenIP":"","ListenPort":8080,"EnableTLS":false,"Enable":false,"DefaultProxy":{"Key":"default"},"ProxyList":[{"Enable":false,"Key":"sub-nas","GroupKey":"","Remark":"NAS","WebServiceType":"reverseproxy","Domains":["nas.leecaiy.shop"],"Locations":["http://192.168.9.200:5000"],"LocationInsecureSkipVerify":true,"EnableAccessLog":true,"CorazaWAFInstance":"","EasyLucky":true,"OtherParams":{"ProxyProtocolV2":true,"UseTargetHost":false,"WebAuth":false}},{"Enable":true,"Key":"sub-files","GroupKey":"","Remark":"Static Files","WebServiceType":"fileserver","Domains":["files.leecaiy.shop"],"Locations":["/mnt/files"],"LocationInsecureSkipVerify":true,"EnableAccessLog":true,"CorazaWAFInstance":"","EasyLucky":true,"OtherParams":{"ProxyProtocolV2":true,"UseTargetHost":false,"WebAuth":false}}]},{"RuleKey":"rule-50000","RuleName":"Lucky Admin","Network":"tcp","ListenIP":"","ListenPort":50000,"EnableTLS":false,"Enable":true,"DefaultProxy":{"Key":"default"},"ProxyList":[]}]}
+[DEBUG] Lucky API Response: 200
+[DEBUG] Lucky API Response: 200
+  ✔ smartAddOrUpdateSubRule adds a new subrule when remark does not exist (3.436277ms)
+[DEBUG] Lucky API Response: 200
+[ensureRuleListResponse v2024-fixed] Called with data: {"ret":0,"ruleList":[{"RuleKey":"rule-55000","RuleName":"Lucky HTTPS","Network":"tcp6","ListenIP":"","ListenPort":55000,"EnableTLS":true,"Enable":true,"DefaultProxy":{"Key":"default"},"ProxyList":[{"Enable":true,"Key":"sub-app","GroupKey":"","Remark":"App Service","WebServiceType":"reverseproxy","Domains":["app.leecaiy.shop"],"Locations":["http://192.168.9.10:3000"],"LocationInsecureSkipVerify":true,"EnableAccessLog":true,"CorazaWAFInstance":"","EasyLucky":true,"OtherParams":{"ProxyProtocolV2":true,"UseTargetHost":true,"WebAuth":false}},{"Enable":true,"Key":"sub-jump","GroupKey":"","Remark":"Jump Redirect","WebServiceType":"redirect","Domains":["go.leecaiy.shop"],"Locations":["https://docs.example.test"],"LocationInsecureSkipVerify":true,"EnableAccessLog":true,"CorazaWAFInstance":"","EasyLucky":true,"OtherParams":{"ProxyProtocolV2":true,"UseTargetHost":false,"WebAuth":false}}]},{"RuleKey":"rule-8080","RuleName":"Legacy Panel","Network":"tcp4","ListenIP":"","ListenPort":8080,"EnableTLS":false,"Enable":false,"DefaultProxy":{"Key":"default"},"ProxyList":[{"Enable":false,"Key":"sub-nas","GroupKey":"","Remark":"NAS","WebServiceType":"reverseproxy","Domains":["nas.leecaiy.shop"],"Locations":["http://192.168.9.200:5000"],"LocationInsecureSkipVerify":true,"EnableAccessLog":true,"CorazaWAFInstance":"","EasyLucky":true,"OtherParams":{"ProxyProtocolV2":true,"UseTargetHost":false,"WebAuth":false}},{"Enable":true,"Key":"sub-files","GroupKey":"","Remark":"Static Files","WebServiceType":"fileserver","Domains":["files.leecaiy.shop"],"Locations":["/mnt/files"],"LocationInsecureSkipVerify":true,"EnableAccessLog":true,"CorazaWAFInstance":"","EasyLucky":true,"OtherParams":{"ProxyProtocolV2":true,"UseTargetHost":false,"WebAuth":false}}]},{"RuleKey":"rule-50000","RuleName":"Lucky Admin","Network":"tcp","ListenIP":"","ListenPort":50000,"EnableTLS":false,"Enable":true,"DefaultProxy":{"Key":"default"},"ProxyList":[]}]}
+[DEBUG] Lucky API Response: 200
+  ✔ smartAddOrUpdateSubRule updates an existing subrule in place (2.188601ms)
+✖ lucky-port-manager (37.042501ms)
+[DEBUG] Lucky API Response: 200
+▶ lucky-ssl
+  ✔ getSSLInfo returns matching certificate from SSL list (7.366693ms)
+[DEBUG] Lucky API Response: 200
+  ✔ getSSLInfo throws when Lucky API returns error (2.415408ms)
+[DEBUG] Lucky API Response: 200
+  ✔ getSSLInfo throws when certificate does not exist (1.643847ms)
+[DEBUG] Lucky API Response: 200
+  ✔ applyACMECert sends default ACME fields and DNS credentials (1.93921ms)
+[DEBUG] Lucky API Response: 200
+[DEBUG] Lucky API Response: 200
+  ✔ renewCert and deleteCert send Key payloads to Lucky endpoints (2.366802ms)
+[DEBUG] Lucky API Response: 200
+[DEBUG] Lucky API Response: 200
+  ✔ expiry helpers compute days and expiring-soon flags (2.157138ms)
+[DEBUG] Lucky API Response: 200
+  ✔ getCertExpiryInfo throws when certificate expiry data is missing (1.326398ms)
+[DEBUG] Lucky API Response: 200
+  ✔ listExpiringSoonCerts filters by threshold and skips incomplete certs (1.649707ms)
+✔ lucky-ssl (22.749642ms)
+✔ lucky-api falls back to LUCKY_OPEN_TOKEN (25.746817ms)
+✔ sync-lucky-to-sunpanel can be imported without env loader errors (2.244606ms)
+[ServiceRegistry] ✅ 服务清单管理模块初始化完成，共加载 1 个服务
+[ServiceRegistry] ✅ 服务清单管理模块初始化完成，共加载 1 个服务
+[ServiceRegistry] ✅ 服务清单管理模块初始化完成，共加载 1 个服务
+[ServiceRegistry] ✅ 服务清单管理模块初始化完成，共加载 1 个服务
+[ServiceRegistry] ✅ 服务清单管理模块初始化完成，共加载 1 个服务
+[ServiceRegistry] ✅ 服务清单管理模块初始化完成，共加载 1 个服务
+[ServiceRegistry] ✅ 服务清单已保存
+[ServiceRegistry] ✅ 快速添加服务: My App (my-app)
+[ServiceRegistry] ✅ 服务清单管理模块初始化完成，共加载 1 个服务
+[ServiceRegistry] ✅ 服务清单已保存
+[ServiceRegistry] ✅ 服务已添加: Jellyfin (jellyfin)
+[ServiceRegistry] ✅ 服务清单管理模块初始化完成，共加载 1 个服务
+[ServiceRegistry] ✅ 服务清单已保存
+[ServiceRegistry] ✅ 服务已更新: Existing App (existing)
+[ServiceRegistry] ✅ 服务清单管理模块初始化完成，共加载 1 个服务
+▶ service-registry
+  ✔ init loads proxy defaults, devices and registry, then initializes service state (2.996352ms)
+  ✔ getAllowedDeviceIds prefers config, then state, then devices.json (0.983737ms)
+  ✔ validateService reports missing fields, invalid port, invalid device and unmanaged domain (0.716582ms)
+  ✔ quickAddFromScan derives proxy config, icon and LAN URL (10.393386ms)
+  ✔ addService fills lucky, sunpanel and advanced defaults (1.91918ms)
+  ✔ updateService merges lucky and sunpanel fields while normalizing advanced config (0.713691ms)
+  ✔ prepareLuckyProxyConfig, prepareSunPanelCardConfig and buildIpv6DirectUrl derive expected outputs (0.5544ms)
+✔ service-registry (19.673968ms)
+✔ POST /api/services/add persists service and returns warning payload when lucky sync fails (55.662963ms)
+✔ POST /api/services/quick-add persists service and returns warning payload when lucky sync fails (11.672815ms)
+✔ POST /api/services/quick-add uses id as name when display name is empty (8.01028ms)
+✖ GET /api/services/connectivity probes ipv4 and ipv6 concurrently and returns per-endpoint status (220.280283ms)
+✔ POST /api/services/quick-add forwards optional ipv6 payload to registry (7.279223ms)
+✔ GET /api/services/connectivity aborts hung probes and reports timeout errors (65.544137ms)
+✔ GET /api/services/connectivity falls back to registry device ipv6 when monitor map is empty (205.820037ms)
+✔ GET /api/services/connectivity prefers ddns domain channel when available (207.758762ms)
+✔ PUT /api/services/proxy-defaults runs ddns, sync and certificate ensure with warning on partial failure (6.341243ms)
+▶ ssh-client
+  ✔ executeSSHCommand rejects immediately when password is missing (2.013074ms)
+  ✔ executeSSHCommand returns filtered command output from shell session (7.333224ms)
+  ✔ testSSHConnection returns true on successful command execution (4.974486ms)
+  ✔ testSSHConnection returns false when SSH connection fails (2.630204ms)
+  ✔ getIPv6Neighbors parses IPv6 rows, normalizes MACs and filters invalid entries (4.291402ms)
+  ✔ getARPTable parses LAN entries and filters zero MAC rows (5.268323ms)
+  ✔ buildDeviceAddressMap joins ARP and IPv6 tables by normalized MAC (6.905967ms)
+✔ ssh-client (35.033795ms)
+[SunPanel] Token from env: tok...
+[SunPanel] Token from env: EMPTY
+[SunPanel] Token from env: dqc78q52pc...
+[SunPanel] Token from env: instance-t...
+[SunPanel] API Call: {
+  url: 'http://sunpanel-instance.local/openapi/v1/itemGroup/getList',
+  endpoint: '/itemGroup/getList',
+  hasToken: true,
+  tokenPreview: 'instance-t...'
+}
+[SunPanel] API Response: { endpoint: '/itemGroup/getList', code: 0, msg: 'success' }
+[SunPanel] Token from env: t...
+[SunPanel] API Call: {
+  url: 'http://sp:20001/openapi/v1/itemGroup/create',
+  endpoint: '/itemGroup/create',
+  hasToken: true,
+  tokenPreview: 't...'
+}
+[SunPanel] API Response: { endpoint: '/itemGroup/create', code: 0, msg: 'success' }
+[SunPanel] Token from env: t...
+[SunPanel] API Call: {
+  url: 'http://sp:20001/openapi/v1/item/getInfoByOnlyName',
+  endpoint: '/item/getInfoByOnlyName',
+  hasToken: true,
+  tokenPreview: 't...'
+}
+[SunPanel] API Response: { endpoint: '/item/getInfoByOnlyName', code: 0, msg: 'success' }
+[SunPanel] Token from env: t...
+[SunPanel] API Call: {
+  url: 'http://sp:20001/openapi/v1/item/update',
+  endpoint: '/item/update',
+  hasToken: true,
+  tokenPreview: 't...'
+}
+[SunPanel] API Response: { endpoint: '/item/update', code: 0, msg: 'success' }
+[SunPanel] Token from env: t...
+[SunPanel] API Call: {
+  url: 'http://sp:20001/openapi/v1/item/create',
+  endpoint: '/item/create',
+  hasToken: true,
+  tokenPreview: 't...'
+}
+[SunPanel] API Response: { endpoint: '/item/create', code: 0, msg: 'success' }
+▶ sunpanel-api
+  ✔ getSunPanelAuthConfig reports auth status correctly (2.445682ms)
+  ✔ normalizes trailing slashes from apiBase via getSunPanelAuthConfig (0.531002ms)
+  ✔ passes explicit config into API calls (1.309933ms)
+  ✔ createGroup passes config to callApi (0.841687ms)
+  ✔ getItemInfo passes config to callApi (0.760026ms)
+  ✔ updateItem passes config to callApi (0.970657ms)
+  ✔ createItem passes config to callApi (1.625818ms)
+✔ sunpanel-api (9.726639ms)
+[SunPanelManager] config initialized: {
+  apiBase: 'http://sunpanel.local/openapi/v1',
+  apiToken: 'sun-token...'
+}
+[SunPanelManager] config initialized: {
+  apiBase: 'http://sunpanel.local/openapi/v1',
+  apiToken: 'sun-token...'
+}
+[SunPanelManager] config initialized: {
+  apiBase: 'http://sunpanel.local/openapi/v1',
+  apiToken: 'sun-token...'
+}
+[SunPanelManager] config initialized: {
+  apiBase: 'http://sunpanel.local/openapi/v1',
+  apiToken: 'sun-token...'
+}
+[SunPanelManager] config initialized: {
+  apiBase: 'http://sunpanel.local/openapi/v1',
+  apiToken: 'sun-token...'
+}
+[SunPanelManager] 初始化SunPanel管理模块...
+[SunPanelManager] ✅ SunPanel管理模块初始化完成
+[SunPanelManager] 🔄 开始同步Lucky到SunPanel实例...
+[SunPanelManager] ➡️ 正在同步到 SunPanel 实例 1 (http://sunpanel.local/openapi/v1)
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/itemGroup/getList',
+  endpoint: '/itemGroup/getList',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanel] API Response: { endpoint: '/itemGroup/getList', code: 0, msg: 'success' }
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/itemGroup/create',
+  endpoint: '/itemGroup/create',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanel] API Response: { endpoint: '/itemGroup/create', code: 0, msg: 'success' }
+[SunPanelManager] ✅ [实例 1] 创建分组: NAS
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/itemGroup/create',
+  endpoint: '/itemGroup/create',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanel] API Response: { endpoint: '/itemGroup/create', code: 0, msg: 'success' }
+[SunPanelManager] ✅ [实例 1] 创建分组: 服务器
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/itemGroup/create',
+  endpoint: '/itemGroup/create',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanel] API Response: { endpoint: '/itemGroup/create', code: 0, msg: 'success' }
+[SunPanelManager] ✅ [实例 1] 创建分组: 其他
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/item/getInfoByOnlyName',
+  endpoint: '/item/getInfoByOnlyName',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanel] API Response: {
+  endpoint: '/item/getInfoByOnlyName',
+  code: 1203,
+  msg: 'item not found'
+}
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/item/create',
+  endpoint: '/item/create',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanel] API Response: { endpoint: '/item/create', code: 0, msg: 'success' }
+[SunPanelManager] ✅ [实例 1] 创建卡片: App Service
+[SunPanelManager] 🎉 所有 SunPanel 实例同步完成.
+[SunPanelManager] config initialized: {
+  apiBase: 'http://sunpanel.local/openapi/v1',
+  apiToken: 'sun-token...'
+}
+[SunPanelManager] 初始化SunPanel管理模块...
+[SunPanelManager] ✅ SunPanel管理模块初始化完成
+[SunPanelManager] 🔄 开始同步Lucky到SunPanel实例...
+[SunPanelManager] ➡️ 正在同步到 SunPanel 实例 1 (http://sunpanel.local/openapi/v1)
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/itemGroup/getList',
+  endpoint: '/itemGroup/getList',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanel] API Response: { endpoint: '/itemGroup/getList', code: 0, msg: 'success' }
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/item/getInfoByOnlyName',
+  endpoint: '/item/getInfoByOnlyName',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanelManager] ❌ [实例 1] 同步失败: app.example.com - Unexpected request: POST http://sunpanel.local/openapi/v1/item/getInfoByOnlyName
+[SunPanelManager] 🎉 所有 SunPanel 实例同步完成.
+[SunPanelManager] config initialized: {
+  apiBase: 'http://sunpanel.local/openapi/v1',
+  apiToken: 'sun-token...'
+}
+[SunPanelManager] 初始化SunPanel管理模块...
+[SunPanelManager] ✅ SunPanel管理模块初始化完成
+[SunPanelManager] 🔄 开始同步Lucky到SunPanel实例...
+[SunPanelManager] ➡️ 正在同步到 SunPanel 实例 1 (http://sunpanel.local/openapi/v1)
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/itemGroup/getList',
+  endpoint: '/itemGroup/getList',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanel] API Response: { endpoint: '/itemGroup/getList', code: 0, msg: 'success' }
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/item/getInfoByOnlyName',
+  endpoint: '/item/getInfoByOnlyName',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanel] API Response: { endpoint: '/item/getInfoByOnlyName', code: 0, msg: 'success' }
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/item/update',
+  endpoint: '/item/update',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanel] API Response: { endpoint: '/item/update', code: 0, msg: 'success' }
+[SunPanelManager] ✅ [实例 1] 更新卡片: App Service
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/item/delete',
+  endpoint: '/item/delete',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanel] API Response: { endpoint: '/item/delete', code: 0, msg: 'success' }
+[SunPanelManager] 🗑️ [实例 1] 已删除不存在的卡片: stale.example.com
+[SunPanelManager] 🎉 所有 SunPanel 实例同步完成.
+[SunPanelManager] config initialized: {
+  apiBase: 'http://sunpanel.local/openapi/v1',
+  apiToken: 'sun-token...'
+}
+[SunPanelManager] 初始化SunPanel管理模块...
+[SunPanelManager] ✅ SunPanel管理模块初始化完成
+[SunPanelManager] 🔄 开始同步Lucky到SunPanel实例...
+[SunPanelManager] ➡️ 正在同步到 SunPanel 实例 1 (http://sunpanel.local/openapi/v1)
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/itemGroup/getList',
+  endpoint: '/itemGroup/getList',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanel] API Response: { endpoint: '/itemGroup/getList', code: 0, msg: 'success' }
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/item/getInfoByOnlyName',
+  endpoint: '/item/getInfoByOnlyName',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanel] API Response: {
+  endpoint: '/item/getInfoByOnlyName',
+  code: 1203,
+  msg: 'item not found'
+}
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/item/create',
+  endpoint: '/item/create',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanel] API Response: {
+  endpoint: '/item/create',
+  code: 5001,
+  msg: 'failed to save icon file'
+}
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/item/create',
+  endpoint: '/item/create',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanel] API Response: {
+  endpoint: '/item/create',
+  code: 5001,
+  msg: 'failed to save icon file'
+}
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/item/create',
+  endpoint: '/item/create',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanel] API Response: { endpoint: '/item/create', code: 0, msg: 'success' }
+[SunPanelManager] ✅ [实例 1] 创建卡片: Standalone Proxy
+[SunPanelManager] 🎉 所有 SunPanel 实例同步完成.
+[SunPanelManager] config initialized: {
+  apiBase: 'http://sunpanel.local/openapi/v1',
+  apiToken: 'sun-token...'
+}
+[SunPanelManager] purgeSunPanel 调用参数: { manualOnlyNames: null, type: 'object', isArray: false }
+[SunPanelManager] 使用本地同步状态，共 2 个卡片
+[SunPanelManager] ➡️ 正在清理 SunPanel 实例 1 (http://sunpanel.local/openapi/v1)
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/item/delete',
+  endpoint: '/item/delete',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+▶ sunpanel-manager
+  ✔ generateOnlyName and buildGroupOnlyName normalize identifiers (3.34038ms)
+  ✔ buildPublicUrl omits default ports and keeps non-default ports (0.525063ms)
+  ✔ buildLanUrl replaces loopback and preserves path, query and hash (0.921274ms)
+  ✔ calculateSunPanelHash is stable for same input and changes with config (0.912921ms)
+  ✖ syncToSunPanel creates default groups and creates a card when item is missing (41.162493ms)
+  ✖ syncToSunPanel skips update when hash is unchanged (2.092837ms)
+  ✖ syncToSunPanel updates an existing card and removes stale cards (3.912607ms)
+  ✔ syncToSunPanel retries create with icon fallbacks when SunPanel cannot save icon files (3.008647ms)
+[SunPanelManager] ❌ [实例 1] 删除卡片失败: svc-app - The operation was aborted due to timeout
+[SunPanel] Token from env: sun-token...
+[SunPanel] API Call: {
+  url: 'http://sunpanel.local/openapi/v1/item/delete',
+  endpoint: '/item/delete',
+  hasToken: true,
+  tokenPreview: 'sun-token...'
+}
+[SunPanelManager] ❌ [实例 1] 删除卡片失败: svc-nas - The operation was aborted due to timeout
+[SunPanelManager] ✅ 清理完成: 删除 0 个，失败 2 个
+  ✖ purgeSunPanel clears local sync state and preserves card summary in result (10002.186993ms)
+✖ sunpanel-manager (10059.65773ms)
+ℹ tests 110
+ℹ suites 13
+ℹ pass 104
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18170.43176
+
+✖ failing tests:
+
+test at test/lucky-port-manager.test.mjs:469:3
+✖ smartAddOrUpdateSubRule returns port_not_found when Lucky rule is missing (4.799681ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   action: 'added',
+  +   data: {
+  +     port: 12345
+  +   },
+  +   msg: '✅ 子规则 "Ghost Rule" 已添加',
+  +   ret: 0
+  -   action: 'port_not_found',
+  -   msg: '端口 12345 的原始规则不存在',
+  -   ret: -1
+    }
+  
+      at TestContext.<anonymous> (file:///vol1/1000/code/auto-ddnns/test/lucky-port-manager.test.mjs:480:12)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { ret: 0, msg: '✅ 子规则 "Ghost Rule" 已添加', action: 'added', data: { port: 12345 } },
+    expected: { ret: -1, msg: '端口 12345 的原始规则不存在', action: 'port_not_found' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/services-routes.test.mjs:175:1
+✖ GET /api/services/connectivity probes ipv4 and ipv6 concurrently and returns per-endpoint status (220.280283ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 2
+  
+      at file:///vol1/1000/code/auto-ddnns/test/services-routes.test.mjs:211:14
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async withMockedFetch (file:///vol1/1000/code/auto-ddnns/test/services-routes.test.mjs:34:12)
+      at async TestContext.<anonymous> (file:///vol1/1000/code/auto-ddnns/test/services-routes.test.mjs:199:5)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/sunpanel-manager.test.mjs:145:3
+✖ syncToSunPanel creates default groups and creates a card when item is missing (41.162493ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   description: 'App Service',
+  +   iconUrl: 'https://app.example.com/favicon.ico',
+  +   isSaveIcon: true,
+  +   itemGroupID: 3,
+  +   itemGroupOnlyName: '其他',
+  +   lanUrl: 'http://192.168.9.2:3000',
+  +   onlyName: 'app-example-com',
+  -   description: 'Main app',
+  -   iconUrl: 'https://app.example.com/icon.png',
+  -   isSaveIcon: false,
+  -   itemGroupID: 2,
+  -   itemGroupOnlyName: '服务器',
+  -   lanUrl: 'http://192.168.9.10:3000',
+  -   onlyName: 'svc-app',
+      title: 'App Service',
+      url: 'https://app.example.com:55000'
+    }
+  
+      at TestContext.<anonymous> (file:///vol1/1000/code/auto-ddnns/test/sunpanel-manager.test.mjs:219:12)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { title: 'App Service', url: 'https://app.example.com:55000', onlyName: 'app-example-com', iconUrl: 'https://app.example.com/favicon.ico', lanUrl: 'http://192.168.9.2:3000', description: 'App Service', itemGroupID: 3, itemGroupOnlyName: '其他', isSaveIcon: true },
+    expected: { title: 'App Service', url: 'https://app.example.com:55000', onlyName: 'svc-app', iconUrl: 'https://app.example.com/icon.png', lanUrl: 'http://192.168.9.10:3000', description: 'Main app', itemGroupID: 2, itemGroupOnlyName: '服务器', isSaveIcon: false },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/sunpanel-manager.test.mjs:239:3
+✖ syncToSunPanel skips update when hash is unchanged (2.092837ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   details: [],
+  +   failed: 1,
+  -   details: [
+  -     {
+  -       action: 'skipped',
+  -       domain: 'app.example.com',
+  -       instance: 0,
+  -       reason: 'hash_unchanged'
+  -     }
+  -   ],
+  -   failed: 0,
+      success: 0,
+      updated: 0
+    }
+  
+      at TestContext.<anonymous> (file:///vol1/1000/code/auto-ddnns/test/sunpanel-manager.test.mjs:310:12)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { success: 0, failed: 1, updated: 0, details: [] },
+    expected: { success: 0, failed: 0, updated: 0, details: [ [Object] ] },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/sunpanel-manager.test.mjs:322:3
+✖ syncToSunPanel updates an existing card and removes stale cards (3.912607ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'app-example-com'
+  - 'svc-app'
+  
+      at TestContext.<anonymous> (file:///vol1/1000/code/auto-ddnns/test/sunpanel-manager.test.mjs:401:12)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'app-example-com',
+    expected: 'svc-app',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/sunpanel-manager.test.mjs:480:3
+✖ purgeSunPanel clears local sync state and preserves card summary in result (10002.186993ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  undefined !== 2
+  
+      at TestContext.<anonymous> (file:///vol1/1000/code/auto-ddnns/test/sunpanel-manager.test.mjs:506:12)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

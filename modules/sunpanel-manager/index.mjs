@@ -212,6 +212,25 @@ export class SunPanelManager {
   }
 
   /**
+   * 根据域名查找服务
+   * @param {Array} services - 服务列表
+   * @param {string} domain - 域名
+   * @returns {object|null} 匹配的服务对象或 null
+   */
+  getServiceByDomain(services, domain) {
+    if (!services || !Array.isArray(services)) {
+      return null;
+    }
+
+    return services.find(service => {
+      if (!service.enableProxy || !service.proxyDomain) {
+        return false;
+      }
+      return service.proxyDomain === domain;
+    }) || null;
+  }
+
+  /**
    * 智能推断服务分组
    * @param {object} service - 服务对象
    * @param {string} domain - 域名

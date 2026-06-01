@@ -4,7 +4,7 @@ import { Client } from 'ssh2';
 
 import { DeviceMonitor } from '../modules/device-monitor/index.mjs';
 
-const ENV_KEYS = ['ROUTER_PASSWORD', 'ROUTER_HOST', 'ROUTER_USERNAME'];
+const ENV_KEYS = ['ROUTER_PASSWORD', 'ROUTER_HOST', 'ROUTER_USERNAME', 'ROUTER_TYPE'];
 
 function snapshotEnv(keys) {
   return Object.fromEntries(keys.map((key) => [key, process.env[key]]));
@@ -265,6 +265,7 @@ describe('device-monitor', () => {
 
   it('checkDevices updates state from SSH-derived ARP and IPv6 maps', async () => {
     process.env.ROUTER_PASSWORD = 'secret';
+    process.env.ROUTER_TYPE = 'ssh';
     const restoreSSH = installSSHMock({
       arpOutput: [
         '192.168.9.10 dev br0 lladdr aa:bb:cc:dd:ee:10 REACHABLE',

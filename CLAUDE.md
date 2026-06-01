@@ -127,3 +127,29 @@ central-hub/                   # 编排层（Express 入口）
 ## 测试
 
 使用 Node.js 内置的 `node:test` 测试运行器。测试文件位于 `test/`。
+
+## Skill
+
+项目包含一个 Claude Code skill，用于管理和操作 Auto-DDNNS 系统。
+
+### 使用方式
+
+```bash
+# 通过脚本使用
+./.claude/skills/auto-ddnns.sh health
+./.claude/skills/auto-ddnns.sh overview
+./.claude/skills/auto-ddnns.sh services
+
+# 或在 Claude Code 中调用
+/auto-ddnns
+```
+
+### 主要功能
+
+- 查看系统状态和概览
+- 管理服务清单（添加、更新、删除）
+- 同步 Lucky、SunPanel、Cloudflare
+- 设备发现和端口扫描
+- 查看 DDNS 历史和变更日志
+
+详见 `.claude/skills/auto-ddnns.md`。

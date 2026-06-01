@@ -280,21 +280,11 @@ curl http://localhost:51000/api/ddns/history
 
 自动触发 Lucky、SunPanel，以及在启用 Cloudflare 时触发 Cloudflare 同步。实现见 `central-hub/routes/services.mjs:9`、`central-hub/routes/services.mjs:82`、`central-hub/routes/services.mjs:141`、`central-hub/routes/services.mjs:173`、`central-hub/routes/services.mjs:216`。
 
-## 迁移与运维文档
-
-- `docs/MIGRATION_GUIDE.md`
-- `docs/migration/ip-address-change.md`
-- `docs/migration/port-change.md`
-- `docs/migration/docker-compose.md`
 
 ## 文档
 
+- [PROJECT.md](PROJECT.md) - 完整项目文档（包含架构、API、部署、运维等）
 - [CLAUDE.md](CLAUDE.md) - Claude Code 项目指引
-- [SECURITY.md](SECURITY.md) - 安全指南和最佳实践
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - 系统架构文档
-- [docs/IMPROVEMENTS.md](docs/IMPROVEMENTS.md) - 改进建议和待办事项
-- [docs/PROJECT_REVIEW.md](docs/PROJECT_REVIEW.md) - 项目检查报告
-- [docs/MIGRATION_GUIDE.md](docs/MIGRATION_GUIDE.md) - 迁移指南
 
 ## 项目质量
 
