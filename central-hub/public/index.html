@@ -354,10 +354,10 @@
         <!-- DDNS 发布情况 -->
         <div class="glass-panel">
             <div class="flex justify-between items-center mb-4">
-                <h2>🌐 DDNS 发布情况</h2>
-                <button class="btn btn-sm" onclick="fetchDDNSHistory()">刷新</button>
+                <h2>🌐 DDNS 域名发布状态</h2>
+                <button class="btn btn-sm" onclick="fetchDDNSStatus()">刷新</button>
             </div>
-            <div id="ddnsHistoryArea">
+            <div id="ddnsStatusArea" class="grid-3">
                 <div class="text-muted text-sm">加载中...</div>
             </div>
         </div>
@@ -653,61 +653,96 @@
             document.getElementById('keyMachinesArea').innerHTML = html;
         }
 
-        async function fetchDDNSHistory() {
+        async function fetchDDNSStatus() {
             try {
-                const data = await apiCall('/api/ddns/history');
-                const history = data.history || [];
+                // 获取服务列表
+                const services = await apiCall('/api/services/list');
+                // 获取设备列表
+                const devicesData = await apiCall('/api/devices/list');
+                const devices = devicesData.devices || {};
 
-                if (history.length === 0) {
-                    document.getElementById('ddnsHistoryArea').innerHTML = '<div class="text-muted text-sm">暂无 DDNS 历史记录</div>';
+                if (!services || services.length === 0) {
+                    document.getElementById('ddnsStatusArea').innerHTML = '<div class="text-muted text-sm">暂无服务配置</div>';
                     return;
                 }
 
-                const html = `
-                    <div style="overflow-x: auto;">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>时间</th>
-                                    <th>状态</th>
-                                    <th>创建</th>
-                                    <th>删除</th>
-                                    <th>未变更</th>
-                                    <th>错误</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${history.slice(0, 10).map(h => {
-                                    const time = new Date(h.timestamp).toLocaleString('zh-CN');
-                                    const statusBadge = h.success
-                                        ? '<span class="badge success">成功</span>'
-                                        : '<span class="badge danger">失败</span>';
-                                    const errors = h.errors && h.errors.length > 0
-                                        ? h.errors.join(', ')
-                                        : '-';
+                // 只显示启用了代理的服务
+                const proxiedServices = services.filter(s => s.enableProxy && s.proxyDomain);
 
-                                    return `
-                                        <tr>
-                                            <td style="white-space: nowrap;">${time}</td>
-                                            <td>${statusBadge}</td>
-                                            <td><span class="badge success">${h.created || 0}</span></td>
-                                            <td><span class="badge ${h.removed > 0 ? 'warning' : ''}">${h.removed || 0}</span></td>
-                                            <td>${h.unchanged || 0}</td>
-                                            <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${errors}">${errors}</td>
-                                        </tr>
-                                    `;
-                                }).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="text-sm text-muted mt-3">
-                        显示最近 10 条记录，共 ${history.length} 条
-                    </div>
-                `;
+                if (proxiedServices.length === 0) {
+                    document.getElementById('ddnsStatusArea').innerHTML = '<div class="text-muted text-sm">暂无启用代理的服务</div>';
+                    return;
+                }
 
-                document.getElementById('ddnsHistoryArea').innerHTML = html;
+                const html = proxiedServices.map(service => {
+                    const device = devices[service.device];
+                    const deviceName = device?.name || `设备 ${service.device}`;
+                    const ipv4 = device?.ipv4 || '未知';
+                    const ipv6 = service.ipv6 || device?.ipv6 || null;
+
+                    // 构建访问地址
+                    const protocol = service.enableTLS ? 'https' : 'http';
+                    const port = service.lucky?.port || 55000;
+                    const externalUrl = `${protocol}://${service.proxyDomain}:${port}`;
+                    const internalUrl = `${service.internalProtocol || 'http'}://${ipv4}:${service.internalPort}`;
+                    const ipv6Url = ipv6 ? `${service.internalProtocol || 'http'}://[${ipv6}]:${service.internalPort}` : null;
+
+                    // 状态徽章
+                    const statusBadge = ipv6
+                        ? '<span class="badge success">✓ IPv6 就绪</span>'
+                        : '<span class="badge warning">仅 IPv4</span>';
+
+                    return `
+                        <div class="device-card" style="background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255,255,255,0.1);">
+                            <div class="flex justify-between items-center mb-3">
+                                <div>
+                                    <div style="font-weight: 600; color: #fff; font-size: 16px;">${service.name}</div>
+                                    <div class="text-sm text-muted mt-1">${deviceName} • ${service.device}:${service.internalPort}</div>
+                                </div>
+                                ${statusBadge}
+                            </div>
+
+                            <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px; margin-bottom: 8px;">
+                                <div class="text-sm" style="color: #94a3b8; margin-bottom: 6px;">🌍 外网访问（DDNS）</div>
+                                <a href="${externalUrl}" target="_blank" style="color: #60a5fa; text-decoration: none; word-break: break-all; font-size: 13px;">
+                                    ${externalUrl}
+                                </a>
+                            </div>
+
+                            <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px; margin-bottom: 8px;">
+                                <div class="text-sm" style="color: #94a3b8; margin-bottom: 6px;">🏠 内网访问（IPv4）</div>
+                                <a href="${internalUrl}" target="_blank" style="color: #a78bfa; text-decoration: none; word-break: break-all; font-size: 13px;">
+                                    ${internalUrl}
+                                </a>
+                            </div>
+
+                            ${ipv6Url ? `
+                                <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px;">
+                                    <div class="text-sm" style="color: #94a3b8; margin-bottom: 6px;">🚀 IPv6 直连</div>
+                                    <a href="${ipv6Url}" target="_blank" style="color: #34d399; text-decoration: none; word-break: break-all; font-size: 13px;">
+                                        ${ipv6Url}
+                                    </a>
+                                </div>
+                            ` : `
+                                <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px;">
+                                    <div class="text-sm" style="color: #94a3b8;">🚀 IPv6 直连</div>
+                                    <div class="text-sm text-muted">未配置 IPv6</div>
+                                </div>
+                            `}
+
+                            ${service.description ? `
+                                <div class="text-sm text-muted mt-3" style="padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05);">
+                                    ${service.description}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+
+                document.getElementById('ddnsStatusArea').innerHTML = html;
             } catch (e) {
-                document.getElementById('ddnsHistoryArea').innerHTML = '<div class="text-danger text-sm">加载失败</div>';
+                console.error('获取 DDNS 状态失败:', e);
+                document.getElementById('ddnsStatusArea').innerHTML = '<div class="text-danger text-sm">加载失败</div>';
             }
         }
 
@@ -925,7 +960,7 @@
             fetchSystemStatus();
             fetchProxyDefaults();
             fetchKeyMachines();
-            fetchDDNSHistory();
+            fetchDDNSStatus();
             fetchServices();
             fetchBookmarks();
             fetchChangelog();
