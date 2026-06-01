@@ -6139,6 +6139,59 @@
       "target": "200",
       "detail": "扫描设备 200 (192.168.9.200), 发现 8 个开放端口",
       "user": "admin"
+    },
+    {
+      "timestamp": "2026-06-01T14:23:07.963Z",
+      "action": "scan_device",
+      "target": "200",
+      "detail": "扫描设备 200 (192.168.9.200), 发现 8 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-06-01T14:23:13.135Z",
+      "action": "scan_device",
+      "target": "10",
+      "detail": "扫描设备 10 (192.168.9.10), 发现 3 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-06-01T14:23:14.584Z",
+      "action": "scan_device",
+      "target": "2",
+      "detail": "扫描设备 2 (192.168.9.2), 发现 4 个开放端口",
+      "user": "admin"
+    },
+    {
+      "timestamp": "2026-06-01T14:23:24.915Z",
+      "action": "add_service",
+      "target": "openclaw",
+      "detail": "从端口扫描快速添加: openclaw (Lucky / SunPanel 服务器:16601)",
+      "user": "admin",
+      "data": {
+        "service": {
+          "id": "openclaw",
+          "name": "openclaw",
+          "device": "2",
+          "ipv6": "240e:0391:0c84:0ab1:be24:11ff:fe9f:ba81",
+          "internalPort": 16601,
+          "internalProtocol": "http",
+          "enableProxy": true,
+          "proxyType": "reverseproxy",
+          "enableTLS": false,
+          "proxyDomain": "openclaw.leecaiy.shop",
+          "description": "openclaw on Lucky / SunPanel 服务器",
+          "lucky": {
+            "port": 55000,
+            "remark": "openclaw",
+            "advancedConfig": ""
+          },
+          "sunpanel": {
+            "group": "其他",
+            "icon": "https://openclaw.leecaiy.shop/favicon.ico",
+            "lanUrl": "http://192.168.9.2:16601"
+          }
+        }
+      }
     }
   ]
 }
