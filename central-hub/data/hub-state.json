@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastUpdate": "2026-06-01T15:11:00.729Z",
-  "uptime": 5531980,
+  "lastUpdate": "2026-06-01T15:15:10.542Z",
+  "uptime": 5532229,
   "startTime": "2026-03-29T14:31:20.610Z",
   "router": {
     "history": []
@@ -121,7 +121,7 @@
     "proxies": [],
     "history": [],
     "syncStatus": {},
-    "lastSync": "2026-06-01T15:00:07.648Z",
+    "lastSync": "2026-06-01T15:15:10.542Z",
     "ddnsTasks": [
       "ddns-2-v6-leecaiy.shop",
       "ddns-2-v6-222869.xyz",
@@ -151,7 +151,7 @@
         "lastSync": "2026-05-03T16:46:29.010Z"
       }
     },
-    "lastSync": "2026-06-01T15:02:11.419Z"
+    "lastSync": "2026-06-01T15:15:08.145Z"
   },
   "devices": {
     "lastUpdate": "2026-06-01T15:10:10.185Z",
