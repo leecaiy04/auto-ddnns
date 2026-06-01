@@ -54,7 +54,7 @@ export function getSunPanelAuthConfig(config = null) {
 async function callApi(endpoint, data = {}, config = null) {
   const resolvedConfig = resolveConfig(config);
   const url = `${resolvedConfig.apiBase}${endpoint}`;
-  const timeoutMs = 5000;
+  const timeoutMs = 30000;
 
   console.log('[SunPanel] API Call:', {
     url,

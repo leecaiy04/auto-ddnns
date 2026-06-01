@@ -206,6 +206,14 @@ sync_service() {
 
 # 主函数
 main() {
+    local mode="${1:-sync}"  # sync 或 purge
+
+    if [ "$mode" = "purge" ]; then
+        info "开始清空 SunPanel 所有卡片..."
+        purge_all_items
+        exit 0
+    fi
+
     info "开始 SunPanel 自动同步..."
 
     # 检查依赖
@@ -238,8 +246,14 @@ main() {
 
     echo ""
 
-    # 3. 同步每个服务
-    info "步骤 3: 同步服务卡片"
+    # 3. 清理不在服务列表中的卡片
+    info "步骤 3: 清理无效卡片"
+    cleanup_invalid_items
+
+    echo ""
+
+    # 4. 同步每个服务
+    info "步骤 4: 同步服务卡片"
 
     # Lucky 管理面板
     sync_service \
@@ -280,6 +294,48 @@ main() {
 
     echo ""
     success "SunPanel 同步完成！"
+}
+
+# 清理无效卡片
+cleanup_invalid_items() {
+    # 定义有效的卡片列表（Auto-DDNNS 管理的服务）
+    local valid_items=("svc-lucky200" "svc-fnos" "svc-openclaw")
+
+    info "检查并删除无效卡片..."
+
+    # 尝试删除可能存在的其他卡片
+    # 这里列出一些常见的测试卡片名称
+    local test_items=("test" "demo" "example" "app" "service")
+
+    for item in "${test_items[@]}"; do
+        result=$(get_item "$item")
+        if echo "$result" | jq -e '.code == 0' > /dev/null 2>&1; then
+            warn "发现测试卡片: $item"
+            delete_item "$item" || true
+        fi
+    done
+
+    # 检查是否有不在有效列表中的 svc- 开头的卡片
+    # 由于 API 限制，我们只能逐个检查已知的服务
+    info "清理完成"
+}
+
+# 清空所有卡片（危险操作）
+purge_all_items() {
+    warn "⚠️  警告：此操作将删除 SunPanel 中所有 Auto-DDNNS 管理的卡片！"
+
+    local items=("svc-lucky200" "svc-fnos" "svc-openclaw")
+
+    for item in "${items[@]}"; do
+        result=$(get_item "$item")
+        if echo "$result" | jq -e '.code == 0' > /dev/null 2>&1; then
+            delete_item "$item" || true
+        else
+            info "卡片不存在，跳过: $item"
+        fi
+    done
+
+    success "清空完成"
 }
 
 # 执行主函数

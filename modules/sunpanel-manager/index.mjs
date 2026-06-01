@@ -354,9 +354,11 @@ export class SunPanelManager {
             };
 
             console.log(`[SunPanelManager] ✅ [实例 ${i+1}] ${action === 'created' ? '创建' : '更新'}卡片: ${finalCardConfig.title}`);
+            results.details.push({ instance: i, domain, action, title: finalCardConfig.title });
           } catch (error) {
             if (i === 0) results.failed++;
             console.error(`[SunPanelManager] ❌ [实例 ${i+1}] 同步失败: ${proxy.domains[0]} - ${error.message}`);
+            results.details.push({ instance: i, domain, action: 'failed', error: error.message });
           }
         }
 

@@ -1,63 +1,17 @@
 {
   "services": [
     {
-      "id": "lucky200",
-      "name": "Lucky 管理面板",
-      "device": "200",
-      "ipv6": null,
-      "internalPort": 16601,
-      "internalProtocol": "http",
-      "enableProxy": true,
-      "proxyType": "reverseproxy",
-      "enableTLS": true,
-      "proxyDomain": "lucky.leecaiy.shop",
-      "description": "Lucky 反向代理管理面板",
-      "lucky": {
-        "port": 55000,
-        "remark": "Lucky 管理",
-        "advancedConfig": ""
-      },
-      "sunpanel": {
-        "group": "NAS",
-        "icon": "https://lucky.leecaiy.shop/favicon.ico",
-        "lanUrl": "http://192.168.9.200:16601/666"
-      }
-    },
-    {
-      "id": "fnos",
-      "name": "FNOS 系统",
-      "device": "200",
-      "ipv6": null,
-      "internalPort": 5566,
-      "internalProtocol": "http",
-      "enableProxy": true,
-      "proxyType": "reverseproxy",
-      "enableTLS": true,
-      "proxyDomain": "fnos.leecaiy.shop",
-      "description": "FNOS NAS 管理系统",
-      "lucky": {
-        "port": 55000,
-        "remark": "FNOS",
-        "advancedConfig": ""
-      },
-      "sunpanel": {
-        "group": "NAS",
-        "icon": "https://fnos.leecaiy.shop/favicon.ico",
-        "lanUrl": "http://192.168.9.200:5566"
-      }
-    },
-    {
       "id": "openclaw",
       "name": "openclaw",
-      "device": "2",
-      "ipv6": "240e:0391:0c84:0ab1:be24:11ff:fe9f:ba81",
-      "internalPort": 16601,
+      "device": "10",
+      "ipv6": "240e:0391:0c84:0ab1:be24:11ff:fe88:7edf",
+      "internalPort": 18789,
       "internalProtocol": "http",
       "enableProxy": true,
       "proxyType": "reverseproxy",
       "enableTLS": false,
       "proxyDomain": "openclaw.leecaiy.shop",
-      "description": "openclaw on Lucky / SunPanel 服务器",
+      "description": "openclaw on Debian 应用服务器",
       "lucky": {
         "port": 55000,
         "remark": "openclaw",
@@ -66,7 +20,75 @@
       "sunpanel": {
         "group": "其他",
         "icon": "https://openclaw.leecaiy.shop/favicon.ico",
-        "lanUrl": "http://192.168.9.2:16601"
+        "lanUrl": "http://192.168.9.10:18789"
+      }
+    },
+    {
+      "enableProxy": true,
+      "proxyType": "reverseproxy",
+      "enableTLS": false,
+      "id": "lucky200",
+      "name": "Lucky 管理面板",
+      "device": "200",
+      "internalPort": 16601,
+      "internalProtocol": "http",
+      "proxyDomain": "lucky.leecaiy.shop",
+      "description": "Lucky 反向代理管理面板",
+      "sunpanel": {
+        "group": "NAS",
+        "icon": "https://lucky.leecaiy.shop/favicon.ico",
+        "lanUrl": "http://192.168.9.200:16601/666"
+      },
+      "lucky": {
+        "port": 55000,
+        "remark": "Lucky 管理面板",
+        "advancedConfig": ""
+      },
+      "advanced": {
+        "waf": false,
+        "ignoreTlsVerify": true,
+        "autoRedirect": true,
+        "useTargetHost": true,
+        "accessLog": true,
+        "securityPresets": true,
+        "authentication": {
+          "enabled": false,
+          "type": "web"
+        }
+      }
+    },
+    {
+      "enableProxy": true,
+      "proxyType": "reverseproxy",
+      "enableTLS": false,
+      "id": "fnos",
+      "name": "FNOS 系统",
+      "device": "200",
+      "internalPort": 5566,
+      "internalProtocol": "http",
+      "proxyDomain": "fnos.leecaiy.shop",
+      "description": "FNOS NAS 管理系统",
+      "sunpanel": {
+        "group": "NAS",
+        "icon": "https://fnos.leecaiy.shop/favicon.ico",
+        "lanUrl": "http://192.168.9.200:5566"
+      },
+      "lucky": {
+        "port": 55000,
+        "remark": "FNOS 系统",
+        "advancedConfig": ""
+      },
+      "advanced": {
+        "waf": false,
+        "ignoreTlsVerify": true,
+        "autoRedirect": true,
+        "useTargetHost": true,
+        "accessLog": true,
+        "securityPresets": true,
+        "authentication": {
+          "enabled": false,
+          "type": "web"
+        }
       }
     }
   ]
