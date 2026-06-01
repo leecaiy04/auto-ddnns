@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastUpdate": "2026-06-01T15:09:00.616Z",
-  "uptime": 5531860,
+  "lastUpdate": "2026-06-01T15:11:00.729Z",
+  "uptime": 5531980,
   "startTime": "2026-03-29T14:31:20.610Z",
   "router": {
     "history": []
@@ -154,7 +154,7 @@
     "lastSync": "2026-06-01T15:02:11.419Z"
   },
   "devices": {
-    "lastUpdate": "2026-06-01T15:00:09.731Z",
+    "lastUpdate": "2026-06-01T15:10:10.185Z",
     "devices": {
       "2": {
         "ipv4": "192.168.9.2",
@@ -163,7 +163,7 @@
         "ipv6State": "REACHABLE",
         "ipv6Interface": "fe80::be24:11ff:fe9f:ba81",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T15:00:09.731Z"
+        "lastSeen": "2026-06-01T15:10:10.185Z"
       },
       "10": {
         "ipv4": "192.168.9.10",
@@ -172,16 +172,16 @@
         "ipv6State": "REACHABLE",
         "ipv6Interface": "fe80::be24:11ff:fe88:7edf",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T15:00:09.731Z"
+        "lastSeen": "2026-06-01T15:10:10.185Z"
       },
       "100": {
         "ipv4": "192.168.9.100",
-        "ipv6": "240e:0391:0c84:0ab1:80e0:5866:bfc9:5f9a",
+        "ipv6": "240e:0391:0c84:0ab1:6c2f:a694:e994:b3c6",
         "mac": "c2:1c:c8:89:0c:ed",
         "ipv6State": "REACHABLE",
         "ipv6Interface": "fe80::1034:2d8:9794:7f99",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T15:00:09.731Z"
+        "lastSeen": "2026-06-01T15:10:10.185Z"
       },
       "102": {
         "ipv4": "192.168.9.102",
@@ -190,7 +190,7 @@
         "ipv6State": null,
         "ipv6Interface": "unknown",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T15:00:09.731Z"
+        "lastSeen": "2026-06-01T15:10:10.185Z"
       },
       "103": {
         "ipv4": "192.168.9.103",
@@ -199,7 +199,7 @@
         "ipv6State": null,
         "ipv6Interface": "unknown",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T15:00:09.731Z"
+        "lastSeen": "2026-06-01T15:10:10.185Z"
       },
       "105": {
         "ipv4": "192.168.9.105",
@@ -208,7 +208,16 @@
         "ipv6State": null,
         "ipv6Interface": "2G:zhanys",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T15:00:09.731Z"
+        "lastSeen": "2026-06-01T15:10:10.185Z"
+      },
+      "106": {
+        "ipv4": "192.168.9.106",
+        "ipv6": null,
+        "mac": "5a:fb:0d:b5:4c:1a",
+        "ipv6State": null,
+        "ipv6Interface": "unknown",
+        "queryMethod": "router-api",
+        "lastSeen": "2026-06-01T15:10:10.185Z"
       },
       "108": {
         "ipv4": "192.168.9.108",
@@ -217,7 +226,7 @@
         "ipv6State": "REACHABLE",
         "ipv6Interface": "fe80::9008:b9ff:fe63:f319",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T15:00:09.731Z"
+        "lastSeen": "2026-06-01T15:10:10.185Z"
       },
       "110": {
         "ipv4": "192.168.9.110",
@@ -226,7 +235,7 @@
         "ipv6State": "REACHABLE",
         "ipv6Interface": "fe80::92d:c94e:5fc1:69c5",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T15:00:09.731Z"
+        "lastSeen": "2026-06-01T15:10:10.185Z"
       },
       "111": {
         "ipv4": "192.168.9.111",
@@ -235,7 +244,7 @@
         "ipv6State": null,
         "ipv6Interface": "unknown",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T15:00:09.731Z"
+        "lastSeen": "2026-06-01T15:10:10.185Z"
       },
       "112": {
         "ipv4": "192.168.9.112",
@@ -244,7 +253,7 @@
         "ipv6State": null,
         "ipv6Interface": "unknown",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T15:00:09.731Z"
+        "lastSeen": "2026-06-01T15:10:10.185Z"
       },
       "200": {
         "ipv4": "192.168.9.200",
@@ -253,7 +262,7 @@
         "ipv6State": "REACHABLE",
         "ipv6Interface": "fe80::c988:875d:1759:5b14",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T15:00:09.731Z"
+        "lastSeen": "2026-06-01T15:10:10.185Z"
       },
       "201": {
         "ipv4": "192.168.9.201",
@@ -262,19 +271,19 @@
         "ipv6State": "REACHABLE",
         "ipv6Interface": "unknown",
         "queryMethod": "direct-ssh",
-        "lastSeen": "2026-06-01T15:00:09.731Z"
+        "lastSeen": "2026-06-01T15:10:10.185Z"
       }
     },
     "ipv6Map": {
       "2": "240e:0391:0c84:0ab1:be24:11ff:fe9f:ba81",
       "10": "240e:0391:0c84:0ab1:be24:11ff:fe88:7edf",
-      "100": "240e:0391:0c84:0ab1:80e0:5866:bfc9:5f9a",
+      "100": "240e:0391:0c84:0ab1:6c2f:a694:e994:b3c6",
       "108": "240e:0391:0c84:0ab1:b43c:4338:4254:3992",
       "110": "240e:0391:0c84:0ab1:7952:84fa:ec17:7472",
       "200": "240e:0391:0c84:0ab1:0000:0000:0000:0c39",
       "201": "240e:391:c84:ab1::c9d"
     },
-    "totalDevices": 12,
+    "totalDevices": 13,
     "ipv6Ready": 7
   },
   "services": {
