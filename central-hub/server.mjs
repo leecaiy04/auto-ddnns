@@ -16,16 +16,11 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { loadEnvFileAsync, getEnv } from '../shared/env-loader.mjs';
-import { loadConfigWithEnv } from '../shared/config-loader.mjs';
+import { loadEnvFileAsync } from '../shared/env-loader.mjs';
+import { ConfigManager } from '../shared/config-manager.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DEFAULT_DOMAIN = 'leecaiy.shop';
 const LOCAL_HOSTS_FOR_PROBE = ['127.0.0.1', 'localhost'];
-
-function getManagedDomain() {
-  return getEnv('ALIYUN_DOMAIN', DEFAULT_DOMAIN).trim() || DEFAULT_DOMAIN;
-}
 
 function createHealthProbeUrls(host, port) {
   const normalizedHost = `${host || ''}`.trim();
@@ -62,57 +57,6 @@ async function isHubAlreadyRunning(host, port) {
   return { running: false, url: null };
 }
 
-function applyRuntimeConfigOverrides(config) {
-  const managedDomain = getManagedDomain();
-
-  if (config?.modules?.lucky) {
-    const luckyInstances = [];
-    if (process.env.LUCKY_API_BASE) {
-      luckyInstances.push({
-        apiBase: process.env.LUCKY_API_BASE,
-        openToken: process.env.LUCKY_OPEN_TOKEN || process.env.LUCKY_TOKEN || process.env.LUCKY_API_TOKEN,
-        username: process.env.LUCKY_USERNAME,
-        password: process.env.LUCKY_PASSWORD
-      });
-    } else {
-      luckyInstances.push({
-        apiBase: `https://lucky.${managedDomain}:55000/666`
-      });
-    }
-    if (process.env.LUCKY_BACKUP_API_BASE) {
-      luckyInstances.push({
-        apiBase: process.env.LUCKY_BACKUP_API_BASE,
-        openToken: process.env.LUCKY_BACKUP_OPEN_TOKEN || process.env.LUCKY_BACKUP_TOKEN || process.env.LUCKY_BACKUP_API_TOKEN,
-        username: process.env.LUCKY_BACKUP_USERNAME,
-        password: process.env.LUCKY_BACKUP_PASSWORD
-      });
-    }
-    config.modules.lucky.instances = luckyInstances;
-  }
-
-  if (config?.modules?.sunpanel) {
-    const sunInstances = [];
-    if (process.env.SUNPANEL_API_BASE) {
-      sunInstances.push({
-        apiBase: process.env.SUNPANEL_API_BASE,
-        apiToken: process.env.SUNPANEL_API_TOKEN,
-        username: process.env.SUNPANEL_USERNAME,
-        password: process.env.SUNPANEL_PASSWORD
-      });
-    }
-    if (process.env.SUNPANEL_BACKUP_API_BASE) {
-      sunInstances.push({
-        apiBase: process.env.SUNPANEL_BACKUP_API_BASE,
-        apiToken: process.env.SUNPANEL_BACKUP_API_TOKEN,
-        username: process.env.SUNPANEL_BACKUP_USERNAME,
-        password: process.env.SUNPANEL_BACKUP_PASSWORD
-      });
-    }
-    config.modules.sunpanel.instances = sunInstances;
-  }
-
-  return config;
-}
 
 // ==================== 加载环境变量 ====================
 
@@ -171,8 +115,13 @@ class CentralHub {
 
   async loadConfig() {
     try {
-      this.config = applyRuntimeConfigOverrides(await loadConfigWithEnv(this.configPath));
+      const configManager = new ConfigManager();
+      this.config = await configManager.load(this.configPath);
+      this.configManager = configManager;
+
       console.log('✅ 配置加载成功');
+      configManager.printSummary();
+
       return this.config;
     } catch (error) {
       console.error('❌ 配置加载失败:', error.message);

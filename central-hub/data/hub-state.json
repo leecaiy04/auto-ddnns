@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastUpdate": "2026-06-01T16:26:12.627Z",
-  "uptime": 5536492,
+  "lastUpdate": "2026-06-06T15:19:00.784Z",
+  "uptime": 5964460,
   "startTime": "2026-03-29T14:31:20.610Z",
   "router": {
     "history": []
@@ -16,7 +16,7 @@
         "removed": 0,
         "unchanged": 0,
         "errors": [],
-        "timestamp": "2026-06-01T15:00:00.133Z"
+        "timestamp": "2026-06-06T07:00:00.958Z"
       },
       {
         "event": "reconcile",
@@ -25,18 +25,7 @@
         "removed": 0,
         "unchanged": 0,
         "errors": [],
-        "timestamp": "2026-06-01T16:00:00.595Z"
-      },
-      {
-        "event": "reconcile",
-        "success": false,
-        "created": 0,
-        "removed": 0,
-        "unchanged": 0,
-        "errors": [
-          "Lucky API 请求超时 (20000ms)"
-        ],
-        "timestamp": "2026-06-01T16:03:02.815Z"
+        "timestamp": "2026-06-06T07:59:44.633Z"
       },
       {
         "event": "reconcile",
@@ -45,7 +34,7 @@
         "removed": 0,
         "unchanged": 0,
         "errors": [],
-        "timestamp": "2026-06-01T16:17:07.933Z"
+        "timestamp": "2026-06-06T08:00:00.143Z"
       },
       {
         "event": "reconcile",
@@ -54,7 +43,7 @@
         "removed": 0,
         "unchanged": 0,
         "errors": [],
-        "timestamp": "2026-06-01T16:18:27.542Z"
+        "timestamp": "2026-06-06T09:00:00.348Z"
       },
       {
         "event": "reconcile",
@@ -63,7 +52,7 @@
         "removed": 0,
         "unchanged": 0,
         "errors": [],
-        "timestamp": "2026-06-01T16:21:15.178Z"
+        "timestamp": "2026-06-06T10:00:00.697Z"
       },
       {
         "event": "reconcile",
@@ -72,7 +61,7 @@
         "removed": 0,
         "unchanged": 0,
         "errors": [],
-        "timestamp": "2026-06-01T16:21:51.499Z"
+        "timestamp": "2026-06-06T11:00:00.942Z"
       },
       {
         "event": "reconcile",
@@ -81,7 +70,7 @@
         "removed": 0,
         "unchanged": 0,
         "errors": [],
-        "timestamp": "2026-06-01T16:25:07.856Z"
+        "timestamp": "2026-06-06T12:00:00.189Z"
       },
       {
         "event": "reconcile",
@@ -90,7 +79,7 @@
         "removed": 0,
         "unchanged": 0,
         "errors": [],
-        "timestamp": "2026-06-01T16:25:26.542Z"
+        "timestamp": "2026-06-06T13:00:00.386Z"
       },
       {
         "event": "reconcile",
@@ -99,7 +88,16 @@
         "removed": 0,
         "unchanged": 0,
         "errors": [],
-        "timestamp": "2026-06-01T16:26:04.838Z"
+        "timestamp": "2026-06-06T14:00:00.578Z"
+      },
+      {
+        "event": "reconcile",
+        "success": true,
+        "created": 10,
+        "removed": 0,
+        "unchanged": 0,
+        "errors": [],
+        "timestamp": "2026-06-06T15:00:00.795Z"
       }
     ],
     "lastUpdate": "2026-04-14T20:40:07.787Z",
@@ -117,7 +115,7 @@
     "proxies": [],
     "history": [],
     "syncStatus": {},
-    "lastSync": "2026-06-01T16:26:12.618Z",
+    "lastSync": "2026-06-06T15:15:00.563Z",
     "ddnsTasks": [
       "ddns-2-v6-leecaiy.shop",
       "ddns-2-v6-222869.xyz",
@@ -130,65 +128,34 @@
       "ddns-254-v6-leecaiy.shop",
       "ddns-254-v6-222869.xyz"
     ],
-    "ddnsLastReconcile": "2026-06-01T16:26:04.836Z"
+    "ddnsLastReconcile": "2026-06-06T15:00:00.793Z"
   },
   "sunpanel": {
     "cards": [],
     "history": [],
-    "syncStatus": {
-      "svc-openclaw_0": {
-        "hash": "b8634094d60197c3f3a5ce6b06b2d86e",
-        "domain": "openclaw.leecaiy.shop",
-        "remark": "openclaw",
-        "target": "http://[240e:0391:0c84:0ab1:be24:11ff:fe88:7edf]:18789",
-        "serviceId": "openclaw",
-        "groupId": 40,
-        "groupOnlyName": "其他",
-        "lastSync": "2026-06-01T16:25:47.184Z"
-      },
-      "svc-lucky200_0": {
-        "hash": "8d7b147c822efda6a3ea3ecdd31f2478",
-        "domain": "lucky.leecaiy.shop",
-        "remark": "Lucky 管理面板",
-        "target": "http://[240e:0391:0c84:0ab1:0000:0000:0000:0c39]:16601",
-        "serviceId": "lucky200",
-        "groupId": 31,
-        "groupOnlyName": "nas",
-        "lastSync": "2026-06-01T16:25:47.196Z"
-      },
-      "svc-fnos_0": {
-        "hash": "1eba4f886d25d20878f66edc982230d2",
-        "domain": "fnos.leecaiy.shop",
-        "remark": "FNOS 系统",
-        "target": "http://[240e:0391:0c84:0ab1:0000:0000:0000:0c39]:5566",
-        "serviceId": "fnos",
-        "groupId": 31,
-        "groupOnlyName": "nas",
-        "lastSync": "2026-06-01T16:25:47.208Z"
-      }
-    },
-    "lastSync": "2026-06-01T16:26:12.627Z"
+    "syncStatus": {},
+    "lastSync": "2026-06-06T15:15:00.575Z"
   },
   "devices": {
-    "lastUpdate": "2026-06-01T16:26:04.813Z",
+    "lastUpdate": "2026-06-06T15:10:09.789Z",
     "devices": {
       "2": {
         "ipv4": "192.168.9.2",
-        "ipv6": "240e:0391:0c84:0ab1:be24:11ff:fe9f:ba81",
+        "ipv6": "240e:0391:0c84:4001:be24:11ff:fe9f:ba81",
         "mac": "bc:24:11:9f:ba:81",
         "ipv6State": "REACHABLE",
         "ipv6Interface": "fe80::be24:11ff:fe9f:ba81",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T16:26:04.813Z"
+        "lastSeen": "2026-06-06T15:10:09.789Z"
       },
       "10": {
         "ipv4": "192.168.9.10",
-        "ipv6": "240e:0391:0c84:0ab1:be24:11ff:fe88:7edf",
+        "ipv6": "240e:0391:0c84:4001:be24:11ff:fe88:7edf",
         "mac": "bc:24:11:88:7e:df",
         "ipv6State": "REACHABLE",
         "ipv6Interface": "fe80::be24:11ff:fe88:7edf",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T16:26:04.813Z"
+        "lastSeen": "2026-06-06T15:10:09.789Z"
       },
       "102": {
         "ipv4": "192.168.9.102",
@@ -197,7 +164,7 @@
         "ipv6State": null,
         "ipv6Interface": "unknown",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T16:26:04.813Z"
+        "lastSeen": "2026-06-06T15:10:09.789Z"
       },
       "103": {
         "ipv4": "192.168.9.103",
@@ -206,7 +173,16 @@
         "ipv6State": null,
         "ipv6Interface": "unknown",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T16:26:04.813Z"
+        "lastSeen": "2026-06-06T15:10:09.789Z"
+      },
+      "104": {
+        "ipv4": "192.168.9.104",
+        "ipv6": null,
+        "mac": "52:e1:1a:54:b4:7b",
+        "ipv6State": null,
+        "ipv6Interface": "unknown",
+        "queryMethod": "router-api",
+        "lastSeen": "2026-06-06T15:10:09.789Z"
       },
       "105": {
         "ipv4": "192.168.9.105",
@@ -215,88 +191,78 @@
         "ipv6State": null,
         "ipv6Interface": "2G:zhanys",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T16:26:04.813Z"
+        "lastSeen": "2026-06-06T15:10:09.789Z"
       },
       "107": {
         "ipv4": "192.168.9.107",
-        "ipv6": "240e:0391:0c84:0ab1:50ce:fab6:b8cd:0770",
+        "ipv6": "240e:0391:0c84:4001:203b:0280:1e3e:f7b4",
         "mac": "46:52:ca:4b:f0:86",
         "ipv6State": "REACHABLE",
         "ipv6Interface": "fe80::4452:caff:fe4b:f086",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T16:26:04.813Z"
+        "lastSeen": "2026-06-06T15:10:09.789Z"
       },
       "108": {
         "ipv4": "192.168.9.108",
-        "ipv6": "240e:0391:0c84:0ab1:b43c:4338:4254:3992",
+        "ipv6": "240e:0391:0c84:4001:90b5:6260:8b78:a1d9",
         "mac": "92:08:b9:63:f3:19",
         "ipv6State": "REACHABLE",
         "ipv6Interface": "fe80::9008:b9ff:fe63:f319",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T16:26:04.813Z"
+        "lastSeen": "2026-06-06T15:10:09.789Z"
       },
-      "110": {
-        "ipv4": "192.168.9.110",
-        "ipv6": "240e:0391:0c84:0ab1:7952:84fa:ec17:7472",
-        "mac": "74:56:3c:fc:03:82",
-        "ipv6State": "REACHABLE",
-        "ipv6Interface": "fe80::92d:c94e:5fc1:69c5",
-        "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T16:26:04.813Z"
-      },
-      "111": {
-        "ipv4": "192.168.9.111",
+      "109": {
+        "ipv4": "192.168.9.109",
         "ipv6": null,
         "mac": "a0:d0:5b:51:f0:e2",
         "ipv6State": null,
         "ipv6Interface": "unknown",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T16:26:04.813Z"
+        "lastSeen": "2026-06-06T15:10:09.789Z"
       },
-      "112": {
-        "ipv4": "192.168.9.112",
-        "ipv6": null,
-        "mac": "e0:bb:9e:e4:fa:0b",
-        "ipv6State": null,
-        "ipv6Interface": "unknown",
+      "110": {
+        "ipv4": "192.168.9.110",
+        "ipv6": "240e:0391:0c84:4001:e8dc:8913:6359:0749",
+        "mac": "74:56:3c:fc:03:82",
+        "ipv6State": "REACHABLE",
+        "ipv6Interface": "fe80::92d:c94e:5fc1:69c5",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T16:26:04.813Z"
+        "lastSeen": "2026-06-06T15:10:09.789Z"
       },
       "200": {
         "ipv4": "192.168.9.200",
-        "ipv6": "240e:0391:0c84:0ab1:0000:0000:0000:0c39",
+        "ipv6": null,
         "mac": "bc:24:11:29:92:a4",
-        "ipv6State": "REACHABLE",
-        "ipv6Interface": "fe80::c988:875d:1759:5b14",
+        "ipv6State": null,
+        "ipv6Interface": "unknown",
         "queryMethod": "router-api",
-        "lastSeen": "2026-06-01T16:26:04.813Z"
+        "lastSeen": "2026-06-06T15:10:09.789Z"
       },
       "201": {
         "ipv4": "192.168.9.201",
-        "ipv6": "240e:391:c84:ab1::c9d",
+        "ipv6": "240e:391:c84:4001::c9d",
         "mac": "bc:24:11:af:93:a1",
         "ipv6State": "REACHABLE",
         "ipv6Interface": "unknown",
         "queryMethod": "direct-ssh",
-        "lastSeen": "2026-06-01T16:26:04.813Z"
+        "lastSeen": "2026-06-06T15:10:09.789Z"
       }
     },
     "ipv6Map": {
-      "2": "240e:0391:0c84:0ab1:be24:11ff:fe9f:ba81",
-      "10": "240e:0391:0c84:0ab1:be24:11ff:fe88:7edf",
-      "107": "240e:0391:0c84:0ab1:50ce:fab6:b8cd:0770",
-      "108": "240e:0391:0c84:0ab1:b43c:4338:4254:3992",
-      "110": "240e:0391:0c84:0ab1:7952:84fa:ec17:7472",
-      "200": "240e:0391:0c84:0ab1:0000:0000:0000:0c39",
-      "201": "240e:391:c84:ab1::c9d"
+      "2": "240e:0391:0c84:4001:be24:11ff:fe9f:ba81",
+      "10": "240e:0391:0c84:4001:be24:11ff:fe88:7edf",
+      "107": "240e:0391:0c84:4001:203b:0280:1e3e:f7b4",
+      "108": "240e:0391:0c84:4001:90b5:6260:8b78:a1d9",
+      "110": "240e:0391:0c84:4001:e8dc:8913:6359:0749",
+      "201": "240e:391:c84:4001::c9d"
     },
     "totalDevices": 12,
-    "ipv6Ready": 7
+    "ipv6Ready": 6
   },
   "services": {
-    "lastUpdate": "2026-06-01T16:04:26.993Z",
-    "totalServices": 3,
-    "proxiedServices": 3
+    "lastUpdate": "2026-06-06T08:08:30.946Z",
+    "totalServices": 0,
+    "proxiedServices": 0
   },
   "npm": {
     "lastSync": null,

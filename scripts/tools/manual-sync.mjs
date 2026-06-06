@@ -18,10 +18,10 @@ import fs from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { loadEnvFile as loadSharedEnvFile } from '../shared/env-loader.mjs';
+import { loadEnvFile as loadSharedEnvFile } from '../../shared/env-loader.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT_DIR = path.resolve(__dirname, '..');
+const ROOT_DIR = path.resolve(__dirname, '../..');
 const CONFIG_FILE = path.join(ROOT_DIR, 'config/lucky-to-sunpanel.json');
 const STATE_FILE = path.join(ROOT_DIR, 'data/lucky-to-sunpanel-state.json');
 

@@ -478,6 +478,41 @@ describe('sunpanel-manager', () => {
   });
 
   it('purgeSunPanel clears local sync state and preserves card summary in result', async () => {
+    installFetchMock((call) => {
+      if (call.url.endsWith('/itemGroup/getList')) {
+        return jsonResponse({
+          code: 0,
+          msg: 'success',
+          data: {
+            list: [
+              {
+                itemGroupID: 1,
+                title: 'Test Group',
+                onlyName: 'test-group'
+              }
+            ],
+            count: 1
+          }
+        });
+      }
+      if (call.url.endsWith('/itemGroup/getInfo')) {
+        return jsonResponse({
+          code: 0,
+          msg: 'success',
+          data: {
+            items: [
+              { onlyName: 'svc-app', title: 'App Service', url: 'https://app.example.com' },
+              { onlyName: 'svc-nas', title: 'NAS', url: 'https://nas.example.com' }
+            ]
+          }
+        });
+      }
+      if (call.url.endsWith('/item/delete')) {
+        return jsonResponse({ code: 0, msg: 'success', data: null });
+      }
+      throw new Error(`Unexpected request: ${call.method} ${call.url}`);
+    });
+
     const { manager, stateManager } = createManager({}, {
       sunpanel: {
         lastSync: '2026-04-25T10:00:00Z',

@@ -28,5 +28,6 @@ test('lucky-api falls back to LUCKY_OPEN_TOKEN', async () => {
 });
 
 test('sync-lucky-to-sunpanel can be imported without env loader errors', async () => {
-  await assert.doesNotReject(() => import('../scripts/sync-lucky-to-sunpanel.mjs'));
+  // 脚本已移动到 scripts/tools/manual-sync.mjs
+  await assert.doesNotReject(() => import('../scripts/tools/manual-sync.mjs'));
 });

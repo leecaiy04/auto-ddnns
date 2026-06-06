@@ -734,3 +734,86 @@ export async function deleteRuleByName(ruleName, config = null) {
 
   return deleteRule(rule.RuleKey, config);
 }
+
+// ==================== 便捷方法 ====================
+
+/**
+ * 根据域名查找反向代理规则（异步版本）
+ * @param {string} domain - 域名
+ * @param {Object} config - 配置对象
+ * @returns {Promise<ReverseProxyRule|null>} 反向代理规则或 null
+ */
+export async function findRuleByDomainAsync(domain, config = null) {
+  const result = await getReverseProxyRules(config);
+  const ruleList = ensureRuleListResponse(result);
+  return findProxyByDomain(ruleList, domain);
+}
+
+/**
+ * 列出所有反向代理域名
+ * @param {Object} config - 配置对象
+ * @returns {Promise<string[]>} 域名列表
+ */
+export async function listAllDomains(config = null) {
+  const result = await getReverseProxyRules(config);
+  const ruleList = ensureRuleListResponse(result);
+  const proxies = extractReverseProxies(ruleList);
+
+  const domains = new Set();
+  for (const proxy of proxies) {
+    if (Array.isArray(proxy.Domains)) {
+      proxy.Domains.forEach(domain => {
+        if (domain && typeof domain === 'string') {
+          domains.add(domain.toLowerCase());
+        }
+      });
+    }
+  }
+
+  return Array.from(domains).sort();
+}
+
+/**
+ * 列出所有已启用的反向代理规则
+ * @param {Object} config - 配置对象
+ * @returns {Promise<ReverseProxyRule[]>} 已启用的反向代理规则列表
+ */
+export async function listEnabledRules(config = null) {
+  const result = await getReverseProxyRules(config);
+  const ruleList = ensureRuleListResponse(result);
+  const proxies = extractReverseProxies(ruleList);
+
+  return proxies.filter(proxy => proxy.Enable);
+}
+
+/**
+ * 根据备注查找反向代理规则（异步版本）
+ * @param {string} remark - 备注/名称
+ * @param {Object} config - 配置对象
+ * @returns {Promise<ReverseProxyRule|null>} 反向代理规则或 null
+ */
+export async function findRuleByRemarkAsync(remark, config = null) {
+  const result = await getReverseProxyRules(config);
+  const ruleList = ensureRuleListResponse(result);
+  return findProxyByRemark(ruleList, remark);
+}
+
+/**
+ * 统计反向代理规则数量
+ * @param {Object} config - 配置对象
+ * @returns {Promise<{total: number, enabled: number, disabled: number}>} 统计信息
+ */
+export async function countRules(config = null) {
+  const result = await getReverseProxyRules(config);
+  const ruleList = ensureRuleListResponse(result);
+  const proxies = extractReverseProxies(ruleList);
+
+  const enabled = proxies.filter(proxy => proxy.Enable).length;
+  const disabled = proxies.length - enabled;
+
+  return {
+    total: proxies.length,
+    enabled,
+    disabled
+  };
+}

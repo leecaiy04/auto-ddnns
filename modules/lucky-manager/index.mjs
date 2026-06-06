@@ -11,11 +11,17 @@ import {
 } from './lucky-port-manager.mjs';
 import {
   deletePort,
-  deleteSubRuleByDomain
+  deleteSubRuleByDomain,
+  listAllDomains,
+  findRuleByDomainAsync,
+  listEnabledRules,
+  countRules
 } from './lucky-reverseproxy.mjs';
 import {
   getSSLList,
-  applyACMECert
+  applyACMECert,
+  listExpiringSoonCerts,
+  getCertExpiryInfo
 } from './lucky-ssl.mjs';
 import {
   getDDNSTaskList,
@@ -26,6 +32,19 @@ import {
   buildAliyunDNSCredentials,
   buildRecord
 } from './lucky-ddns.mjs';
+import {
+  getVersion as getSystemVersion,
+  getSystemInfo,
+  testConnection as testLuckyConnection
+} from './lucky-system.mjs';
+import {
+  getPortForwardRules,
+  listAllListenPorts
+} from './lucky-portforward.mjs';
+import {
+  getWolDevices,
+  wakeDevice
+} from './lucky-wol.mjs';
 import { getEnv } from '../../shared/env-loader.mjs';
 
 function formatTargetHost(targetHost) {
@@ -744,6 +763,112 @@ export class LuckyManager {
       console.error('[LuckyManager] ❌ 清空 Lucky 数据失败:', error.message);
       throw error;
     }
+  }
+
+  // ==================== 便捷方法 ====================
+
+  /**
+   * 获取 Lucky 版本信息
+   */
+  async getVersion() {
+    const config = this.getLuckyProxyConfig();
+    return await getSystemVersion(config);
+  }
+
+  /**
+   * 获取系统信息
+   */
+  async getSystemInfo() {
+    const config = this.getLuckyProxyConfig();
+    return await getSystemInfo(config);
+  }
+
+  /**
+   * 测试 Lucky 连接
+   */
+  async testConnection() {
+    const config = this.getLuckyProxyConfig();
+    return await testLuckyConnection(config);
+  }
+
+  /**
+   * 列出所有反向代理域名
+   */
+  async listAllDomains() {
+    const config = this.getLuckyProxyConfig();
+    return await listAllDomains(config);
+  }
+
+  /**
+   * 根据域名查找反向代理规则
+   */
+  async findRuleByDomain(domain) {
+    const config = this.getLuckyProxyConfig();
+    return await findRuleByDomainAsync(domain, config);
+  }
+
+  /**
+   * 列出所有已启用的反向代理规则
+   */
+  async listEnabledRules() {
+    const config = this.getLuckyProxyConfig();
+    return await listEnabledRules(config);
+  }
+
+  /**
+   * 统计反向代理规则数量
+   */
+  async countRules() {
+    const config = this.getLuckyProxyConfig();
+    return await countRules(config);
+  }
+
+  /**
+   * 列出即将过期的 SSL 证书
+   */
+  async listExpiringSoonCerts(daysThreshold = 30) {
+    const config = this.getLuckyProxyConfig();
+    return await listExpiringSoonCerts(daysThreshold, config);
+  }
+
+  /**
+   * 获取证书过期信息
+   */
+  async getCertExpiryInfo(certKey) {
+    const config = this.getLuckyProxyConfig();
+    return await getCertExpiryInfo(certKey, config);
+  }
+
+  /**
+   * 获取端口转发规则列表
+   */
+  async getPortForwardRules() {
+    const config = this.getLuckyProxyConfig();
+    return await getPortForwardRules(config);
+  }
+
+  /**
+   * 列出所有监听端口
+   */
+  async listAllListenPorts() {
+    const config = this.getLuckyProxyConfig();
+    return await listAllListenPorts(config);
+  }
+
+  /**
+   * 获取 WOL 设备列表
+   */
+  async getWolDevices() {
+    const config = this.getLuckyProxyConfig();
+    return await getWolDevices(config);
+  }
+
+  /**
+   * 唤醒设备
+   */
+  async wakeDevice(mac) {
+    const config = this.getLuckyProxyConfig();
+    return await wakeDevice(mac, config);
   }
 }
 

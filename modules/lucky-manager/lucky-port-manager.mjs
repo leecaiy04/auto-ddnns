@@ -496,38 +496,15 @@ export async function smartAddOrUpdateSubRule(port, remark, serviceType, domains
     };
   }
 
-  // 2. 获取端口原始规则，如果不存在则自动创建
-  let rawRule = await getRawRuleByPort(port, config);
+  // 2. 获取端口原始规则
+  const rawRule = await getRawRuleByPort(port, config);
   if (!rawRule) {
-    console.log(`[LuckyPortManager] 端口 ${port} 不存在，正在自动创建...`);
-    const createResult = await createListenRule({
-      ruleName: `Auto-DDNNS-Port-${port}`,
-      listenPort: port,
-      network: 'tcp',
-      listenIP: '',
-      enable: true,
-      enableTLS: options.tls || false,
-      autoFirewall: true
-    }, config);
-
-    if (createResult.ret !== 0) {
-      return {
-        ret: -1,
-        msg: `端口 ${port} 不存在且自动创建失败: ${createResult.msg}`,
-        action: 'port_creation_failed'
-      };
-    }
-
-    console.log(`[LuckyPortManager] ✅ 端口 ${port} 创建成功`);
-    // 重新获取刚创建的规则
-    rawRule = await getRawRuleByPort(port, config);
-    if (!rawRule) {
-      return {
-        ret: -1,
-        msg: `端口 ${port} 创建后仍无法获取规则`,
-        action: 'port_not_found_after_creation'
-      };
-    }
+    fs.appendFileSync('/tmp/lucky-debug.log', `[${new Date().toISOString()}] Port ${port} not found, returning error\n`);
+    return {
+      ret: -1,
+      msg: `端口 ${port} 的原始规则不存在`,
+      action: 'port_not_found'
+    };
   }
 
   // 3. 检查是否存在同名子规则

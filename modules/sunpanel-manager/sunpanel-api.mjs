@@ -11,6 +11,10 @@ import { appendFileSync } from 'fs';
 const DEFAULT_API_BASE = 'http://192.168.9.2:20001/api';
 const DEBUG_LOG = '/tmp/sunpanel-debug.log';
 
+// Token 缓存
+let cachedToken = null;
+let tokenExpireTime = null;
+
 function debugLog(message) {
   try {
     const timestamp = new Date().toISOString();
@@ -20,20 +24,84 @@ function debugLog(message) {
   }
 }
 
+/**
+ * 登录 SunPanel 获取 token
+ * @param {string} username - 用户名
+ * @param {string} password - 密码
+ * @param {string} apiBase - API 基础 URL
+ * @returns {Promise<string>} token
+ */
+async function loginAndGetToken(username, password, apiBase) {
+  // 尝试内部 API 登录端点
+  const internalLoginUrl = `${apiBase.replace('/openapi/v1', '')}/api/login/account`;
+
+  console.log('[SunPanel] 尝试登录获取新 token...');
+  debugLog(`Attempting login to ${internalLoginUrl}`);
+
+  try {
+    const response = await fetch(internalLoginUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username, password })
+    });
+
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('登录失败：返回非 JSON 响应');
+    }
+
+    const result = await response.json();
+
+    if (result.code !== 0) {
+      throw new Error(`登录失败：${result.msg || result.code}`);
+    }
+
+    const token = result.data?.token;
+    if (!token) {
+      throw new Error('登录成功但未返回 token');
+    }
+
+    // 缓存 token，设置 23 小时过期（SunPanel token 通常 24 小时有效）
+    cachedToken = token;
+    tokenExpireTime = Date.now() + 23 * 60 * 60 * 1000;
+
+    console.log('[SunPanel] ✅ 登录成功，已获取新 token');
+    debugLog(`Login successful, token: ${token.substring(0, 10)}...`);
+
+    return token;
+  } catch (error) {
+    console.error('[SunPanel] ❌ 登录失败:', error.message);
+    debugLog(`Login failed: ${error.message}`);
+    throw error;
+  }
+}
+
 function normalizeApiBase(apiBase) {
   return `${apiBase || DEFAULT_API_BASE}`.replace(/\/+$/u, '');
 }
 
 function resolveConfig(config = null) {
   const overrides = config ?? {};
-  const token = overrides.apiToken ?? getEnv('SUNPANEL_API_TOKEN', '');
 
-  debugLog(`resolveConfig called - token: ${token ? token.substring(0, 10) + '...' : 'EMPTY'}`);
+  // 优先使用缓存的 token（如果未过期）
+  let token = null;
+  if (cachedToken && tokenExpireTime && Date.now() < tokenExpireTime) {
+    token = cachedToken;
+    debugLog('Using cached token');
+  } else {
+    token = overrides.apiToken ?? getEnv('SUNPANEL_API_TOKEN', '');
+    debugLog(`Using token from config/env: ${token ? token.substring(0, 10) + '...' : 'EMPTY'}`);
+  }
+
   console.log('[SunPanel] Token from env:', token ? `${token.substring(0, 10)}...` : 'EMPTY');
 
   return {
     apiBase: normalizeApiBase(overrides.apiBase ?? getEnv('SUNPANEL_API_BASE', DEFAULT_API_BASE)),
-    apiToken: token
+    apiToken: token,
+    username: overrides.username ?? getEnv('SUNPANEL_USERNAME', ''),
+    password: overrides.password ?? getEnv('SUNPANEL_PASSWORD', '')
   };
 }
 
@@ -49,9 +117,11 @@ export function getSunPanelAuthConfig(config = null) {
  * 调用 Sun Panel API
  * @param {string} endpoint - API 端点
  * @param {object} data - 请求数据
+ * @param {object} config - 配置对象
+ * @param {boolean} isRetry - 是否为重试请求
  * @returns {Promise<object>} 响应数据
  */
-async function callApi(endpoint, data = {}, config = null) {
+async function callApi(endpoint, data = {}, config = null, isRetry = false) {
   const resolvedConfig = resolveConfig(config);
   const url = `${resolvedConfig.apiBase}${endpoint}`;
   const timeoutMs = 30000;
@@ -93,6 +163,24 @@ async function callApi(endpoint, data = {}, config = null) {
     code: result.code,
     msg: result.msg
   });
+
+  // 如果 token 过期且有用户名密码，尝试重新登录
+  if (result.code === 1001 && !isRetry && resolvedConfig.username && resolvedConfig.password) {
+    console.log('[SunPanel] Token 过期，尝试自动重新登录...');
+    try {
+      const newToken = await loginAndGetToken(
+        resolvedConfig.username,
+        resolvedConfig.password,
+        resolvedConfig.apiBase
+      );
+
+      // 使用新 token 重试请求
+      return await callApi(endpoint, data, { ...config, apiToken: newToken }, true);
+    } catch (loginError) {
+      console.error('[SunPanel] 自动登录失败:', loginError.message);
+      throw new Error(`Token expired and auto-login failed: ${loginError.message}`);
+    }
+  }
 
   if (result.code !== 0) {
     throw new Error(`API Error ${result.code}: ${result.msg}`);
@@ -248,6 +336,254 @@ export async function testConnection(config = null) {
     console.error('❌ Sun Panel 连接失败:', error.message);
     return false;
   }
+}
+
+// ==================== 便捷方法 ====================
+
+/**
+ * 获取所有分组和项目（内部 API）
+ * @param {Object} config - 配置对象
+ * @param {boolean} isRetry - 是否为重试请求
+ * @returns {Promise<Object>} 所有分组和项目
+ */
+export async function getAllGroupsWithItems(config = null, isRetry = false) {
+  const resolvedConfig = resolveConfig(config);
+  const url = `${resolvedConfig.apiBase.replace('/openapi/v1', '')}/api/panel/itemIcon/getListAllGroup`;
+  const timeoutMs = 30000;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'token': resolvedConfig.apiToken,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({}),
+    signal: AbortSignal.timeout(timeoutMs)
+  });
+
+  const contentType = response.headers.get('content-type');
+  if (!contentType || !contentType.includes('application/json')) {
+    const text = await response.text();
+    throw new Error(`API returned non-JSON response (${response.status}): ${text.substring(0, 100)}`);
+  }
+
+  const result = await response.json();
+
+  // 如果 token 过期且有用户名密码，尝试重新登录
+  if (result.code === 1001 && !isRetry && resolvedConfig.username && resolvedConfig.password) {
+    console.log('[SunPanel] Token 过期，尝试自动重新登录...');
+    try {
+      const newToken = await loginAndGetToken(
+        resolvedConfig.username,
+        resolvedConfig.password,
+        resolvedConfig.apiBase
+      );
+
+      // 使用新 token 重试请求
+      return await getAllGroupsWithItems({ ...config, apiToken: newToken }, true);
+    } catch (loginError) {
+      console.error('[SunPanel] 自动登录失败:', loginError.message);
+      throw new Error(`Token expired and auto-login failed: ${loginError.message}`);
+    }
+  }
+
+  if (result.code !== 0) {
+    throw new Error(`API Error ${result.code}: ${result.msg}`);
+  }
+
+  return result.data;
+}
+
+/**
+ * 列出所有项目（扁平化）
+ * @param {Object} config - 配置对象
+ * @returns {Promise<Array>} 所有项目的扁平数组
+ */
+export async function listAllItems(config = null) {
+  try {
+    const data = await getAllGroupsWithItems(config);
+    const items = [];
+
+    if (data && Array.isArray(data.list)) {
+      for (const group of data.list) {
+        if (group.itemInfos && Array.isArray(group.itemInfos)) {
+          for (const item of group.itemInfos) {
+            items.push({
+              ...item,
+              groupTitle: group.title,
+              groupOnlyName: group.onlyName,
+              groupId: group.id
+            });
+          }
+        }
+      }
+    }
+
+    return items;
+  } catch (error) {
+    // 如果内部 API 失败，尝试使用 OpenAPI
+    console.warn('[SunPanel] 内部 API 失败，回退到 OpenAPI:', error.message);
+    const groups = await getGroupList(config);
+    const items = [];
+
+    if (groups && Array.isArray(groups.list)) {
+      for (const group of groups.list) {
+        // OpenAPI 需要逐个获取分组信息
+        try {
+          const groupInfo = await getGroupInfo({ itemGroupID: group.itemGroupID }, config);
+          if (groupInfo.items && Array.isArray(groupInfo.items)) {
+            for (const item of groupInfo.items) {
+              items.push({
+                ...item,
+                groupTitle: group.title,
+                groupOnlyName: group.onlyName,
+                groupId: group.itemGroupID
+              });
+            }
+          }
+        } catch (e) {
+          console.warn(`[SunPanel] 获取分组 ${group.title} 详情失败:`, e.message);
+        }
+      }
+    }
+
+    return items;
+  }
+}
+
+/**
+ * 根据标题查找项目
+ * @param {string} title - 项目标题
+ * @param {Object} config - 配置对象
+ * @returns {Promise<Object|null>} 项目对象或 null
+ */
+export async function findItemByTitle(title, config = null) {
+  const items = await listAllItems(config);
+  return items.find(item => item.title === title) || null;
+}
+
+/**
+ * 根据唯一标识查找项目
+ * @param {string} onlyName - 唯一标识
+ * @param {Object} config - 配置对象
+ * @returns {Promise<Object|null>} 项目对象或 null
+ */
+export async function findItemByOnlyName(onlyName, config = null) {
+  try {
+    return await getItemInfo(onlyName, config);
+  } catch (error) {
+    // 如果通过 onlyName 查询失败，尝试从列表中查找
+    const items = await listAllItems(config);
+    return items.find(item => item.onlyName === onlyName) || null;
+  }
+}
+
+/**
+ * 根据标题查找分组
+ * @param {string} title - 分组标题
+ * @param {Object} config - 配置对象
+ * @returns {Promise<Object|null>} 分组对象或 null
+ */
+export async function findGroupByTitle(title, config = null) {
+  try {
+    const data = await getAllGroupsWithItems(config);
+    if (data && Array.isArray(data.list)) {
+      return data.list.find(group => group.title === title) || null;
+    }
+  } catch (error) {
+    // 回退到 OpenAPI
+    const groups = await getGroupList(config);
+    if (groups && Array.isArray(groups.list)) {
+      return groups.list.find(group => group.title === title) || null;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * 根据唯一标识查找分组
+ * @param {string} onlyName - 唯一标识
+ * @param {Object} config - 配置对象
+ * @returns {Promise<Object|null>} 分组对象或 null
+ */
+export async function findGroupByOnlyName(onlyName, config = null) {
+  try {
+    return await getGroupInfo({ onlyName }, config);
+  } catch (error) {
+    // 如果通过 onlyName 查询失败，尝试从列表中查找
+    try {
+      const data = await getAllGroupsWithItems(config);
+      if (data && Array.isArray(data.list)) {
+        return data.list.find(group => group.onlyName === onlyName) || null;
+      }
+    } catch (e) {
+      const groups = await getGroupList(config);
+      if (groups && Array.isArray(groups.list)) {
+        return groups.list.find(group => group.onlyName === onlyName) || null;
+      }
+    }
+  }
+
+  return null;
+}
+
+/**
+ * 获取站点设置（内部 API）
+ * @param {Object} config - 配置对象
+ * @returns {Promise<Object>} 站点设置
+ */
+export async function getSiteSettings(config = null) {
+  const resolvedConfig = resolveConfig(config);
+  const url = `${resolvedConfig.apiBase.replace('/openapi/v1', '')}/api/panel/globalSetting/getSiteStting`;
+  const timeoutMs = 30000;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'token': resolvedConfig.apiToken,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({}),
+    signal: AbortSignal.timeout(timeoutMs)
+  });
+
+  const result = await response.json();
+
+  if (result.code !== 0) {
+    throw new Error(`API Error ${result.code}: ${result.msg}`);
+  }
+
+  return result.data;
+}
+
+/**
+ * 获取用户信息（内部 API）
+ * @param {Object} config - 配置对象
+ * @returns {Promise<Object>} 用户信息
+ */
+export async function getUserInfo(config = null) {
+  const resolvedConfig = resolveConfig(config);
+  const url = `${resolvedConfig.apiBase.replace('/openapi/v1', '')}/api/user/getAuthInfo`;
+  const timeoutMs = 30000;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'token': resolvedConfig.apiToken,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({}),
+    signal: AbortSignal.timeout(timeoutMs)
+  });
+
+  const result = await response.json();
+
+  if (result.code !== 0) {
+    throw new Error(`API Error ${result.code}: ${result.msg}`);
+  }
+
+  return result.data;
 }
 
 // CLI 接口

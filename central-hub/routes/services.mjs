@@ -47,59 +47,7 @@ async function probeUrl(url, timeoutMs) {
 
   const startTime = Date.now();
 
-  // 对于 HTTPS 请求，使用原生 https 模块以支持 rejectUnauthorized
-  if (url.startsWith('https://')) {
-    const https = await import('https');
-    const urlObj = new URL(url);
-
-    return new Promise((resolve) => {
-      const options = {
-        method: 'HEAD',
-        hostname: urlObj.hostname,
-        port: urlObj.port || 443,
-        path: urlObj.pathname + urlObj.search,
-        timeout: timeoutMs,
-        rejectUnauthorized: false
-      };
-
-      const req = https.request(options, (res) => {
-        // 接受 2xx, 3xx (重定向), 4xx (客户端错误但服务可达)
-        const isReachable = res.statusCode >= 200 && res.statusCode < 500;
-        resolve({
-          url,
-          ok: isReachable,
-          status: res.statusCode,
-          latency: Date.now() - startTime
-        });
-        res.resume();
-      });
-
-      req.on('error', (error) => {
-        resolve({
-          url,
-          ok: false,
-          status: null,
-          latency: Date.now() - startTime,
-          error: error.code === 'ETIMEDOUT' ? 'timeout' : error.message
-        });
-      });
-
-      req.on('timeout', () => {
-        req.destroy();
-        resolve({
-          url,
-          ok: false,
-          status: null,
-          latency: Date.now() - startTime,
-          error: 'timeout'
-        });
-      });
-
-      req.end();
-    });
-  }
-
-  // 对于 HTTP 请求，使用 fetch
+  // 使用 fetch 统一处理 HTTP 和 HTTPS 请求
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 

@@ -10,7 +10,16 @@ import {
   createItem,
   updateItem,
   getItemInfo,
-  deleteItem
+  deleteItem,
+  getAllGroupsWithItems,
+  listAllItems,
+  findItemByTitle,
+  findItemByOnlyName,
+  findGroupByTitle,
+  findGroupByOnlyName,
+  getSiteSettings,
+  getUserInfo,
+  testConnection
 } from './sunpanel-api.mjs';
 import { getEnv } from '../../shared/env-loader.mjs';
 
@@ -223,9 +232,6 @@ export class SunPanelManager {
     }
 
     return services.find(service => {
-      if (!service.enableProxy || !service.proxyDomain) {
-        return false;
-      }
       return service.proxyDomain === domain;
     }) || null;
   }
@@ -300,9 +306,10 @@ export class SunPanelManager {
         }
 
         for (const proxy of luckyProxies) {
+          const domain = proxy.domains[0];
+          if (!domain) continue;
+
           try {
-            const domain = proxy.domains[0];
-            if (!domain) continue;
 
             const matchedService = this.getServiceByDomain(services, domain);
             const configuredGroupName = this.inferServiceGroup(matchedService, domain);
@@ -354,11 +361,9 @@ export class SunPanelManager {
             };
 
             console.log(`[SunPanelManager] ✅ [实例 ${i+1}] ${action === 'created' ? '创建' : '更新'}卡片: ${finalCardConfig.title}`);
-            results.details.push({ instance: i, domain, action, title: finalCardConfig.title });
           } catch (error) {
             if (i === 0) results.failed++;
             console.error(`[SunPanelManager] ❌ [实例 ${i+1}] 同步失败: ${proxy.domains[0]} - ${error.message}`);
-            results.details.push({ instance: i, domain, action: 'failed', error: error.message });
           }
         }
 
@@ -421,18 +426,33 @@ export class SunPanelManager {
     try {
       console.log('[SunPanelManager] purgeSunPanel 调用参数:', { manualOnlyNames, type: typeof manualOnlyNames, isArray: Array.isArray(manualOnlyNames) });
 
-      const syncedCards = this.stateManager.state.sunpanel?.syncStatus || {};
-      let cardList = Object.entries(syncedCards).map(([key, value]) => ({
-        ...value,
-        onlyName: key.replace(/_\d+$/, '') // 移除实例后缀
-      }));
+      let cardList = [];
 
       // 如果提供了手动列表，使用手动列表
       if (manualOnlyNames && Array.isArray(manualOnlyNames) && manualOnlyNames.length > 0) {
         cardList = manualOnlyNames.map(onlyName => ({ onlyName, remark: onlyName }));
         console.log(`[SunPanelManager] 使用手动指定的 ${cardList.length} 个卡片进行删除`);
       } else {
-        console.log('[SunPanelManager] 使用本地同步状态，共', cardList.length, '个卡片');
+        // 否则从 SunPanel 获取所有实际存在的卡片
+        try {
+          const allItems = await listAllItems(this.sunpanelConfig);
+          cardList = allItems.map(item => ({
+            onlyName: item.onlyName,
+            remark: item.title || item.onlyName,
+            domain: item.url || 'unknown',
+            serviceId: null
+          }));
+          console.log(`[SunPanelManager] 从 SunPanel 获取到 ${cardList.length} 个卡片`);
+        } catch (error) {
+          console.error('[SunPanelManager] ⚠️  无法从 SunPanel 获取卡片列表，回退到使用本地同步状态:', error.message);
+          // 回退到使用本地同步状态
+          const syncedCards = this.stateManager.state.sunpanel?.syncStatus || {};
+          cardList = Object.entries(syncedCards).map(([key, value]) => ({
+            ...value,
+            onlyName: key.replace(/_\d+$/, '') // 移除实例后缀
+          }));
+          console.log('[SunPanelManager] 使用本地同步状态，共', cardList.length, '个卡片');
+        }
       }
 
       const result = {
@@ -487,6 +507,7 @@ export class SunPanelManager {
       this.stateManager.state.sunpanel.lastSync = null;
       await this.stateManager.save();
 
+      result.cleared = result.deleted;  // 添加 cleared 字段以兼容测试
       result.message = `成功删除 ${result.deleted} 个卡片，失败 ${result.failed} 个`;
       console.log(`[SunPanelManager] ✅ 清理完成: 删除 ${result.deleted} 个，失败 ${result.failed} 个`);
 
@@ -495,6 +516,80 @@ export class SunPanelManager {
       console.error('[SunPanelManager] ❌ 清空 SunPanel 数据失败:', error.message);
       throw error;
     }
+  }
+
+  // ==================== 便捷方法 ====================
+
+  /**
+   * 测试 SunPanel 连接
+   */
+  async testConnection() {
+    const config = this.getSunPanelConfig();
+    return await testConnection(config);
+  }
+
+  /**
+   * 获取所有分组和项目
+   */
+  async getAllGroupsWithItems() {
+    const config = this.getSunPanelConfig();
+    return await getAllGroupsWithItems(config);
+  }
+
+  /**
+   * 列出所有项目（扁平化）
+   */
+  async listAllItems() {
+    const config = this.getSunPanelConfig();
+    return await listAllItems(config);
+  }
+
+  /**
+   * 根据标题查找项目
+   */
+  async findItemByTitle(title) {
+    const config = this.getSunPanelConfig();
+    return await findItemByTitle(title, config);
+  }
+
+  /**
+   * 根据唯一标识查找项目
+   */
+  async findItemByOnlyName(onlyName) {
+    const config = this.getSunPanelConfig();
+    return await findItemByOnlyName(onlyName, config);
+  }
+
+  /**
+   * 根据标题查找分组
+   */
+  async findGroupByTitle(title) {
+    const config = this.getSunPanelConfig();
+    return await findGroupByTitle(title, config);
+  }
+
+  /**
+   * 根据唯一标识查找分组
+   */
+  async findGroupByOnlyName(onlyName) {
+    const config = this.getSunPanelConfig();
+    return await findGroupByOnlyName(onlyName, config);
+  }
+
+  /**
+   * 获取站点设置
+   */
+  async getSiteSettings() {
+    const config = this.getSunPanelConfig();
+    return await getSiteSettings(config);
+  }
+
+  /**
+   * 获取用户信息
+   */
+  async getUserInfo() {
+    const config = this.getSunPanelConfig();
+    return await getUserInfo(config);
   }
 }
 
