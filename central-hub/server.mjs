@@ -95,13 +95,17 @@ function applyRuntimeConfigOverrides(config) {
     if (process.env.SUNPANEL_API_BASE) {
       sunInstances.push({
         apiBase: process.env.SUNPANEL_API_BASE,
-        apiToken: process.env.SUNPANEL_API_TOKEN
+        apiToken: process.env.SUNPANEL_API_TOKEN,
+        username: process.env.SUNPANEL_USERNAME,
+        password: process.env.SUNPANEL_PASSWORD
       });
     }
     if (process.env.SUNPANEL_BACKUP_API_BASE) {
       sunInstances.push({
         apiBase: process.env.SUNPANEL_BACKUP_API_BASE,
-        apiToken: process.env.SUNPANEL_BACKUP_API_TOKEN
+        apiToken: process.env.SUNPANEL_BACKUP_API_TOKEN,
+        username: process.env.SUNPANEL_BACKUP_USERNAME,
+        password: process.env.SUNPANEL_BACKUP_PASSWORD
       });
     }
     config.modules.sunpanel.instances = sunInstances;
@@ -215,10 +219,6 @@ class CentralHub {
         this.config.modules.lucky,
         this.stateManager
       );
-      // 用于兼容旧的接口
-      this.modules.lucky = this.modules.luckyManager;
-      // DDNS 通过 LuckyManager 管理
-      this.modules.ddns = this.modules.luckyManager;
     }
 
     // Cloudflare DNS 管理模块
@@ -237,11 +237,9 @@ class CentralHub {
       );
     }
 
-    // 初始化所有模块（避免别名指向同一实例时重复初始化）
-    const initializedModules = new Set();
+    // 初始化所有模块
     for (const [name, module] of Object.entries(this.modules)) {
-      if (module && typeof module.init === 'function' && !initializedModules.has(module)) {
-        initializedModules.add(module);
+      if (module && typeof module.init === 'function') {
         await module.init();
       }
     }
