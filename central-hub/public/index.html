@@ -518,6 +518,34 @@
         </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-backdrop" id="deleteConfirmModal">
+        <div class="modal">
+            <h2 class="mb-4" style="color: var(--danger);">⚠️ 确认删除服务</h2>
+            <p class="text-sm text-muted mb-4">
+                即将删除服务：<strong id="delete-service-name" style="color: var(--text-primary);"></strong>
+            </p>
+            <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                <p class="text-sm" style="color: #fca5a5; margin-bottom: 12px;">
+                    <strong>🔗 级联删除操作</strong>
+                </p>
+                <ul style="list-style: none; padding-left: 0; font-size: 13px; color: var(--text-secondary);">
+                    <li style="margin-bottom: 8px;">✓ 从服务清单移除此配置</li>
+                    <li style="margin-bottom: 8px;">✓ 删除 Lucky 反向代理规则</li>
+                    <li style="margin-bottom: 8px;">✓ 删除 SunPanel 仪表盘卡片</li>
+                    <li style="margin-bottom: 8px;">✓ 清理 Cloudflare DNS 记录（如已启用）</li>
+                </ul>
+                <p class="text-sm" style="color: #fca5a5; margin-top: 12px;">
+                    ⚠️ 此操作不可撤销，请谨慎确认！
+                </p>
+            </div>
+            <div class="flex justify-between">
+                <button type="button" class="btn" onclick="closeModal('deleteConfirmModal')">取消</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteService()">确认删除</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Utilities
         function showToast(message, type = 'success') {
@@ -567,6 +595,49 @@
 
         function closeModal(id) { document.getElementById(id).classList.remove('show'); }
         function openModal(id) { document.getElementById(id).classList.add('show'); }
+
+        // Delete Service with Confirmation
+        let pendingDeleteServiceId = null;
+
+        function deleteService(serviceId, serviceName) {
+            pendingDeleteServiceId = serviceId;
+            document.getElementById('delete-service-name').textContent = serviceName;
+            openModal('deleteConfirmModal');
+        }
+
+        async function confirmDeleteService() {
+            if (!pendingDeleteServiceId) return;
+
+            closeModal('deleteConfirmModal');
+
+            showToast('正在删除服务...', 'warning');
+
+            try {
+                const result = await apiCall(
+                    `/api/services/${pendingDeleteServiceId}`,
+                    'DELETE',
+                    '删除服务'
+                );
+
+                // 显示详细的删除结果
+                if (result.cascadeResults) {
+                    const { lucky, sunpanel, cloudflare } = result.cascadeResults;
+
+                    let details = [];
+                    if (lucky?.success) details.push('Lucky 反向代理已清理');
+                    if (sunpanel?.success) details.push('SunPanel 卡片已删除');
+                    if (cloudflare?.success) details.push('Cloudflare DNS 已清理');
+
+                    if (details.length > 0) {
+                        showToast(`删除成功！${details.join('、')}`, 'success');
+                    }
+                }
+
+                pendingDeleteServiceId = null;
+            } catch (error) {
+                showToast(`删除失败: ${error.message}`, 'error');
+            }
+        }
 
         function openAddServiceModal() {
             document.getElementById('add-id').value = '';
@@ -863,7 +934,7 @@
                         <a href="#" target="_blank" style="color:#a78bfa; text-decoration:none; display:none; font-size:13px;" id="link-v6-${s.id}">IPv6 直连通道</a>
                         <div class="text-muted" style="font-size:11px;" id="latency-v6-${s.id}">-</div>
                     </td>
-                    <td><button class="btn btn-sm btn-danger" onclick="apiCall('/api/services/${s.id}', 'DELETE', '删除服务')">移除</button></td>
+                    <td><button class="btn btn-sm btn-danger" onclick="deleteService('${s.id}', '${s.name || s.id}')">🗑️ 删除</button></td>
                 </tr>
             `}).join('');
             

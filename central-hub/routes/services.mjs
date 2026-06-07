@@ -378,12 +378,38 @@ export function serviceRoutes(modules) {
       if (!modules.serviceRegistry) {
         return res.status(503).json({ error: '服务清单模块未初始化' });
       }
+
+      // 获取服务详情用于日志
+      const service = modules.serviceRegistry.getService(id);
+      const serviceName = service?.name || id;
+
       await modules.serviceRegistry.deleteService(id);
+
+      // 触发级联同步（自动删除 Lucky、SunPanel、Cloudflare 的相关配置）
       const sync = await triggerServiceSync(modules, 'service_delete');
+
+      // 构建详细的级联删除结果
+      const cascadeResults = {
+        lucky: {
+          success: isSyncStepSuccessful(sync?.results?.lucky),
+          message: '反向代理规则已清理'
+        },
+        sunpanel: {
+          success: isSyncStepSuccessful(sync?.results?.sunpanel),
+          message: '仪表盘卡片已删除'
+        },
+        cloudflare: sync?.results?.cloudflare ? {
+          success: isSyncStepSuccessful(sync.results.cloudflare),
+          message: 'DNS 记录已清理'
+        } : null
+      };
+
       res.json(buildMutationResponse({
-        successMessage: '服务已删除并完成同步',
-        warningMessage: '服务已删除，但后续同步存在失败项，请查看 sync 结果',
-        sync
+        successMessage: `服务 "${serviceName}" 已删除，并完成级联清理（Lucky、SunPanel${sync?.results?.cloudflare ? '、Cloudflare' : ''}）`,
+        warningMessage: `服务 "${serviceName}" 已删除，但部分级联清理失败，请检查 Lucky/SunPanel 状态`,
+        sync,
+        cascadeResults,
+        serviceId: id
       }));
     } catch (error) {
       console.error('[Services] 删除服务失败:', error);
